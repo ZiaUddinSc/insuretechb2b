@@ -105,14 +105,14 @@ def CreateClaim(request):
     return render(request, template_name=template_name, context={"banks": banks, "products": products, "claim_relations": claim_relations,"currencies":currencies,"districts":districts})
 
 
-@group_required_multiple('Insurer Audit Officer','Insurer Finance', 'Claim Supervisor','ORGANIZATION HR', 'Shield Operation',"B2B Employee","Insurer Claim Officer")
+@group_required_multiple('Insurer Audit Officer','Insurer Finance', 'Claim Supervisor','Organization HR', 'Shield Operation',"B2B Employee","Insurer Claim Officer")
 def ClaimList(request):
     template_name = 'claim/claim-list.html'
     
     return render(request, template_name=template_name,context={'request': request})
 
 
-@group_required_multiple('Insurer Audit Officer','Claim Supervisor', 'ORGANIZATION HR', 'Shield Operation',"B2B Employee","Insurer Claim Officer")
+@group_required_multiple('Insurer Audit Officer','Claim Supervisor', 'Organization HR', 'Shield Operation',"B2B Employee","Insurer Claim Officer")
 def ReceiveClaimList(request):
     template_name = 'claim/receive-claim-list.html'
     return render(request, template_name=template_name,context={'request': request})
@@ -195,7 +195,7 @@ def create_claim_api(request):
             data['hospital_or_clinic_name'] = data['hospital_or_clinic_name']
         serializer = ClaimInformationSerializer(data=data)
         if serializer.is_valid():
-            group_instance= Group.objects.get(name__in=["ORGANIZATION HR"])
+            group_instance= Group.objects.get(name__in=["Organization HR"])
             from_group= Group.objects.get(name__in=["B2B Employee"])
             hr_reciver = claim_hr_receiver(request)
             instance = serializer.save(current_group=group_instance,
@@ -529,7 +529,7 @@ def update_claim_status(request):
         #         file.save()   
         #         if  status in [1,2]:    
         #             group_instance = None  
-        #             if groupname.upper()=="ORGANIZATION HR":      
+        #             if groupname.upper()=="":      
         #                 group_instance, _ = Group.objects.get_or_create(name="Waada")
         #             elif groupname.upper()=="Waada": 
         #                 group_instance, _ = Group.objects.get_or_create(name="Insurer Claim Officer")
@@ -635,8 +635,8 @@ class FileReceiveWithHistoryView(APIView):
             user_groups = user.groups.values_list('name', flat=True)
             # Normal user sees only own created data
            
-            if "ORGANIZATION HR" in user_groups:
-                queryset = queryset.filter(current_group__name="ORGANIZATION HR")
+            if "Organization HR" in user_groups:
+                queryset = queryset.filter(current_group__name="Organization HR")
 
             elif "Shield Operation" in user_groups:
                 queryset = queryset.filter(current_group__name="Shield Operation")

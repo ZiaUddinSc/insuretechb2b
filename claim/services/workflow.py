@@ -36,10 +36,10 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
                 "status":action,
             }
     # --- ORGANIZATION HR Actions ---
-    if claim.current_group.name == "ORGANIZATION HR":
+    if claim.current_group.name == "Organization HR":
         if action == 1 : #APPROVED
             new_status  = 4 # Pending for New
-            next_group  = Group.objects.get(name="Waada Operation")
+            next_group  = Group.objects.get(name="Shield Operation")
         elif action == 7: # DOCUMENT_REQUIRED
             new_status = 7
             claim.current_holder=claim_user
@@ -47,7 +47,7 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
             next_group=Group.objects.get(name="B2B Employee")
             claim.current_group=next_group
             last_history.status_after=action
-            group= Group.objects.get(name="ORGANIZATION HR") #Document Sending
+            group= Group.objects.get(name="Organization HR") #Document Sending
             send_dynamic_email(
                 to_email=claim_user.email,
                 template_type="group",
@@ -61,7 +61,7 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
             last_history.status_after=action
             next_group=Group.objects.get(name="B2B Employee")
             claim.current_group=next_group
-            group= Group.objects.get(name="ORGANIZATION HR")
+            group= Group.objects.get(name="Organization HR")
             send_dynamic_email(
                 to_email=claim_user.email,
                 template_type="group",
@@ -70,7 +70,7 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
             )
 
     # --- Waada Actions ---
-    elif claim.current_group.name == "Waada Operation":
+    elif claim.current_group.name == "Shield Operation":
         if action == 1:
             new_status  = 4 # Pending for New
             claim.is_edited_waada=True
@@ -84,7 +84,7 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
             claim.is_edited_claim_officer=False
             claim.is_edited_audit_officer=False
             claim.is_edited_claim_supervisor=False
-            group= Group.objects.get(name="Waada Operation")
+            group= Group.objects.get(name="Shield Operation")
             send_dynamic_email(
                 to_email=claim_user.email,
                 template_type="group",
@@ -100,7 +100,7 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
             claim.is_edited_waada=False
             claim.is_edited_claim_officer=False
             claim.is_edited_audit_officer=False
-            group= Group.objects.get(name="Waada Operation")
+            group= Group.objects.get(name="Shield Operation")
             
             send_dynamic_email(
                 to_email=claim_user.email,
@@ -220,7 +220,7 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
         elif action == 7:
             new_status = 7
             claim.current_holder=claim_user
-            next_group=Group.objects.get(name="ORGANIZATION HR")
+            next_group=Group.objects.get(name="Organization HR")
             claim.current_group=next_group
             claim.is_edited_waada=False
             claim.is_edited_claim_officer=False
@@ -236,7 +236,7 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
         elif action == 0:
             new_status = 0
             claim.current_holder=claim_user
-            next_group=Group.objects.get(name="ORGANIZATION HR")
+            next_group=Group.objects.get(name="Organization HR")
             claim.current_group=next_group
             claim.is_edited_waada=False
             claim.is_edited_claim_officer=False
@@ -252,7 +252,7 @@ def process_claim_action(claim, action, actor_user, remarks="", settled_amount=N
     # Save claim changes
     elif claim.current_group.name == "B2B Employee":
         new_status = action  
-        next_group = Group.objects.get(name="ORGANIZATION HR")               
+        next_group = Group.objects.get(name="Organization HR")               
     if new_status == 1:
         claim.file_status = 4
     else:

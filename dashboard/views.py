@@ -69,7 +69,7 @@ def dashboard_counts(request,group_name="Super Admin"):
         )
         
         
-    elif group_name=="ORGANIZATION HR":
+    elif group_name=="Organization HR":
         history_qs = FileTransferHistory.objects.filter(
             sender=request.user
             # file__employee__contract_no=current_contract_no
@@ -145,7 +145,7 @@ def error_404_view(request, exception):
 
 
 def hr_admin_dashboard(request):
-    dashboard_data=dashboard_counts(request,"ORGANIZATION HR")
+    dashboard_data=dashboard_counts(request,"Organization HR")
     context = dashboard_data
     return render(request, 'dashboard/hr_admin_dashboard.html',context=context)
 
@@ -190,7 +190,7 @@ def waadaaSupervisor(request):
 def required_document(request):
     return render(request, 'dashboard/required-document.html')
 
-def dashboardCount(request,group_name="ORGANIZATION HR"):
+def dashboardCount(request,group_name="Organization HR"):
     latest_status = FileTransferHistory.objects.filter(
             to_group__name=group_name
      ).values('file').annotate(status=Max('status_after')) 
@@ -230,7 +230,7 @@ def dashboardCount(request,group_name="ORGANIZATION HR"):
 
 
 
-def dashboardForClaimOfficerCount(request,group_name="ORGANIZATION HR"):
+def dashboardForClaimOfficerCount(request,group_name="Organization HR"):
     if group_name == "Claim Supervisor": 
         latest_status = FileTransferHistory.objects.filter(
                 to_group__name=group_name
@@ -281,7 +281,7 @@ def dashboardForClaimOfficerCount(request,group_name="ORGANIZATION HR"):
 
 
 
-def dashboardCountForOrganization(request,group_name="ORGANIZATION HR"):
+def dashboardCountForOrganization(request,group_name="Organization HR"):
     
     try:
         employee = EmployeeInformation.objects.get(user=request.user)
@@ -439,7 +439,7 @@ def GroupClaim(request):
 
 
 def WaadaaOperationDashboard(request):
-    dashboard_data=dashboardCount(request,"Waada Operation")
+    dashboard_data=dashboardCount(request,"Shield Operation")
     context = dashboard_data
     template_name = 'dashboard/waadaa_operation_dashboard.html'
     return render(request, template_name=template_name,context=context)
@@ -489,7 +489,7 @@ def process_data(request,rows):
             users_data = []       
             useremails = set()   
             group_name = "B2B Employee"  # or get from request.POST
-            hr_group_name = "ORGANIZATION HR"  # or get from request.POST
+            hr_group_name = "Organization HR"  # or get from request.POST
             group, created = Group.objects.get_or_create(name=group_name)
             hr_group, created = Group.objects.get_or_create(name=hr_group_name)
             child_counter = {}

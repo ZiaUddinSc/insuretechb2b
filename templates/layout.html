@@ -27,7 +27,7 @@
       </li>
       <li class="nav-item">
        
-        {% if request.user|has_group:"ORGANIZATION HR"  %}
+        {% if request.user|has_group:"Organization HR"  %}
         <a class="nav-link" href="{% url 'hr_admin_dashboard' %}">
           <i class="fa fa-home menu-icon"></i>
           <span class="menu-title">Dashboard</span>
@@ -170,11 +170,11 @@
         </a>
         <div class="collapse" id="form-claim-elements">
           <ul class="nav flex-column sub-menu">
-            {% if request.user|has_group:"ORGANIZATION HR" or request.user|has_group:"Insurer Finance" or request.user|has_group:"Claim Supervisor" or  request.user|has_group:"Super Admin" or request.user|has_group:"Insurer Audit Officer"   or request.user|has_group:"Insurer Claim Officer" or request.user|has_group:"Insurer Audit Officer" or  request.user|has_group:"B2B Employee" or  request.user|has_group:"Shield Operation"%} 
+            {% if request.user|has_group:"Organization HR" or request.user|has_group:"Insurer Finance" or request.user|has_group:"Claim Supervisor" or  request.user|has_group:"Super Admin" or request.user|has_group:"Insurer Audit Officer"   or request.user|has_group:"Insurer Claim Officer" or request.user|has_group:"Insurer Audit Officer" or  request.user|has_group:"B2B Employee" or  request.user|has_group:"Shield Operation"%} 
 
             <li class="nav-item"> <a class="nav-link" href="{% url 'claim_list' %}">Claim List</a></li>
             {% endif %}
-            {% if request.user|has_group:"ORGANIZATION HR" or  request.user|has_group:"Claim Supervisor" or  request.user|has_group:"Super Admin" or request.user|has_group:"Insurer Audit Officer"   or request.user|has_group:"Insurer Claim Officer" or request.user|has_group:"Insurer Audit Officer" or  request.user|has_group:"Shield Operation" or  request.user|has_group:"B2B Employee"%} 
+            {% if request.user|has_group:"Organization HR" or  request.user|has_group:"Claim Supervisor" or  request.user|has_group:"Super Admin" or request.user|has_group:"Insurer Audit Officer"   or request.user|has_group:"Insurer Claim Officer" or request.user|has_group:"Insurer Audit Officer" or  request.user|has_group:"Shield Operation" or  request.user|has_group:"B2B Employee"%} 
             <li class="nav-item"> <a class="nav-link" href="{% url 'received-claim-list' %}">Claim Pending List</a></li>
             {% endif %}
             {% comment %} <li class="nav-item"> <a class="nav-link" href="{% url 'life-list' %}">Life</a></li>

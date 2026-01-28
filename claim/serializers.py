@@ -286,13 +286,13 @@ class ClaimInformationFileSerializer(serializers.ModelSerializer):
         groups=request.user.groups.values_list('name', flat=True)
         if "Insurer Claim Officer" in groups:
             enable_edit=obj.is_edited_claim_officer
-        elif "Waada Operation" in groups:
+        elif "Shield Operation" in groups:
             enable_edit=obj.is_edited_waada
         elif "Claim Supervisor" in groups:
             enable_edit=obj.is_edited_claim_supervisor
         elif "Insurer Audit Officer" in groups:
             enable_edit=obj.is_edited_audit_officer
-        elif "ORGANIZATION HR" in groups:
+        elif "Organization HR" in groups:
             enable_edit=False
         elif "B2B Employee" in groups:
             enable_edit=False
@@ -458,13 +458,13 @@ class ClaimInformationListSerializer(serializers.ModelSerializer):
         groups=request.user.groups.values_list('name', flat=True)
         if "Insurer Claim Officer" in groups:
             enable_edit=obj.is_edited_claim_officer
-        elif "Waada Operation" in groups:
+        elif "Shield Operation" in groups:
             enable_edit=obj.is_edited_waada
         elif "Claim Supervisor" in groups:
             enable_edit=obj.is_edited_claim_supervisor
         elif "Insurer Audit Officer" in groups:
             enable_edit=obj.is_edited_audit_officer
-        elif "ORGANIZATION HR" in groups:
+        elif "Organization HR" in groups:
             enable_edit=False
         elif "B2B Employee" in groups:
             enable_edit=False

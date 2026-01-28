@@ -79,7 +79,7 @@ class CustomUserLoginAPIView(APIView):
             _, token = AuthToken.objects.create(user)
             # Redirect to group-based dashboard
             if user.is_superuser is not True:
-                if user.groups.filter(name='ORGANIZATION HR').exists():
+                if user.groups.filter(name='Organization HR').exists():
                     response = redirect('hr_admin_dashboard')
                 elif user.groups.filter(name='Shield Operation').exists():
                     response = redirect('waadaa_operation_dashboard')
