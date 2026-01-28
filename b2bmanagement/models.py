@@ -527,7 +527,7 @@ class Organization(CommonBaseModel):
     trade_license_file = models.FileField(upload_to=tin_file_path,blank=True,null=True)  # You can also use ImageField
     bin_number = models.CharField(max_length=100, blank=True,null=True)
     bin_file = models.FileField(upload_to=bin_file_path,blank=True,null=True)  # You can also use ImageField
-    bank=models.ForeignKey(Bank,blank=True,null=True, on_delete=models.DO_NOTHING)
+    bank=models.ForeignKey(Bank,blank=True,null=True, on_delete=models.SET_NULL)
     account_name = models.CharField(max_length=100, blank=True,null=True)
     account_number = models.CharField(max_length=100, blank=True,null=True)
     branch_name = models.CharField(max_length=100, blank=True,null=True)
@@ -537,7 +537,7 @@ class Organization(CommonBaseModel):
     CompanyType,
     blank=True,
     null=True,
-    on_delete=models.DO_NOTHING
+    on_delete=models.SET_NULL,
     )
     status = models.PositiveSmallIntegerField(choices=ORGANIZATION_STATUS_CHOICES, default=1)
     created_by = models.ForeignKey(

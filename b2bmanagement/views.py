@@ -1024,17 +1024,21 @@ class CompanyTypeView(APIView,PageNumberPagination):
 
     def delete(self, request, pk):
         try:
-          #Retrieve Iten by ID
-          company_type = CompanyType.objects.get(id=pk)
+        # Retrieve company type by ID
+            company_type = CompanyType.objects.get(pk=pk)
+        except CompanyType.DoesNotExist:
+            return Response(
+            {"error": "Company type not found"},
+            status=status.HTTP_404_NOT_FOUND
+            )
+        # Direct delete from database
+        company_type.delete()
 
-        except company_type.DoesNotExist:
-            return Response({"error": "Compnay type not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        #Delete the plan insurer the database 
-        company_type.status = 2                  # example field
-        company_type.save()
-        return Response({"error": False,"message":'Compnay type has been deleted'})
-
+        return Response(
+            {"error": False, "message": "Company type has been deleted"},
+            status=status.HTTP_200_OK
+        
+        )
 
 class CompanyTypeViewSigleList(APIView):
     def get(self, request,item_id):
