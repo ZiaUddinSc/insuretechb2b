@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  My Policy
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+    <!-- partial -->
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="page-header">
+          <h3 class="page-title">My Policy</h3>
+        </div>
+
+        <div class="container mt-4">
+          <!-- Row 1 -->
+          <div class="row mb-3 justify-content-between">
+            <div class="col-md-5">
+              <div class="info-card coverage-card">
+                <h6>Life Coverage</h6>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="info-card amount-card text-right">
+                <h6>BDT : 5,00,000.00</h6>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="row mb-3 justify-content-between">
+            <div class="col-md-5">
+              <div class="info-card coverage-card">
+                <h6>Accidental Death Benefit</h6>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="info-card amount-card text-right">
+                <h6>BDT : 10,00,000.00</h6>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="row mb-3 justify-content-between">
+            <div class="col-md-5">
+              <div class="info-card coverage-card">
+                <h6>Hospitalization Coverage</h6>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="info-card amount-card text-right">
+                <h6>BDT : 2,00,000.00</h6>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 4 -->
+          <div class="row mb-3 justify-content-between">
+            <div class="col-md-5">
+              <div class="info-card coverage-card">
+                <h6>OPD Coverage</h6>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="info-card amount-card text-right">
+                <h6>BDT : 10,000.00</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+
+      <!-- partial -->
+
+      <!-- page-body-wrapper ends -->
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+  <!-- container-scroller -->
+{% endblock %}
+
+{% block extra_script %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}
+<!-- / Layout wrapper -->

@@ -1,0 +1,430 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Company Wise Plan List{% endblock title%}
+
+{% block extra_head %}
+
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+
+ 
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Company Wise Plan List
+              </h3>
+              <nav aria-label="breadcrumb">
+                <a  href="{% url 'company-wise-plan' %}" >
+                <button type="button" class="btn btn-primary" >Add Company Plan</button>
+                </a>
+              </nav>
+            </div>
+          <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="company-plan-list" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>Organization Name</th>
+                          <th>Organization Code</th>
+                          <th>Organization Contract No</th> 
+                          <th>Created Plans</th> 
+                          <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="addInsurerModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Add New Insurer</h5> 
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="errors">
+                  </ul>
+                  
+                  <form id="form-insurer-information" method="POST" action="{% url "create-insurer" %}">
+                    {% comment %} <div class="form-group">
+                      <label for="name" class="col-form-label">Insurer Code</label>
+                      <input type="text" class="form-control" name="insurer_code">
+                    </div> {% endcomment %}
+                    <div class="form-group">
+                      <label for="company_type" class="col-form-label"> Status</label>
+                      <select  id="status" name="status"  class="select2 form-control" style="width: 200px;">
+                        <option value="1">Life</option>
+                        <option value="2">Non-Life</option>
+                      </select>
+                    </div>
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" id="insurer-save" class="btn btn-success">Save</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="updateInsurerModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Update Insurer Information</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="update_errors">
+                  </ul>
+                  
+                  <form id="form-bank-update-information" method="PUT" action="{% url "create-insurer" %}">
+                    <div class="form-group">
+                      <label for="insurer_company_name" class="col-form-label">Insurance Company Name</label>
+                      <input type="text" id="insurer_company_name" class="form-control" name="insurer_company_name">
+                    </div>
+                    <div class="form-group">
+                      <label for="insurer_company_type" class="col-form-label">Insurance Company Type:</label>
+                      <select  id="insurer_company_type" name="insurer_company_type"  class="select2 form-control" style="width: 200px;">
+                        <option value="1">Life</option>
+                        <option value="2">Non-Life</option>
+                      </select>
+                    </div>
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" data-id="" id="insurer_update" class="btn btn-success">Update</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+
+    <script>
+      var companyPlanTable
+      $(document).ready(function() {
+        //Displaying Data by API
+
+        companyPlanTable=$('#company-plan-list').DataTable({
+          "pageLength" : 10,
+          "processing": true,
+          "serverSide": true,
+          "filter": true,
+          "responsive": true,
+          "order": [0, 'desc'],
+          ajax: {
+            "processing":false,
+            "url": "{% url 'company-plan-list' %}",
+            "dataSrc": function (response) {
+              return response.data;
+           }
+          },      
+          columns: [
+              {"mData":"organization.organization_name",defaultContent:"N/A"},
+              {"mData":"organization.organization_code",defaultContent:"N/A"},
+
+              {"mData":"organization.organization_contract_no",defaultContent:"N/A"},
+              {"mData": function (source) {
+                let planNames = $.map(source.company_plan_documents, function(item) {
+                  return item.plan.name;
+              });
+              
+              // Make them unique
+              let uniqueNames = [...new Set(planNames)];
+              
+              // Sort alphabetically
+              uniqueNames.sort();
+              
+              // Join with commas
+              let result = uniqueNames.join(", ");
+                
+                // If you want unique names
+                return  result
+                }
+              },
+              {"mData": function (source) {
+                return  `<div class="action-buttons">
+                  
+                  <a href="/b2bmanagement/company-plan-details/${source.id}/" class="btn btn-outline-success">View</a>
+                  <a data-id="${source.id}" class="btn btn-outline-danger insurer-delete">Delete</a>
+                </div>`
+                }
+              },
+              
+             
+            
+          ],
+          buttons: [
+          'pdf',
+          'excel',
+          'print',
+          'csv'
+          ]
+        });
+        //Validation and Submit data
+
+        (function($) {
+          'use strict';
+         var  validator = $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-insurer-information')
+              $.ajax({
+                type: "POST",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action"), 
+                data: form.serialize(), // serializes the form's elements.
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    // Closing Model After submission 
+                    $("#addInsurerModal .close").click()
+                    $().removeClass("errors");
+                    // Restting form After submission 
+                    $("#form-insurer-information")[0].reset();
+                    //Resetting Error message
+                    $('.errors li').remove();
+                     companyPlanTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("name")) {
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                      }
+                      
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response?.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          $(function() {
+      
+            // validate organization form  on keyup and submit
+            $("#form-insurer-information").validate({
+              rules: {
+                name: "required",
+                company_type : "required",
+              },
+              messages: {
+                name: "Please enter insurer company name",
+                company_type: "Please enter insurer company type",
+              },
+              errorPlacement: function(label, element) {
+                label.addClass('mt-2 text-danger');
+                label.insertAfter(element);
+              },
+              highlight: function(element, errorClass) {
+                $(element).parent().addClass('has-danger')
+                $(element).addClass('form-control-danger')
+              }
+            });
+         
+          });
+        })(jQuery);
+        
+        //Viewing data after clicking edit button in table
+
+        $('#company-plan-list').on('click','.edit_view',function(){
+          var id = $(this).attr('data-id')
+          $('#updateInsurerModal').modal('toggle')
+          $.ajax({
+            type: "GET",
+            headers: {//<==
+              "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+            },
+            url: '/b2bmanagement/insurer-details/'+id+'/', 
+            success: function(response) {
+               if(response.success){
+                $('#insurer_company_name').val(response.data.name)
+                $("#insurer_company_type").val(response.data.company_type).change();
+                $('#insurer_update').attr('data-id', response.data.id)
+               }else{
+                alert("Something error")
+               }
+            }
+         });
+        })
+        //Update data submit and  validation
+        $(function() {
+          $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-bank-update-information')
+              var id =$('#insurer_update').attr('data-id')
+              $.ajax({
+                type: "PUT",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action")+id+'/', 
+                data:{
+                  name:$('#insurer_company_name').val(),
+                  company_type:$('#insurer_company_type').val(),
+                },
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    //Closing Modal after submission
+
+                    $("#updateInsurerModal .close").click()
+                    //Clearing Submit form
+                    $("#form-bank-update-information")[0].reset();
+                    //Resetting Error message
+                    $('.update_errors li').remove();
+                     companyPlanTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("name")) {
+                        $('.update_errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                      }
+                    
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          // validate organization form  on keyup and submit
+          $("#form-bank-update-information").validate({
+            rules: {
+              insurer_name: "required",
+              insurer_company_type : "required",
+            },
+            messages: {
+              insurer_name: "Please enter insurance company name ",
+              insurer_company_type: "Please enter insurance company type",
+            },
+            errorPlacement: function(label, element) {
+              label.addClass('mt-2 text-danger');
+              label.insertAfter(element);
+            },
+            highlight: function(element, errorClass) {
+              $(element).parent().addClass('has-danger')
+              $(element).addClass('form-control-danger')
+            }
+          });
+       
+        });
+
+        //Delete Module
+        $('#company-plan-list').on('click', '.insurer-delete', function (event) {      
+          var row = companyPlanTable.row($(this).parents('tr'));
+          var id = ($(this).attr('data-id'))
+          swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this data!",
+            icon: "warning",
+            buttons: [
+              'Cancel',
+              'Confirm'
+            ],
+            dangerMode: true,
+          }).then(function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                  type:'DELETE',
+                  headers: {//<==
+                    "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                  },
+                  url:'/b2bmanagement/create-insurer/'+id+'/',
+                  success: function(data){
+                    if(data.error){  //You are checking for true/false not yes or no.
+                      $.toast({
+                        heading: 'Danger',
+                        text: "Something wrong.data didn't delete",
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        loaderBg: '#f2a654',
+                        position: 'top-right'
+                      })
+                    }else{
+                      companyPlanTable.ajax.reload();
+                    }
+                  }
+                });
+            } else {
+              swal("Cancelled", "Your data is safe :)", "error");
+            }
+          })
+         
+        });
+
+      });
+     
+  </script>
+  {% endblock extra_script %}

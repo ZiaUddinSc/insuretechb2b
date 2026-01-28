@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Update Employee {% endblock %}
+
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container-fluid page-body-wrapper">
+  {% include 'layout.html' %}
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Update Employee Information</h4>
+<form id="employee-update">
+    <div class="row">
+      <input type="hidden" id="emp_id" value="{{ employee.id }}">
+      <div class="col-md-6">
+        <label>Employee Name</label>
+        <input type="text" value="{{ employee.employee_name }}" class="form-control employeeName" placeholder="Employee Name" name="employee_name"/>
+      </div>
+      <div class="col-md-6">
+        <label>Employee ID</label>
+        <input type="text"  value="{{ employee.employee_id }}" class="form-control employeeID" placeholder="Employee ID" name="employee_id"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label>Member ID</label>
+        <input type="text" value="{{ employee.member_id }}"  class="form-control memberID" placeholder="Member ID" name="member_id"/>
+      </div>
+      <div class="col-md-6">
+        <label>Member Name</label>
+        <input type="text" value="{{ employee.member_name }}"  name class="form-control memberName" placeholder="Member Name" name="member_name"/>
+      </div>
+    </div>  
+    <div class="row">
+      <div class="col-md-6">
+          <label>Relation</label>
+          <select class="form-control relationField" style="height: 45px;" name="relation">
+            <option value="">--Select Relation --</option>
+            <option value="self" {% if employee.relation == "self" %}selected{% endif %}>Self</option>
+            <option value="wife" {% if employee.relation == "wife" %}selected{% endif %}>Wife</option>
+            <option value="child" {% if employee.relation == "child" %}selected{% endif %}>Child 1</option>
+            <option value="child2" {% if employee.relation == "child2" %}selected{% endif %}>Child 2</option>
+            <option value="child3" {% if employee.relation == "child3" %}selected{% endif %}>Child 3</option>
+            <option value="child4" {% if employee.relation == "child4" %}selected{% endif %}>Child 4</option>
+            <option value="child5" {% if employee.relation == "child5" %}selected{% endif %}>Child 5</option>
+            <option value="child6" {% if employee.relation == "child6" %}selected{% endif %}>Child 6</option>
+            <option value="father" {% if employee.relation == "father" %}selected{% endif %}>Father</option>
+            <option value="mother" {% if employee.relation == "mother" %}selected{% endif %}>Mother</option>
+          </select>
+      </div>
+      <div class="col-md-6">
+        <label>Nominee</label>
+        <select class="form-control nomineeField" style="height: 45px;" name="nominee">
+          <option value="">--Select Nominee --</option>
+          <option value="1" {% if employee.nominee_type == "y" %}selected{% endif %}>Yes</option>
+          <option value="0" {% if employee.nominee_type == "n" %}selected{% endif %}>No</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+          <label>Designation</label>
+          <select class="form-control empDesignationField" style="height: 45px;" name="designation">
+            <option value="">--Select Designation --</option>
+            {% for designation in designations %}
+            <option value="{{ designation.id }}"
+                    {% if employee.designation == designation.id %}selected{% endif %}>
+                {{ designation.title }}
+            </option>
+        {% endfor %}
+          </select>
+      </div>
+      <div class="col-md-6">
+        <label>Department</label>
+        <select class="form-control empDesignationField" style="height: 45px;" name="department">
+          <option value="">--Select Department --</option>
+          {% for department in departments %}
+          <option value="{{ department.id }}"
+                  {% if employee.department == department.id %}selected{% endif %}>
+              {{ department.name }}
+          </option>
+      {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label>Mobile No</label>
+        <input type="text"  value="{{ employee.mobile_number }}" class="form-control empMobileNo" placeholder="Member ID" name="mobile_no"/>
+      </div>
+      <div class="col-md-6">
+        <label>Email</label>
+        <input type="text" class="form-control empEmail"
+        name="employee_email"
+        value="{{ employee.employee_email }}">      
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>DOB</label>
+          <div id="dob"  class="input-group date datepicker">
+            <input type="text" name="dob" class="form-control" value="{{ employee.dob }}">
+            <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label>Age</label>
+
+        <input type="number" value="{{ employee.age }}" min="0" class="form-control no-arrows age" placeholder="Age" name="age"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label>Sex</label>
+        <select class="form-control empSexField" style="height: 45px;" name="sex">
+          <option value="">--Select Sex --</option>
+          <option value="male"   {% if employee.sex == "male" %}selected{% endif %}>Male</option>
+          <option value="female" {% if employee.sex == "female" %}selected{% endif %}>Female</option>
+          <option value="other"  {% if employee.sex == "other" %}selected{% endif %}>Other</option>
+      
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label>Maritial Status</label>
+        <select class="form-control empMaritialField" style="height: 45px;"  name="maritial_status">
+          <option value="">--Select Maritial Status --</option>
+          <option value="S" {% if employee.marital_status == "S" %}selected{% endif %}>Single</option>
+          <option value="M" {% if employee.marital_status == "M" %}selected{% endif %}>Married</option>
+          <option value="D" {% if employee.marital_status == "D" %}selected{% endif %}>Divorced</option>
+          <option value="W" {% if employee.marital_status == "W" %}selected{% endif %}>Widowed</option>
+      
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label>Salary</label>
+        <input type="number" class="form-control" name="salary" value="{{ employee.salary }}">
+      </div>
+      <div class="col-md-6">
+        <label>Sum Assured Life</label>
+        <input type="number" min="0" value="{{ employee.sum_assured_life }}" class="form-control no-arrows empSumAssuredLife" placeholder="Sum Assured Life" name="sum_assured_life"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label>Membership Date</label>
+        <div id="membership_date"  class="input-group date datepicker">
+          <input type="text" name="membership_date" class="form-control" value="{{ employee.membership_date }}">
+          <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label>Account Type</label>
+        <select class="form-control empAccountTypelField" style="height: 45px;" name="account_type">
+          <option value="">--Select Account Type --</option>
+          <option value="bank" {% if employee.ac_type == 'bank' %}selected{% endif %}>Bank</option>
+          <option value="mfs"  {% if employee.ac_type == 'mfs' %}selected{% endif %}>Mobile Financial Service</option>
+  
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Bank Name</label>
+          <select class="form-control" style="height: 45px;" name="bank">
+            <option value="">-- Select Bank --</option>
+            {% for bank in banks %}
+            <option value="{{ bank.id }}"
+              {% if employee.bank == bank.id %}selected{% endif %}>
+              {{ bank.name }}
+            </option>
+          {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Account Name</label>
+          <input value="{{ employee.account_name }}" type="text" class="form-control" placeholder="Account name" name="account_name"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+    
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Account Number</label>
+          <input type="number"  value="{{ employee.account_number }}" class="form-control no-arrows" placeholder="Account Number" name="account_number"/>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Branch Name</label>
+          <input  value="{{ employee.branch_name }}" type="text" class="form-control" placeholder="Branch name" name="branch_name"/>
+        </div>
+      </div>
+    
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Routing Number</label>
+          <input value="{{ employee.routing_number }}" type="number" class="form-control no-arrows" placeholder="Routing Number" name="routing_number"/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label>Plan</label>
+        <select class="form-control empPlanField" style="height: 45px;" name="plan">
+          <option value="">--Select Plan --</option>
+          {% for plan in plans %}
+        <option value="{{ plan.id }}"
+            {% if employee.plan == plan.id %}selected{% endif %}>
+            {{ plan.name }}
+        </option>
+    {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label>HR Admin</label>
+        <select class="form-control empSexField" style="height: 45px;" name="hr_type">
+          <option value="">--Select HR Admin --</option>
+          <option value="y" {% if employee.hr_type == "y" %}selected{% endif %}>Yes</option>
+          <option value="n" {% if employee.hr_type == "n" %}selected{% endif %}>No</option>
+        </select>
+        
+      </div>
+        {% comment %} <div class="col-md-6">
+          <label>Insurer Name</label>
+          <select class="form-control InsurerField" name="insurer" style="height:60">
+            <option value="">--Select Insurer --</option>
+            {% for insurer in insurers%}
+            <option value={{insurer.id}}>{{insurer.insurer_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+            <label>Insurer Code</label>
+            <input type="text" class="form-control insurerCode" placeholder="Insurer Code" readonly/>
+        </div> {% endcomment %}
+      
+    </div>
+    <br/>
+    <div class="row">
+      <div class="col-md-12"  style="text-align: right;">
+        <button type="submit" class="btn btn-info updateSingleEntry" id="updateSingleEntry"  >Update Employee</button>
+      </div>
+    </div>
+  </div> 
+</form>
+{% include 'footer.html' %}
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  $("#employee-update").on("submit", function (e) {
+    e.preventDefault();
+    let id = $("#emp_id").val();
+    let formData = new FormData(this);
+
+    $.ajax({
+      url: "/claim/employee-create/" + id + "/",   // use actual URL with ID
+      type: "POST",
+      data: formData,
+      processData: false,   // required
+      contentType: false,   // required
+      headers: {
+          "X-CSRFToken": $('meta[name="csrf-token"]').attr("content")
+      },
+      success: function (response) {
+          alert("Updated Successfully!");
+          window.location.href = "/claim/employees/";  
+      },
+      error: function (xhr) {
+          alert("Something went wrong");
+          console.log(xhr.responseText);
+      }
+     });
+});
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="{% static '/js/formpickers.js' %}"></script>  
+<script src="{% static '/js/custom/validation.js' %}"></script>
+{% endblock %}

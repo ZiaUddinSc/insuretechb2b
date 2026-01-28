@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Claim Dashboard
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="card">
+          <div class="card-body">
+            <div class="col-12">
+              <h3>Welcome to claim dashboard</h3>
+
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row justify-content-sm-between pb-2">
+                      <a class="nav-link" href="{% url 'create-claim'%}"><span class="btn btn-primary">+ Create Claim</span></a>
+                      <a class="nav-link" href="#"><span class="btn btn-primary">View Claim</span></a>
+                      <a class="nav-link" href="#"><span class="btn btn-primary">Report Claim</span></a>
+                      <a class="nav-link" href="#"><span class="btn btn-primary">Claim</span></a>
+                    </div>
+                    <div class="row">
+                      <div class="table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr style="text-align: center;">
+                              <th style="font-size: 14px;">Claim Tracking no</th>
+                              <th style="font-size: 14px;">Claim No</th>
+                              <th style="font-size: 14px;">Claim Type</th>
+                              <th style="font-size: 14px;">Policy No</th>
+                              <th style="font-size: 14px;">Patient Name</th>
+                              <th style="font-size: 14px;">Claim Amount</th>
+                              <th style="font-size: 14px;">Net Payable Amount</th>
+                              <th style="font-size: 14px;">Status</th>
+                              <th style="font-size: 14px;">Post Status</th>
+                              <th style="font-size: 14px;">Submission to Received Duration</th>
+                              <th style="font-size: 14px;">Settlement Duration</th>
+                              <th style="font-size: 14px;">Doc Required</th>
+                              <th style="font-size: 14px;">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+                              <td>Herman Beck</td>
+                              <td>John</td>
+                              <td>Photoshop</td>
+                              <td>$456.00</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>
+                                <label class="badge badge-danger badge-pill">Pending</label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>1</td>
+                              <td>Herman Beck</td>
+                              <td>John</td>
+                              <td>Photoshop</td>
+                              <td>$456.00</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>
+                                <label class="badge badge-danger badge-pill">Pending</label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>1</td>
+                              <td>Herman Beck</td>
+                              <td>John</td>
+                              <td>Photoshop</td>
+                              <td>$456.00</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>
+                                <label class="badge badge-danger badge-pill">Pending</label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>1</td>
+                              <td>Herman Beck</td>
+                              <td>John</td>
+                              <td>Photoshop</td>
+                              <td>$456.00</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>12 May 2017</td>
+                              <td>
+                                <label class="badge badge-danger badge-pill">Pending</label>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+{% endblock %}
+{% block extra_script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>
+  <script src="{% static '/js/wizard.js' %}"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>
+
+  <script>
+    ;(function ($) {
+      'use strict'
+      $.validator.setDefaults({
+        submitHandler: function () {
+          var form = $('#org-form-create')
+          $('.errors li').remove()
+          $.ajax({
+            type: 'POST',
+            headers: {
+              //<==
+              'X-CSRFTOKEN': '{{ csrf_token }}' //<==
+            },
+            url: form.attr('action'),
+            data: form.serialize(), // serializes the form's elements.
+            success: function (response) {
+              if (response.success) {
+                $.toast({
+                  heading: 'Success',
+                  text: response.data.message,
+                  showHideTransition: 'slide',
+                  icon: 'success',
+                  loaderBg: '#f96868',
+                  position: 'top-right'
+                })
+                window.location.replace('/b2bmanagement/b2b-organization-list/')
+              } else {
+                if (response.data.hasOwnProperty('organization_code')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.organization_code[0] + '</li>')
+                }
+                if (response.data.hasOwnProperty('organization_name')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.organization_name[0] + '</li>')
+                }
+                if (response.data.hasOwnProperty('email')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.email[0] + '</li>')
+                }
+              }
+            }
+          })
+        }
+      })
+    
+      $(function () {
+        // validate organization form  on keyup and submit
+        $('#org-form-create').validate({
+          rules: {
+            organization_code: 'required',
+            organization_name: 'required',
+            organization_address: 'required',
+            email: {
+              required: true,
+              email: true
+            }
+          },
+          messages: {
+            organization_code: 'Please enter  organization code',
+            organization_name: 'Please enter  organization name',
+            organization_address: 'Please enter  organization address',
+            email: 'Please enter a valid email address'
+          },
+          errorPlacement: function (label, element) {
+            label.addClass('mt-2 text-danger')
+            label.insertAfter(element)
+          },
+          highlight: function (element, errorClass) {
+            $(element).parent().addClass('has-danger')
+            $(element).addClass('form-control-danger')
+          }
+        })
+      })
+    })(jQuery)
+  </script>
+{% endblock %}

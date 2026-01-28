@@ -1,0 +1,71 @@
+let data = [];
+table.find("tbody tr").each(function () {
+    let rowData = {};
+    $(this).find("input, select").each(function () {
+        rowData[$(this).attr("name") || $(this).attr("class")] = $(this).val();
+    });
+    data.push(rowData);
+});
+
+// send AJAX to save data
+$.ajax({
+    url: "/api/plan/save/", // your API endpoint
+    type: "POST",
+    data: {
+        plan_id: planId,
+        rows: data,
+        csrfmiddlewaretoken: "{{ csrf_token }}"
+    },
+    success: function (response) {
+        alert(response.message);
+
+        // hide current plan
+        currentPlanDiv.addClass("d-none");
+
+        // show next plan
+        let nextPlanDiv = currentPlanDiv.next(".plan-row");
+        if (nextPlanDiv.length) {
+            nextPlanDiv.removeClass("d-none");
+        } else {
+            alert("✅ All plans completed!");
+        }
+    },
+    error: function () {
+        alert("Error saving plan.");
+    }
+});
+
+
+
+function saveCurrentPlan(currentPlanDiv, callback) {
+    let planId = currentPlanDiv.data("id");
+    let table = currentPlanDiv.find(".companyPlan");
+
+    // collect all input values
+    let data = [];
+    table.find("tbody tr").each(function () {
+        let rowData = {};
+        $(this).find("input, select").each(function () {
+            let key = $(this).attr("name") || $(this).attr("class");
+            rowData[key] = $(this).val();
+        });
+        data.push(rowData);
+    });
+
+    $.ajax({
+        url: "/api/plan/save/", // your API endpoint
+        type: "POST",
+        data: {
+            plan_id: planId,
+            rows: data,
+            csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        success: function (response) {
+            alert(response.message);
+            if (callback) callback(); // callback to handle next step
+        },
+        error: function () {
+            alert("Error saving plan.");
+        }
+    });
+}

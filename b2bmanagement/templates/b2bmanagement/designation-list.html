@@ -1,0 +1,388 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Designation List{% endblock title%}
+
+{% block extra_head %}
+
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+
+ 
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Designation List
+              </h3>
+              <nav aria-label="breadcrumb">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#adddesignationModal" data-whatever="@mdo">Add New designation</button>
+              </nav>
+            </div>
+          <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="designation-list" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>Title</th>
+                          <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="adddesignationModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Add Designation</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="errors">
+                    {% comment %} <li style="color:red">Coffee</li> {% endcomment %}
+                  </ul>
+                  
+                  <form id="form-designation-information" method="POST" action="{% url "designation-save" %}">
+                    <div class="form-group">
+                      <label for="title" class="col-form-label">Title</label>
+                      <input type="text" class="form-control" name="title">
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" id="save_designation" class="btn btn-success">Save</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="updatedesignationModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Update Designation</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="update_errors">
+                    {% comment %} <li style="color:red">Coffee</li> {% endcomment %}
+                  </ul>
+                  
+                  <form id="form-designation-update-information" method="PUT" action="{% url "designation-save" %}">
+                    <div class="form-group">
+                      <label for="designation_title" class="col-form-label">Title</label>
+                      <input type="text" id="designation_title" class="form-control" name="designation_title">
+                    </div>
+                   
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" data-id="" id="designation_update" class="btn btn-success">Update</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+
+    <script>
+      var designationTable
+      $(document).ready(function() {
+        //Displaying Data by API
+
+        designationTable=$('#designation-list').DataTable({
+          "pageLength" : 10,
+          "processing": true,
+          "serverSide": true,
+          "filter": true,
+          "order": [0, 'desc'],
+          ajax: {
+            "processing":false,
+            "url": "{% url 'designation-list' %}",
+            "dataSrc": function (response) {
+              return response.data;
+           }
+          },      
+          columns: [
+              {"mData":"title"},
+              {"mData": function (source) {
+
+                return  `<div class="action-buttons">
+                  <a data-id="${source.id}" class="btn btn-outline-primary edit_view">Edit</a>
+                  <a data-id="${source.id}" class="btn btn-outline-danger designation-delete">Delete</a>
+                </div>`
+                }
+              },
+              
+             
+            
+          ],
+          buttons: [
+          'pdf',
+          'excel',
+          'print',
+          'csv'
+          ]
+        });
+        //Validation and Submit data
+
+        (function($) {
+          'use strict';
+         var  validator = $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-designation-information')
+              $.ajax({
+                type: "POST",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action"), 
+                data: form.serialize(), // serializes the form's elements.
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    // Closing Model After submission 
+                    $("#adddesignationModal .close").click()
+                    $().removeClass("errors");
+                    // Restting form After submission 
+                    $("#form-designation-information")[0].reset();
+                    //Resetting Error message
+                    $('.errors li').remove();
+                     designationTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("title")) {
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">'+response.data.title[0]+'</li>')
+                      }
+                    
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          $(function() {
+      
+            // validate organization form  on keyup and submit
+            $("#form-designation-information").validate({
+              rules: {
+                title: "required"
+              },
+              messages: {
+                title: "Please enter title"
+              },
+              errorPlacement: function(label, element) {
+                label.addClass('mt-2 text-danger');
+                label.insertAfter(element);
+              },
+              highlight: function(element, errorClass) {
+                $(element).parent().addClass('has-danger')
+                $(element).addClass('form-control-danger')
+              }
+            });
+         
+          });
+        })(jQuery);
+        
+        //Viewing data after clicking edit button in table
+
+        $('#designation-list').on('click','.edit_view',function(){
+          var id = $(this).attr('data-id')
+          $('#updatedesignationModal').modal('toggle')
+          $.ajax({
+            type: "GET",
+            headers: {//<==
+              "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+            },
+            url: '/b2bmanagement/designation-details/'+id+'/', 
+            success: function(response) {
+               if(response.success){
+                $('#designation_title').val(response.data.title)
+                $('#designation_update').attr('data-id', response.data.id)
+               }else{
+                alert("Something error")
+               }
+            }
+         });
+        })
+        //Update data submit and  validation
+        $(function() {
+          $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-designation-update-information')
+              var id =$('#designation_update').attr('data-id')
+              $.ajax({
+                type: "PUT",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action")+id+'/', 
+                data:{
+                  title:$('#designation_title').val(),
+                },
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    //Closing Modal after submission
+
+                    $("#updatedesignationModal .close").click()
+                    //Clearing Submit form
+                    $("#form-designation-update-information")[0].reset();
+                    //Resetting Error message
+                    $('.update_errors li').remove();
+                     designationTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("title")) {
+                        $('.update_errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">'+response.data.title[0]+'</li>')
+                      }
+                     
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          // validate organization form  on keyup and submit
+          $("#form-designation-update-information").validate({
+            rules: {
+              designation_name: "required",
+              designation_short_name : "required",
+            },
+            messages: {
+              designation_name: "Please enter name",
+              designation_short_name: "Please enter short name",
+            },
+            errorPlacement: function(label, element) {
+              label.addClass('mt-2 text-danger');
+              label.insertAfter(element);
+            },
+            highlight: function(element, errorClass) {
+              $(element).parent().addClass('has-danger')
+              $(element).addClass('form-control-danger')
+            }
+          });
+       
+        });
+
+        //Delete Module
+        $('#designation-list').on('click', '.designation-delete', function (event) {      
+          var row = designationTable.row($(this).parents('tr'));
+          var id = ($(this).attr('data-id'))
+          swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this data!",
+            icon: "warning",
+            buttons: [
+              'Cancel',
+              'Confirm'
+            ],
+            dangerMode: true,
+          }).then(function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                  type:'DELETE',
+                  headers: {//<==
+                    "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                  },
+                  url:'/b2bmanagement/designation-save/'+id+'/',
+                  success: function(data){
+                    if(data.error){  //You are checking for true/false not yes or no.
+                      $.toast({
+                        heading: 'Danger',
+                        text: "Something wrong.data didn't delete",
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        loaderBg: '#f2a654',
+                        position: 'top-right'
+                      })
+                    }else{
+                      designationTable.ajax.reload();
+                    }
+                  }
+                });
+            } else {
+              swal("Cancelled", "Your data is safe :)", "error");
+            }
+          })
+         
+        });
+
+      });
+     
+  </script>
+  {% endblock extra_script %}

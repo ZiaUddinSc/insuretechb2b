@@ -1,0 +1,50 @@
+
+
+{% load static %}
+
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default"
+    data-assets-path="{% static '/assets/' %}" data-template="vertical-menu-template-free">
+
+
+    <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <title>{% block title %} {% endblock title%}</title>
+      <!-- plugins:css -->
+      <link rel="stylesheet" href="{% static '/vendors/iconfonts/font-awesome/css/all.min.css' %}">
+      <link rel="stylesheet" href="{% static '/vendors/css/vendor.bundle.base.css' %}">
+      <link rel="stylesheet" href="{% static '/vendors/css/vendor.bundle.addons.css' %}">
+      <link rel="stylesheet" href="{% static 'css/style.css' %}">
+      {% comment %} <link rel="shortcut icon" href="http://www.urbanui.com/" /> {% endcomment %}
+      <!-- endinject -->
+      <link rel="shortcut icon" href="{% static '/images/favicon.png' %}" />
+
+      <meta name="csrf-token" content="{{ csrf_token }}">
+      {% comment %} for edtion {% endcomment %}
+      <link href="https://cdn.jsdelivr.net/npm/froala-editor@latest/css/froala_editor.pkgd.min.css" rel="stylesheet"
+      type="text/css" />
+
+
+
+
+{% block extra_head %}
+{% endblock extra_head %}
+
+
+</head>
+
+<body>
+    {% block layout %}{% endblock %}
+    <!-- body canvas -->
+    {% block content %}{% endblock %}
+    <!-- footer -->
+    {% block footer %}{% endblock %}
+    {% block extra_script %}
+    {% comment %} Additional JS Script will be appeared here {% endcomment %}
+    {% endblock   %}
+  </body>
+
+</html>

@@ -1,0 +1,540 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Plan List{% endblock title%}
+
+{% block extra_head %}
+
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+
+ 
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Company Wise Plan View
+              </h3>
+             </div>
+            
+              <form id="company-plan-form" >
+                <table class="table table-bordered companyPlan">
+                  <thead>
+                    <tr>
+                      <th>
+                       Organization Name
+                      </th>
+                      <th>
+                        Organization Code
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        {{ company_plan.organization.organization_name }}
+                      </td>
+                      <td>
+                        {{ company_plan.organization.organization_code }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+               
+                <br/>
+                <div>
+                  {% for company_doc in company_plan.company_plan_documents %}
+                  <h3>Plan -{{company_doc.plan.name}}</h3>
+                  <div class="table-responsive">
+                    <table class="table table-bordered companyPlan">
+                      <thead>
+                        <tr>
+                          <th>
+                            Policy Type
+                          </th>
+                          <th>
+                            Coverage Type
+                          </th>
+                          <th>
+                            Coverage Amount
+                          </th>
+                          <th>
+                            Premium Rate % 
+                          </th>
+                          <th>
+                            Premium Amount
+                          </th>
+                          <th>
+                            Insured Number of Beneficiary
+
+                          </th>
+                          <th>
+                            Total Premium 
+
+                          </th>
+                         
+                         
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for company in company_doc.company_documents %}
+                        <tr>
+                          <td>
+                           {{company.policy_type.name}}
+                          </td>
+                          <td>
+
+                            {{company.coverage_type.name}}
+                          </td>
+                          <td>
+                            {{company.coverage_amount}}
+                          </td>
+                          <td>
+                            {{company.premium_rate}}
+                          </td>
+                          <td>
+                            {{company.premium_amount}}                          
+                          </td>
+                          <td>
+                            {{company.insured_beneficiary_no}}      
+                          </td>
+                          <td>
+                            {{company.total}}      
+                         </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                          <td colspan="5">
+                          </td>
+                          <td>
+                            <h6>Gross Total</h6>
+                          </td>
+                          <td>
+                            {{company_doc.total_sum}}
+                          </td>
+                          
+                        </tr>
+                      <tr>
+                        <td>
+                          Uploaded Documents
+                        </td>
+                        
+                        <td colspan="6">
+                          {% if company_doc.company_plan_doc %}
+                          <button type="button" class="btn btn-primary btn-rounded btn-fw viewPdfBtn" data-url="{{company_doc.company_plan_doc}}">View</button>
+                          {% else %}
+                            <span>No document uploaded</span>
+                            {% endif %}
+                        </td>  
+                       
+                        
+                      </tr>
+
+
+                      </tbody>
+                    </table>
+                  </div>
+                  <br/>
+                  {% endfor %}
+                </div>  
+               
+              </form> 
+              <div id="pdfModal" style="display:none; position:fixed; top:5%; left:5%; width:90%; height:90%; background:#fff; border:2px solid #333; z-index:9999; overflow:auto; padding:10px;">
+                <img id="imgViewer" style="display:none; max-width:800px; max-height:600px; border:1px solid #ccc;">
+                <button id="closeModal" style="
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: red;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                cursor: pointer;
+            ">Close</button>
+                <canvas id="pdfCanvas" style="width:100%; border:1px solid #ccc;"></canvas>
+              </div>
+              <div id="loader" style="display:none;">
+                <div class="loader-content">
+                    <img src="/static/images/loader/loader.gif" alt="Loading...">
+                </div>
+            </div>
+            </div>
+          </div>
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+<script src="{% static 'js/pdf.min.js' %}"></script>
+<script src="{% static 'js/pdf.worker.min.js' %}"></script>
+<script src="{% static 'js/custom/pdf-view-custom.js' %}"></script>
+  <script>
+    $(document).ready(function () {
+        $(document).on('click', '.add-more-plan', function (e) {
+          e.preventDefault(); // prevent default form submission
+          let table =$(this).closest("table"); 
+          const newRow = $(`<tr>
+            <td>
+              <select class="form-control policyType" style="height: 45px;" name="policy_type[]">
+                <option value="">--Select Policy --</option>
+                {% for product in products%}
+                <option value={{product.id}}>{{product.name}}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td>
+              <select class="form-control coverageType" style="height: 45px;" name="coverage_type[]">
+                <option value="">--Select Coverage Type --</option>
+              </select>
+            </td>
+            <td>
+              <input type="number" min="0" class="form-control coverageAmount" placeholder="Coverage Amount" name="coverage_amount[]"/>
+            </td>
+            <td>
+              <input type="number" min="0" class="form-control premiumRate" placeholder="Premium Rate %" name="premium_rate[]"/>
+            </td>
+            <td>
+              <input type="number" min="0" class="form-control premiumAmount" placeholder="Premium Amount" name="premium_amount[]"/>
+            </td>
+            <td>
+              <input type="number" min="0" class="form-control insuredBeneficiary" placeholder="Insured Number of Beneficiary" name="insured_beneficiary_no[]"/>
+            </td>
+            <td>
+              <input type="number" min="0" readonly class="form-control total" placeholder="Total" name="total[]"/>
+            </td>
+            <td>
+              <button class="btn btn-danger add-remove-plan" >-</button>
+              <button class=" btn btn-primary add-more-plan" >+</button>
+            </td>
+            
+          </tr>`);
+          table.find("tbody tr").eq(-2).before(newRow);
+
+        });   
+        $(document).on('click', '.add-remove-plan', function (e) {
+          e.preventDefault(); // prevent default form submission
+          $(this).closest("tr").remove();
+
+        });   
+        $(document).on("change",'.policyType',function (e) {
+         
+          e.preventDefault(); 
+          var $el = $(this);
+          // For selects: check value is not empty
+          if ($el.is("select") && $el.val() !== "") {
+            $el.css("border", "");
+          }
+          const selectedType = $(this).val()
+          let coverageDropdown = $(this).closest("tr").find(".coverageType");
+          coverageDropdown.empty().append('<option value="">--Select Coverage Type--</option>');
+          
+          $.ajax({
+            url: '/b2bproduct/policy-details/?product_id='+selectedType,  // Django URL to fetch policies
+            success: function(response){
+            let data = response.data
+            $.each(data, function (i, item) {
+              coverageDropdown.append(
+                  $('<option>', { value: item.id, text: item.name })
+              );
+          });
+            }
+        });
+        $(document).on("change",'.coverageType',function (e) {
+          
+          e.preventDefault(); 
+          let row = $(this).closest("tr:visible");
+          var $el = $(this);
+          // For selects: check value is not empty
+          if ($el.is("select") && $el.val() !== "") {
+            $el.css("border", "");
+          }
+          let policy = row.find(".policyType").val();
+          let coverage = row.find(".coverageType").val();
+          if (!policy || !coverage) return; // skip if any is empty      
+          let duplicate = false;
+          $(".companyPlan tr:visible").not(row).each(function () {
+            let otherPolicy = $(this).find(".policyType").val();
+            let otherCoverage = $(this).find(".coverageType").val();
+             console.log(policy)
+            if (policy === otherPolicy && coverage === otherCoverage) {
+                duplicate = true;
+                return false; // break loop
+            }
+          });
+    
+          if (duplicate) {
+              alert("This Policy + Coverage combination is already selected in another row!");
+              // Reset the changed field
+              $(this).val("");
+          }
+        });
+    
+        
+        });
+        $(document).on("change",'#organization',function (e) {          
+          e.preventDefault(); 
+          var $el = $(this);
+          if ($el.is("select") && $el.val() !== "") {
+            $el.css("border", "");
+          }
+        });
+        $(document).on("click", ".saveContinue", function (e) {
+          e.preventDefault();   
+          let currentPlanDiv = $(this).closest(".plan-row:visible");
+          let isValid = validateForm()
+           if(isValid){
+                saveCurrentPlan(currentPlanDiv, function (success) {
+                    currentPlanDiv.addClass("d-none");
+                    let nextPlanDiv = currentPlanDiv.next(".plan-row");
+                    if (nextPlanDiv.length) {
+                        nextPlanDiv.removeClass("d-none");
+                          $.toast({
+                            heading: "Sucessfully",
+                            text: "Plan saved successfully",
+                            showHideTransition: "slide",
+                            icon: "success",
+                            loaderBg: "#f96868",
+                            position: "top-right",
+                          });
+                          $("#organization").prop("disabled", true);
+                    } else {
+                        $.toast({
+                          heading: "Sucessfully",
+                          text: "All plans completed!",
+                          showHideTransition: "slide",
+                          icon: "success",
+                          loaderBg: "#f96868",
+                          position: "top-right",
+                        });
+                        window.location.replace("/b2bmanagement/company-plans/");
+
+                    }
+                });
+           }
+          
+        });
+  
+        // Save & Exit click
+        $(document).on("click", ".saveExit", function (e) {
+          e.preventDefault();   
+          let currentPlanDiv = $(this).closest(".plan-row:visible");
+          let isValid = validateForm()
+          if(isValid){
+                saveCurrentPlan(currentPlanDiv, function () {
+                  
+                  $.toast({
+                    heading: "Suucessfully",
+                    text: "Plan saved successfully",
+                    showHideTransition: "slide",
+                    icon: "success",
+                    loaderBg: "#f96868",
+                    position: "top-right",
+                  });
+                  window.location.replace("/b2bmanagement/company-plans/");
+
+                });
+           }     
+        });
+
+        $(document).on("input", ".coverageAmount, .premiumRate, .premiumAmount, .insuredBeneficiary", function(e) {
+          e.preventDefault(); 
+          var $el = $(this);
+
+          // For inputs: check non-empty
+          if ($el.is("input") && $el.val().trim() !== "") {
+            $el.css("border", "");
+          }
+          let row = $(this).closest("tr");    
+          let coverage = parseFloat(row.find(".coverageAmount").val()) || 0;
+          let rate = parseFloat(row.find(".premiumRate").val()) || 0;
+          let premium = parseFloat(row.find(".premiumAmount").val()) || 0;
+          let beneficiary = parseFloat(row.find(".insuredBeneficiary").val()) || 0;
+      
+          // If premium rate changes → calculate premium amount
+          if ($(this).hasClass("premiumRate") || $(this).hasClass("coverageAmount")) {
+            if (coverage > 0 && rate > 0) {
+                premium = coverage * (rate/100);
+                row.find(".premiumAmount").val(premium.toFixed(2));
+                if (row.find(".premiumAmount").is("input") && row.find(".premiumAmount").val().trim() !== "") {
+                  row.find(".premiumAmount").css("border", "");
+                }
+            }
+          }
+
+          // If premium amount changes → calculate premium rate
+          if ($(this).hasClass("premiumAmount") && coverage > 0) {
+              rate = (premium / coverage) * 100;
+              row.find(".premiumRate").val(rate.toFixed(2));
+              if (row.find(".premiumRate").is("input") && row.find(".premiumRate").val().trim() !== "") {
+                row.find(".premiumRate").css("border", "");
+              }
+          }
+          // Calculate total = premium * beneficiary
+          let total = premium * beneficiary;
+          row.find(".total").val(total.toFixed(2));
+          // --- Gross Total Calculation ---
+          let grossTotal = 0;
+          $(".total").each(function() {
+              grossTotal += parseFloat($(this).val()) || 0;
+          });
+          $(".grossTotal:visible").val(grossTotal.toFixed(2));
+        });
+
+        function saveCurrentPlan(currentPlanDiv, callback) {
+          let planId = currentPlanDiv.data("id");
+          let table = currentPlanDiv.find(".companyPlan");
+          let firstPlanRow = $(".plan-row:visible").first();
+
+          // Extract the plan name from the <h3>
+          let planName = firstPlanRow.find("h3").text().replace("Plan - ", "").trim();
+          // collect all input values
+          let formData = new FormData();
+          formData.append("plan", planId);
+          formData.append("plan_type_name", planName);
+          formData.append("company_plan_id", $('#company_plan_id').val());
+          
+          formData.append("organization", $('#organization').val());
+          let fileInput = $("tbody tr:visible").find("input[type='file']")[0];
+          if (fileInput && fileInput.files.length > 0) {
+              let file = fileInput.files[0]; // single file
+              console.log("Selected file:", file.name);
+              formData.append("upload_document_file", file);
+          }
+          table.find("tbody tr:visible").each(function (index) {
+            let policy_type = $(this).find('select[name="policy_type[]"]').val();
+            if(policy_type){
+            let coverage_type = $(this).find('select[name="coverage_type[]"]').val();
+            let coverage_amount = $(this).find('input[name="coverage_amount[]"]').val();
+            let premium_rate = $(this).find('input[name="premium_rate[]"]').val();
+            let premium_amount = $(this).find('input[name="premium_amount[]"]').val();
+            let insured_beneficiary_no = $(this).find('input[name="insured_beneficiary_no[]"]').val();
+            let total = $(this).find('input[name="total[]"]').val();
+              
+            formData.append(`policy_type[${index}]`, policy_type);
+            formData.append(`coverage_type[${index}]`, coverage_type);
+            formData.append(`coverage_amount[${index}]`, coverage_amount);
+            formData.append(`premium_rate[${index}]`, premium_rate);
+            formData.append(`premium_amount[${index}]`, premium_amount);
+            formData.append(`insured_beneficiary_no[${index}]`, insured_beneficiary_no);
+            formData.append(`total[${index}]`, total);
+    
+            }
+          
+               
+          });
+             
+          $.ajax({
+            type: "POST",
+            url: "/b2bmanagement/company-plan-create/", // your API endpoint
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {//<==
+              "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+            },
+            processData: false,
+            success: function (response) {
+                if(response.success){
+                    $('#company_plan_id').val(response?.data?.id)
+                    if (callback) callback(); // callback to handle next step
+                }
+            },
+            error: function () {
+              $.toast({
+                heading: "Warning",
+                text: "Data didn't saved successfully",
+                showHideTransition: "slide",
+                icon: "warning",
+                loaderBg: "#f96868",
+                position: "top-right",
+              });
+            }
+        });
+           
+    
+        
+        }
+
+        function validateForm(){
+          let valid = true
+          var organization = $('#company-plan-form').find("select#organization");
+            if (organization.val() === "") {
+              organization.css("border", "2px solid red");
+              valid = false;
+            } else {
+              organization.css("border", "");
+            }
+          $(".companyPlan tbody tr:visible").each(function () {
+
+            var policyType = $(this).find("select.policyType");
+            if (policyType.val() === "") {
+              policyType.css("border", "2px solid red");
+              valid = false;
+            } else {
+              policyType.css("border", "");
+            }
+            var coverageType = $(this).find("select.coverageType");
+            if (coverageType.val() === "") {
+              coverageType.css("border", "2px solid red");
+              valid = false;
+            } else {
+              coverageType.css("border", "");
+            }
+            var coverageAmount = $(this).find("input.coverageAmount");
+            if (coverageAmount.val() === "") {
+              coverageAmount.css("border", "2px solid red");
+              valid = false;
+            } else {
+              coverageAmount.css("border", "");
+            }
+          var premiumRate = $(this).find("input.premiumRate");
+            if (premiumRate.val() === "") {
+              premiumRate.css("border", "2px solid red");
+              valid = false;
+            } else {
+              premiumRate.css("border", "");
+            }
+            var premiumAmount = $(this).find("input.premiumAmount");
+            if (premiumAmount.val() === "") {
+              premiumAmount.css("border", "2px solid red");
+              valid = false;
+            } else {
+              premiumAmount.css("border", "");
+            }
+            var insuredBeneficiary = $(this).find("input.insuredBeneficiary");
+            if (insuredBeneficiary.val() === "") {
+              insuredBeneficiary.css("border", "2px solid red");
+              valid = false;
+            } else {
+              insuredBeneficiary.css("border", "");
+            }
+          });
+          return valid
+        }
+
+    
+      
+    }); 
+  </script>
+  {% endblock extra_script %}

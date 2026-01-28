@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  GoP
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="card mt">
+          <div class="card-body">
+            <div class="col-12 grid-margin">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Add GoP</h4>
+                  <form class="form-sample">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Hospital Name :</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Bed/ Cabin/Word No:</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Admission Date:</label>
+                          <div id="datepicker-popup" class="input-group date datepicker col-sm-9">
+                            <input type="text" class="form-control" />
+                            <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {% comment %} <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Policy Logo :</label>
+                          <div class="col-sm-9">
+                            <input class="form-control file-input" id="image" name="image" type="file" />
+                          </div>
+                        </div>
+                      </div> {% endcomment %}
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Diagnosis :</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Doctor advice</label>
+                          <div class="col-sm-9">
+                            <input class="form-control file-input" id="image" name="image" type="file" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Attendant Name :</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Attendant Mobile</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Relation with Attendant</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Gop</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row align-items-center justify-content-between">
+                      <div class="form-check">
+                        <label class="form-check-label text-muted"><input type="checkbox" class="form-check-input" />Status pending</label>
+                      </div>
+                      <input class="btn btn-primary" type="submit" value="Submit" />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- content-wrapper ends -->
+        <!-- partial:../../partials/_footer.html -->
+
+        <!-- partial -->
+      </div>
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+{% endblock %}
+<!-- container-scroller -->
+
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+  <script src="{% static 'js/formpickers.js' %}"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      // Initialize all fields with select2
+      $('.product-type').select2()
+    })
+  </script>
+{% endblock %}

@@ -1,0 +1,93 @@
+<h2>Email Template Settings</h2>
+
+<div>
+  <button id="showGroupTab">Group Templates</button>
+  <button id="showUserTab">User Templates</button>
+</div>
+
+<div id="groupSection">
+  <h3>Group Template</h3>
+  <select id="groupSelect">
+    <option value="1">HR</option>
+    <option value="2">Finance</option>
+  </select><br>
+  <input type="text" id="groupSubject" placeholder="Subject"><br>
+  <textarea id="groupMessage" placeholder="Message"></textarea><br>
+  <button id="saveGroupTemplate">Save Group Template</button>
+</div>
+
+<div id="userSection" style="display:none">
+  <h3>User Template</h3>
+  <select id="userSelect">
+    <option value="3">john</option>
+    <option value="4">mia</option>
+  </select><br>
+  <input type="text" id="userSubject" placeholder="Subject"><br>
+  <textarea id="userMessage" placeholder="Message"></textarea><br>
+  <button id="saveUserTemplate">Save User Template</button>
+</div>
+
+<hr>
+<h4>Existing Templates:</h4>
+<pre id="templateList"></pre>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+function loadTemplates() {
+  $.get('/templates/get/', function(res) {
+    $("#templateList").text(JSON.stringify(res, null, 2));
+  });
+}
+
+$(document).ready(function() {
+  loadTemplates();
+
+  $("#showGroupTab").click(() => {
+    $("#userSection").hide();
+    $("#groupSection").show();
+  });
+
+  $("#showUserTab").click(() => {
+    $("#groupSection").hide();
+    $("#userSection").show();
+  });
+
+  $("#saveGroupTemplate").click(function() {
+    const data = {
+      template_type: "group",
+      group_id: $("#groupSelect").val(),
+      subject: $("#groupSubject").val(),
+      message: $("#groupMessage").val(),
+    };
+    $.ajax({
+      url: "/templates/save/",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function(res) {
+        alert(res.message);
+        loadTemplates();
+      }
+    });
+  });
+
+  $("#saveUserTemplate").click(function() {
+    const data = {
+      template_type: "user",
+      user_id: $("#userSelect").val(),
+      subject: $("#userSubject").val(),
+      message: $("#userMessage").val(),
+    };
+    $.ajax({
+      url: "/templates/save/",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(data),
+      success: function(res) {
+        alert(res.message);
+        loadTemplates();
+      }
+    });
+  });
+});
+</script>

@@ -1,0 +1,14 @@
+#suggestions {
+    border: 1px solid #ccc;
+    display: none;
+    position: absolute;
+    background: white;
+    width: 200px;
+}
+.suggest-item {
+    padding: 5px;
+    cursor: pointer;
+}
+.suggest-item:hover {
+    background-color: #f0f0f0;
+}

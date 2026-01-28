@@ -1,0 +1,309 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Organization List{% endblock title%}
+
+{% block extra_head %}
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Organizations
+              </h3>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                 <a href="{% url 'add-new-b2b-orgonization' %}"> <button type="button" class="btn btn-primary btn-fw" >Add New Organization</button></a>
+                  
+                </ol>
+              </nav>
+            </div>
+
+            <div class="form-container">
+              <div class="col-md-3">
+                <div>
+                  <label for="start-date">From Date:</label>
+                </div>
+                  <input type="date" id="start-date" placeholder="From Date" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <div>
+                  <label for="end-date">To :</label>
+                </div>
+                  <input class="form-control" type="date" id="end-date" placeholder="To Date">
+              </div>
+              <div>
+                <div>
+                  <label for="dropdown">Status :</label>
+                </div>
+                  <select  id="org-status"  class="select2 form-control" style="width: 200px;">
+                      <option value="">--Select Status--</option>
+                      <option value="1">Active</option>
+                      <option value="0">Inactive</option>
+                  </select>
+              </div>
+              <div class="btn-row">
+                  <button onclick="" class="btn-reset">Reset</button>
+              
+                  <button id="fiter-data" class="btn-filter">Filter</button>
+              </div>
+          </div>
+           
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="org-listing" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>Organization Code</th>
+                          <th>Organization Name</th>
+                          <th>Status</th>
+                          <th>Action</th>
+                          
+
+                          
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="bulkUploadModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Upload Employee Information</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  
+                  <form id="form-bulk-upload-information" method="POST" >
+                    <input type="hidden" readonly id="organization_id" name="organization_id">
+                    <div class="form-group">
+                      <label for="name" class="col-form-label">Upload Excel</label>
+                      <input type="file" id="excel_file" name="excel_file" class="form-control-file" accept=".xlsx" required />
+                    </div>
+                    <div id="loader" style="display:none;">Processing... Please wait.</div>
+                      <div id="popup" style="display:none;">
+                          <h3>Upload Results</h3>
+                          <div id="popupContent"></div>
+                      </div>
+                   
+                </div>
+                <div class="modal-footer">
+                  <a href="{% url 'download_excel_template' %}">Download Excel Template</a>
+                  <button type="submit" id="upload_bulk_data" class="btn btn-success">Upload</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+
+    <script>
+      var orgTbale
+      $(document).ready(function() {
+        const csrftoken = getCookie('csrftoken');
+        $(document).on('submit','#form-bulk-upload-information', function(e) {
+          e.preventDefault();
+          var formData = new FormData();
+          var fileInput = $('#excel_file')[0];
+          let org_id =$('#organization_id').val()
+          if (fileInput.files.length === 0) {
+            $('#message').text('Please select a file.');
+            return;
+          }
+          $("#loader").show(); // show loader
+          formData.append('organization', org_id);
+          formData.append('excel_file', fileInput.files[0]);
+          $.ajax({
+            url: '/dashboard/upload-excel/',  // your Django URL for upload
+            type: 'POST',
+            data: formData,
+            processData: false,  // Important for file upload
+            contentType: false,  // Important for file upload
+            headers: {'X-CSRFToken': csrftoken}, // CSRF token
+            success: function(response) {
+              $("#popupContent").html('');
+              $("#loader").hide();
+            if(response.status==true){
+             
+              $('#excel_file').val('');
+                html=""
+                if(response.inserted.length>0){
+                  html += "<br><strong>Uploaded data</strong><br>";
+                }
+                if(response.duplicates.length>0){ 
+                html += "<br><strong>Duplicates:</strong><br>";
+                      response.duplicates.forEach(item => {
+                          html += `Member Name: ${item.member_name}, Member id: ${item.employee_id} }<br>`;
+                      });
+                }      
+    
+                  $("#popupContent").html(html);
+                  $("#popup").show();
+             }else{
+                alert(JSON.stringify(response.message))
+             }
+            },
+            error: function(xhr) {
+              $("#loader").hide();
+              alert(JSON.stringify(xhr.responseJSON.error || "Upload failed"));
+            }
+          });
+        });
+        orgTbale=$('#org-listing').DataTable({
+          "pageLength" : 10,
+          "processing": true,
+          "serverSide": true,
+          "filter": true,
+          "responsive": true,
+          "order": [0, 'desc'],
+          ajax: {
+            "processing":false,
+            "url": "{% url 'organizations' %}",
+            "dataSrc": function (response) {
+              return response.data;
+           },
+           data: function (d) {
+            d.start_date = $('#start-date').val()
+            d.end_date = $('#end-date').val()
+            d.status =$('#org-status').find(":selected").val()
+           }
+          },      
+          columns: [
+              {"mData":"organization_code",defaultContent:"N/A"},
+              {"mData":"organization_name",defaultContent:"N/A"},
+              {"mData": function (source) {
+                return source.status == 1 ? "Active" : "Inactive";
+                }
+              },
+              {"mData": function (source) {
+
+                return  `<div class="action-buttons">
+                  <a href="/b2bmanagement/organization-view-details/${source.id}" class="btn btn-outline-primary">View</a>
+                  <a href="/b2bmanagement/update-b2b-organization/${source.id}" class="btn btn-outline-primary">Edit</a>
+
+                </div>`
+                }
+              },       
+          ],
+          buttons: [
+          'pdf',
+          'excel',
+          'print',
+          'csv'
+          ]
+        });
+      
+        $('#org-listing').on('click', '.org-delete', function (event) {      
+          var row = orgTbale.row($(this).parents('tr'));
+          var id = ($(this).attr('data-id'))
+          swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this data!",
+            icon: "warning",
+            buttons: [
+              'Cancel',
+              'Confirm'
+            ],
+            dangerMode: true,
+          }).then(function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                  type:'DELETE',
+                  headers: {//<==
+                    "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                  },
+                  url:'/b2bmanagement/add-b2b-organization/'+id+'/',
+                  success: function(data){
+                    if(data.error){  //You are checking for true/false not yes or no.
+                      $.toast({
+                        heading: 'Danger',
+                        text: "Something wrong.data didn't delete",
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        loaderBg: '#f2a654',
+                        position: 'top-right'
+                      })
+                    }else{
+                      window.location.reload()
+                      }
+                  }
+                });
+            } else {
+              swal("Cancelled", "Your data is safe :)", "error");
+            }
+          })
+         
+        });
+
+        $('#fiter-data').on('click', function () {
+          orgTbale.draw();
+        });
+
+            // Helper function to get CSRF token cookie
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i=0; i<cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.startsWith(name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+
+      $('#org-listing').on('click', '.fileUpload', function (event) {  
+          var id = ($(this).attr('data-id'))
+          $('#organization_id').val(id)
+          $('#bulkUploadModal').modal('show');    
+        });
+       
+     
+        });
+     
+  </script>
+  {% endblock extra_script %}

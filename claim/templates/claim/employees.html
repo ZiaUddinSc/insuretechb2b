@@ -1,0 +1,219 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Employee List{% endblock title%}
+
+{% block extra_head %}
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Employee List
+              </h3>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                 {% comment %} <a href="{% url 'create-claim' %}"> <button type="button" class="btn btn-primary btn-fw" >Upload Bulk</button></a>      {% endcomment %}
+                </ol>
+              </nav>
+            </div>
+            <div class="form-container">
+              <div class="col-md-3">
+                <div>
+                  <label for="start-date">From Date:</label>
+                </div>
+                  <input type="date" id="start-date" placeholder="From Date" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <div>
+                  <label for="end-date">To :</label>
+                </div>
+                  <input class="form-control" type="date" id="end-date" placeholder="To Date">
+              </div>
+              <div>
+                <div>
+                  <label for="dropdown">Status :</label>
+                </div>
+                  <select  id="file-status-status"  class="select2 form-control" style="width: 200px;">
+                     <option value="">Select Status</option>
+                      <option value="active">Active</option>
+                      <option value="inactive">InActive</option>
+                  </select>
+              </div>
+              <div class="btn-row">
+                  <button onclick="" class="btn-reset">Reset</button>
+              
+                  <button id="fiter-data" class="btn-filter">Filter</button>
+              </div>
+          </div>
+           
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="employee_listing" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>Organization Name</th>
+                          <th>Member ID</th>
+                          <th>Contract No</th>
+                          <th>Member Name</th>
+                          <th>Employee Email</th>
+                          <th>Nominee</th>
+                          <th>Organization HR</th>
+                          <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+
+    <script>
+      var claimTable
+      $(document).ready(function() {
+        let path = window.location.pathname;  
+        // Example: "/employee/42/"
+        let parts = path.split("/");  
+        
+        // Get the policy ID (second last element)
+        let policyId = parts[parts.length - 2];  
+        
+        console.log("Policy ID:", policyId);
+
+        claimTable=$('#employee_listing').DataTable({
+          "pageLength" : 10,
+          "processing": true,
+          "serverSide": true,
+          "filter": true,
+          "responsive": true,
+          "order": [0, 'desc'],
+          ajax: {
+            "processing":false,
+            "url":  "{% url 'all-employee' %}",
+            "dataSrc": function (response) {
+              return response.data;
+           },
+           data: function (d) {
+            d.start_date= $('#start-date').val()
+            d.end_date = $('#end-date').val()
+            d.status =$('#file-status-status').find(":selected").val()
+           }
+          
+          },      
+          columns: [
+          
+              {"mData":"organization_emp_policy.organization_contract_no",defaultContent:"N/A"},
+              {"mData":"member_id",defaultContent:"N/A"},
+              {"mData":"contract_no",defaultContent:"N/A"},
+              {"mData":"member_name",defaultContent:"N/A"},
+              {"mData":"employee_email",defaultContent:"N/A"},
+              {"mData":"nominee_type_display",defaultContent:"N/A"},
+              { 
+                "mData": "hr_type",
+                "mRender": function (data, type, full) {
+                    if (data=="n") return 'No'; // Empty check
+                    return "Yes";
+                }
+              },
+              {"mData": function (source) {
+
+                return  `<div class="action-buttons">
+                   <a href="/claim/employee-details/${source.id}" class="btn btn-outline-primary">Edit</a>
+                </div>`
+                }
+              },  
+          ],
+          buttons: [
+          'pdf',
+          'excel',
+          'print',
+          'csv'
+          ]
+        });
+      
+        $('#employee_listing').on('click', '.emp-delete', function (event) {      
+          var row = claimTable.row($(this).parents('tr'));
+          var id = ($(this).attr('data-id'))
+          swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this data!",
+            icon: "warning",
+            buttons: [
+              'Cancel',
+              'Confirm'
+            ],
+            dangerMode: true,
+          }).then(function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                  type:'DELETE',
+                  headers: {//<==
+                    "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                  },
+                  url:'/claim/claim-with-history/'+id+'/',
+                  success: function(data){
+                    if(data.error){  //You are checking for true/false not yes or no.
+                      $.toast({
+                        heading: 'Danger',
+                        text: "Something wrong.data didn't delete",
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        loaderBg: '#f2a654',
+                        position: 'top-right'
+                      })
+                    }else{
+                      window.location.reload()
+                      }
+                  }
+                });
+            } else {
+              swal("Cancelled", "Your data is safe :)", "error");
+            }
+          })
+         
+        });
+
+        $('#fiter-data').on('click', function () {
+          claimTable.draw();
+        });
+       
+     
+        });
+     
+  </script>
+  {% endblock extra_script %}

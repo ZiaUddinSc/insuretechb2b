@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Group Claim
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+    <!-- partial -->
+    <div class="main-panel">
+    
+      <div class="content-wrapper">
+        <h3>Organization Name: {{organization}}</h3>
+        <div class="col-md-12 custom-card-w-o-h mb-4 row ">
+          <h5>Start Date: 20-12-2024</h5>
+          <h5>End Date: 20-12-2025</h5>
+        </div>
+        <div class="row grid-margin">
+        
+          <div class="col-md-4 stretch-card">
+            <a href="/claim/received-claim-list/" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center custom-card">
+             
+             <div class="number-div">
+               <h4 class="">{{pending_count}}</h4>
+                <h5 class="custom-text">Number</h5>
+             </div>
+            <img src="{% static 'images/dashboard/waiting-for-approval.png' %}" class="icon-dashboard" alt="Waiting for approval" width="80" height="80" />
+              <h5 class="mt-2 custom-text">Waiting for approval</h5>
+            </a>
+          </div>
+          <div class="col-md-4 stretch-card">
+            <a href="#" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center custom-card">
+              <div class="number-div">
+               <h4 class="">{{approved_count}}</h4>
+                <h5 class="custom-text">Number</h5>
+             </div>
+            {% comment %} <div class="amount-div">
+               <h4 class=""></h4>
+                <h5 class="custom-text">Amount</h5>
+             </div> {% endcomment %}
+              <img src="{% static 'images/dashboard/under-process.png' %}" class="icon-dashboard" alt="Under Process " width="80" height="80" />
+              <h5 class="mt-2 custom-text">Under Process</h5>
+            </a>
+          </div>
+          <div class="col-md-4 stretch-card">
+            <a href="#" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center custom-card">
+              <div class="number-div">
+                <h4 class="">{{doc_rec_count}}</h4>
+                 <h5 class="custom-text">Number</h5>
+              </div>
+               {% comment %} <div class="amount-div">
+               <h4 class="">0</h4>
+                <h5 class="custom-text">Amount</h5>
+             </div> {% endcomment %}
+              <img src="{% static 'images/dashboard/documents.png' %}" class="icon-dashboard" alt="Create Claim" width="80" height="80" />
+              <h5 class="mt-2 custom-text">Document Required</h5>
+            </a>
+          </div>
+          
+        </div>
+
+        <div class="row grid-margin">
+
+          <div class="col-md-4 stretch-card">
+            <a href="#" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center custom-card">
+                <div class="number-div">
+               <h4 class="">0</h4>
+                <h5 class="custom-text">Number</h5>
+             </div>
+ {% comment %} <div class="amount-div">
+               <h4 class="">0</h4>
+                <h5 class="custom-text">Amount</h5>
+             </div> {% endcomment %}
+            
+              <img src="{% static 'images/dashboard/settled.png' %}" class="icon-dashboard" alt="Create Claim" width="80" height="80" />
+              <h5 class="mt-2 custom-text">Settled Claim</h5>
+            </a>
+          </div>
+
+          <div class="col-md-4 stretch-card">
+            <a href="#" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
+             
+             <div class="number-div">
+               <h4 class="">0</h4>
+                <h5 class="custom-text">Number</h5>
+             </div>
+ {% comment %} <div class="amount-div">
+               <h4 class="">0</h4>
+                <h5 class="custom-text">Amount</h5>
+             </div> {% endcomment %}
+             
+              <img src="{% static 'images/dashboard/Paid.png' %}" class="icon-dashboard" alt="Paid Claim" width="70" height="70" />
+              <h5 class="mt-2 custom-text">Paid Claim</h5>
+            </a>
+          </div>
+          <div class="col-md-4 stretch-card">
+             <a href="/claim/claim-list/" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
+              <img src="{% static 'images/dashboard/claim-history.png' %}" class="icon-dashboard" alt="Claim History" width="80" height="80" />
+              <h5 class="mt-2 custom-text">Claim History</h5>
+            </a>
+          </div>
+            <div class="col-md-4 stretch-card mt-4">
+              <a href="#" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
+               <div class="number-div">
+               <h4 class="">{{decline_count}}</h4>
+                <h5 class="custom-text">Number</h5>
+             </div>
+ {% comment %} <div class="amount-div">
+               <h4 class="">0</h4>
+                <h5 class="custom-text">Amount</h5>
+             </div> {% endcomment %}
+           
+                <img src="{% static 'images/dashboard/claim-denial.png' %}" class="icon-dashboard" alt="Decline Claims" width="80" height="80" />
+              <h5 class="mt-2 custom-text">Decline Claims</h5>
+            </a>
+          </div>
+          {% comment %} <div class="col-md-4 stretch-card mt-4">
+           <a href="#" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
+            <div class="number-div">
+              <h4 class="">{{ status_summary.declined.count|default:0 }}</h4>
+               <h5 class="custom-text">Number</h5>
+            </div>
+             <div class="amount-div">
+               <h4 class="">{{ status_summary.declined.total_amount|default:0 }}</h4>
+                <h5 class="custom-text">Amount</h5>
+             </div>
+     
+                 <img
+              src="{% static 'images/dashboard/submitted-claims.png' %}"
+              class="icon-dashboard" alt="Submitted claim for others" width="80" height="80" />
+                      <h5 class="mt-2 custom-text">Submitted claim for others</h5>
+                    </a>
+          </div> {% endcomment %}
+         
+             
+          
+
+          {% comment %} <div class="col-md-4 stretch-card mt-4">
+              <a href="#" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
+              <img src="{% static 'images/dashboard/gpo.png' %}" class="icon-dashboard" alt="Claim History" width="80" height="80" />
+              <h5 class="mt-2 custom-text">Gop for others</h5>
+            </a>
+          </div>
+           {% endcomment %}
+                 
+        
+
+
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+
+      <!-- partial -->
+
+      <!-- page-body-wrapper ends -->
+
+      {% include 'footer.html' %}
+    </div>
+    <div class="modal fade" id="PasswordChangeModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel">Change Your Passowrd</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+             <h6>Your password is system generated.Please change it</h6>
+            <form id="form-user-password-update" method="POST" >
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="old_password" class="col-form-label">Old Password</label>
+                <input type="text" class="form-control" id="old_password" name="old_password">
+              </div>
+              <div class="form-group">
+                <label for="password" class="col-form-label">New Password</label>
+                <input type="text" class="form-control" id="password" name="password">
+                <small id="password-strength" class="form-text text-muted"></small>
+              </div>
+              <div class="form-group">
+                <label for="conf_password" class="col-form-label">Confirm password</label>
+                <input type="text" class="form-control" id="conf_password" name="confirm_password">
+              </div>
+              <div id="error-msg" class="text-danger mt-2"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="update-password" class="btn btn-success">Update Password</button>
+            <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- container-scroller -->
+{% endblock %}
+
+{% block extra_script %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+<script>
+  var showModal = "{{ show_system_gen_popup }}";
+  if(showModal==='Y' || showModal==='y'){ 
+        $(document).ready(function () {
+          $('#PasswordChangeModal').modal('show');  
+        })
+   }
+</script>
+{% endblock %}
+<!-- / Layout wrapper -->

@@ -1,0 +1,1070 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Create Claim {% endblock %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container-fluid page-body-wrapper">
+  {% include 'layout.html' %}
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <div class="card">
+        <div class="card-body">
+          <h3>Create Claim</h3>
+          <form id="claim-form" action="#">
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group"><label>Beneficiary ID</label><input type="text" class="form-control" /></div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group"><label>Beneficiary Name</label><input type="text" class="form-control" /></div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group"><label>Claim Type</label>
+                  <select class="form-control" name="ClaimType">
+                    <option value="">-- Select Claim Type --</option>
+                    <option value="life">Life</option>
+                    <option value="health">Health</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group"><label>Benefit Type</label>
+                  <select class="form-control" name="BeneficiaryType">
+                    <option value="">-- Select Benefit Type --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+ <!-- 📄 natural date Section -->
+            <div id="section-natural" style="display:none;">
+              <h5 class="mt-4">Natural Death Details</h5>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Death Date</label><input type="text" class="form-control datepicker" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Cause of Death</label><input type="text" class="form-control" /></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital Name (If Applicable)</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Doctor's Name (If Applicable)</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Claim Amount</label><input type="number" class="form-control" /></div></div>
+              </div>
+              <div id="section-bank-details" class="mt-4">
+                <h5 class="mb-3">Bank Details</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Name</label>
+                      <select class="form-control">
+                        <option value="">-- Select Bank --</option>
+                        <option value="Eastern Bank">Eastern Bank</option>
+                        <option value="Brac Bank">Brac Bank</option>
+                        <option value="Islami Bank">Islami Bank</option>
+                      
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Account Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Holder Name" />
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Account No</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Number" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Branch Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Branch Name" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Routing No</label>
+                      <input type="text" class="form-control" placeholder="Enter Routing Number" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 📄 Upload Document Section -->
+                        <div class="document-upload-section" class="mt-4">
+                  <h5 class="mb-3">Upload Required Document</h5>
+                  <div class="document-fields-container">
+                      <div class="row document-row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Document Type</label>
+                                  <select class="form-control" name="documentType">
+                                      <option value="">-- Select Document --</option>
+                                      <option>Death Registration Certificate</option>
+                                      <option>Death Certificate from hospital</option>
+                                      <option>Copy of NID of Nominee & Policy Holder</option>
+                                      <option>Hospital Discharge Certificate</option>
+                                      <option>Doctor’s Prescriptions</option>
+                                      <option>Diagnosis Reports</option>
+                                      <option>Hospital Bills</option>
+                                      <option>FIR for Accidental Death</option>
+                                      <option>Nominee Bank Account Details</option>
+                                      <option>Graveyard Slip / Local Testimonial</option>
+                                      <option>Diverse License</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Upload PDF</label>
+                                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+                              </div>
+                          </div>
+                      </div>
+                      </div>
+
+                  <div class="row mt-3">
+                      <div class="col-12 text-center">
+                          <button type="button" class="btn btn-primary add-more-document-btn" >Add More Document</button>
+                      </div>
+                  </div>
+              </div>
+          <!-- 📄 End Upload Document Section -->    
+            </div>
+
+            <div id="section-accidental" style="display:none;">
+              <h5 class="mt-4">Cost type: </h5>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Funeral Expenses: </label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Outstanding Medical Bills</label><input type="text" class="form-control" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Other </label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Claim Amount</label><input type="number" class="form-control" /></div></div>
+              </div>
+
+               <div id="section-bank-details" class="mt-4">
+                <h5 class="mb-3">Bank Details</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Name</label>
+                      <select class="form-control">
+                        <option value="">-- Select Bank --</option>
+                        <option value="Eastern Bank">Eastern Bank</option>
+                        <option value="Brac Bank">Brac Bank</option>
+                        <option value="Islami Bank">Islami Bank</option>
+                      
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Account Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Holder Name" />
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Account No</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Number" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Branch Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Branch Name" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Routing No</label>
+                      <input type="text" class="form-control" placeholder="Enter Routing Number" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- 📄 Upload Document Section -->
+                <div class="document-upload-section" class="mt-4">
+                  <h5 class="mb-3">Upload Required Document</h5>
+                  <div class="document-fields-container">
+                      <div class="row document-row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Document Type</label>
+                                  <select class="form-control" name="documentType[]">
+                                      <option value="">-- Select Document --</option>
+                                      <option>Death Registration Certificate</option>
+                                      <option>Death Certificate from hospital</option>
+                                      <option>Copy of NID of Nominee & Policy Holder</option>
+                                      <option>Hospital Discharge Certificate</option>
+                                      <option>Doctor’s Prescriptions</option>
+                                      <option>Diagnosis Reports</option>
+                                      <option>Hospital Bills</option>
+                                      <option>FIR for Accidental Death</option>
+                                      <option>Nominee Bank Account Details</option>
+                                      <option>Graveyard Slip / Local Testimonial</option>
+                                      <option>Diverse License</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Upload PDF</label>
+                                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+                              </div>
+                          </div>
+                      </div>
+                      </div>
+
+                  <div class="row mt-3">
+                      <div class="col-12 text-center">
+                          <button type="button" class="btn btn-primary add-more-document-btn" >Add More Document</button>
+                      </div>
+                  </div>
+              </div>
+          <!-- 📄 End Upload Document Section -->    
+            </div>
+
+
+            <div id="section-total-disability" style="display:none;">
+              <h5 class="mt-4">Cost Description </h5>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Hospital Name</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Incident Date
+                  </label><input type="text" class="form-control datepicker" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Cause of Treatment </label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Claim Amount</label><input type="number" class="form-control" /></div></div>
+              </div>
+
+                <div id="section-bank-details" class="mt-4">
+                <h5 class="mb-3">Bank Details</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Name</label>
+                      <select class="form-control">
+                        <option value="">-- Select Bank --</option>
+                        <option value="Eastern Bank">Eastern Bank</option>
+                        <option value="Brac Bank">Brac Bank</option>
+                        <option value="Islami Bank">Islami Bank</option>
+                      
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Account Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Holder Name" />
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Account No</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Number" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Branch Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Branch Name" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Routing No</label>
+                      <input type="text" class="form-control" placeholder="Enter Routing Number" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- 📄 Upload Document Section -->
+             <div class="document-upload-section" class="mt-4">
+                  <h5 class="mb-3">Upload Required Document</h5>
+                  <div class="document-fields-container">
+                      <div class="row document-row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Document Type</label>
+                                  <select class="form-control" name="documentType[]">
+                                      <option value="">-- Select Document --</option>
+                                      <option>Death Registration Certificate</option>
+                                      <option>Death Certificate from hospital</option>
+                                      <option>Copy of NID of Nominee & Policy Holder</option>
+                                      <option>Hospital Discharge Certificate</option>
+                                      <option>Doctor’s Prescriptions</option>
+                                      <option>Diagnosis Reports</option>
+                                      <option>Hospital Bills</option>
+                                      <option>FIR for Accidental Death</option>
+                                      <option>Nominee Bank Account Details</option>
+                                      <option>Graveyard Slip / Local Testimonial</option>
+                                      <option>Diverse License</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Upload PDF</label>
+                                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+                              </div>
+                          </div>
+                      </div>
+                      </div>
+
+                  <div class="row mt-3">
+                      <div class="col-12 text-center">
+                          <button type="button" class="btn btn-primary add-more-document-btn">Add More Document</button>
+                      </div>
+                  </div>
+              </div>
+          <!-- 📄 End Upload Document Section -->    
+            </div>
+
+             <!-- 📄 partial-disability Section -->
+            <div id="section-partial-disability" style="display:none;">
+               <h5 class="mt-4">Cost Description </h5>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Hospital Name</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Incident Date
+</label><input type="text" class="form-control datepicker" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Cause of Treatment </label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Claim Amount</label><input type="number" class="form-control" /></div></div>
+              </div>
+
+               <div id="section-bank-details" class="mt-4">
+                <h5 class="mb-3">Bank Details</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Name</label>
+                      <select class="form-control">
+                        <option value="">-- Select Bank --</option>
+                        <option value="Eastern Bank">Eastern Bank</option>
+                        <option value="Brac Bank">Brac Bank</option>
+                        <option value="Islami Bank">Islami Bank</option>
+                      
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Account Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Holder Name" />
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Account No</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Number" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Branch Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Branch Name" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Routing No</label>
+                      <input type="text" class="form-control" placeholder="Enter Routing Number" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- 📄 Upload Document Section -->
+            <div class="document-upload-section" class="mt-4">
+                  <h5 class="mb-3">Upload Required Document</h5>
+                  <div class="document-fields-container">
+                      <div class="row document-row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Document Type</label>
+                                  <select class="form-control" name="documentType[]">
+                                      <option value="">-- Select Document --</option>
+                                      <option>Death Registration Certificate</option>
+                                      <option>Death Certificate from hospital</option>
+                                      <option>Copy of NID of Nominee & Policy Holder</option>
+                                      <option>Hospital Discharge Certificate</option>
+                                      <option>Doctor’s Prescriptions</option>
+                                      <option>Diagnosis Reports</option>
+                                      <option>Hospital Bills</option>
+                                      <option>FIR for Accidental Death</option>
+                                      <option>Nominee Bank Account Details</option>
+                                      <option>Graveyard Slip / Local Testimonial</option>
+                                      <option>Diverse License</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Upload PDF</label>
+                                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+                              </div>
+                          </div>
+                      </div>
+                      </div>
+
+                  <div class="row mt-3">
+                      <div class="col-12 text-center">
+                          <button type="button" class="btn btn-primary add-more-document-btn">Add More Document</button>
+                      </div>
+                  </div>
+              </div>
+          <!-- 📄 End Upload Document Section -->    
+            </div>
+
+
+             <!-- 📄 ipd Section -->  
+            <div id="section-ipd" style="display:none;">
+             
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Date of admission
+                </label><input type="text" class="form-control datepicker" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Date of Discharge
+                </label><input type="text" class="form-control datepicker" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Cause of Admission
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Doctor’s Name 
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+              <h5 class="mt-4">Cost Type  </h5>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Room Rent1</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>ICU/CCU/NSU</label><input type="text" class="form-control" /></div></div>
+               
+              </div>
+              <div class="row">
+              
+                <div class="col-md-6"><div class="form-group"><label>Consultation fee 
+                </label><input type="number" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Ancillary
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Medical Investigation
+                </label><input type="number" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Others
+                </label><input type="number" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Claim Amount
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+
+
+               <div id="section-bank-details" class="mt-4">
+                <h5 class="mb-3">Bank Details</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Name</label>
+                      <select class="form-control">
+                        <option value="">-- Select Bank --</option>
+                        <option value="Eastern Bank">Eastern Bank</option>
+                        <option value="Brac Bank">Brac Bank</option>
+                        <option value="Islami Bank">Islami Bank</option>
+                      
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Account Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Holder Name" />
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Account No</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Number" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Branch Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Branch Name" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Routing No</label>
+                      <input type="text" class="form-control" placeholder="Enter Routing Number" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- 📄 Upload Document Section -->
+            <div class="document-upload-section" class="mt-4">
+                  <h5 class="mb-3">Upload Required Document</h5>
+                  <div class="document-fields-container">
+                      <div class="row document-row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Document Type</label>
+                                  <select class="form-control" name="documentType[]">
+                                      <option value="">-- Select Document --</option>
+                                      <option>Death Registration Certificate</option>
+                                      <option>Death Certificate from hospital</option>
+                                      <option>Copy of NID of Nominee & Policy Holder</option>
+                                      <option>Hospital Discharge Certificate</option>
+                                      <option>Doctor’s Prescriptions</option>
+                                      <option>Diagnosis Reports</option>
+                                      <option>Hospital Bills</option>
+                                      <option>FIR for Accidental Death</option>
+                                      <option>Nominee Bank Account Details</option>
+                                      <option>Graveyard Slip / Local Testimonial</option>
+                                      <option>Diverse License</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Upload PDF</label>
+                                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+                              </div>
+                          </div>
+                      </div>
+                      </div>
+
+                  <div class="row mt-3">
+                      <div class="col-12 text-center">
+                          <button type="button" class="btn btn-primary add-more-document-btn">Add More Document</button>
+                      </div>
+                  </div>
+              </div>
+              
+            </div>
+         
+            <!-- 📄 opd Section -->
+            <div id="section-opd" style="display:none;">
+           <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Treatment Date
+                </label><input type="text" class="form-control datepicker" /></div></div>
+              </div>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Cause of Treatment
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+             
+                <h5 class="mt-4">Cost description</h5>
+                <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Consultation Fee </label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Investigation</label><input type="text" class="form-control" /></div></div>
+               
+              </div>
+              <div class="row">
+              
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Day care  amount
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Other With description </label><input type="number" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total  Amount
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+             
+
+
+               <div id="section-bank-details" class="mt-4">
+                <h5 class="mb-3">Bank Details</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Name</label>
+                      <select class="form-control">
+                        <option value="">-- Select Bank --</option>
+                        <option value="Eastern Bank">Eastern Bank</option>
+                        <option value="Brac Bank">Brac Bank</option>
+                        <option value="Islami Bank">Islami Bank</option>
+                      
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Account Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Holder Name" />
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Account No</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Number" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Branch Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Branch Name" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Routing No</label>
+                      <input type="text" class="form-control" placeholder="Enter Routing Number" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- 📄 Upload Document Section -->
+            <div class="document-upload-section" class="mt-4">
+                  <h5 class="mb-3">Upload Required Document</h5>
+                  <div class="document-fields-container">
+                      <div class="row document-row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Document Type</label>
+                                  <select class="form-control" name="documentType[]">
+                                      <option value="">-- Select Document --</option>
+                                      <option>Death Registration Certificate</option>
+                                      <option>Death Certificate from hospital</option>
+                                      <option>Copy of NID of Nominee & Policy Holder</option>
+                                      <option>Hospital Discharge Certificate</option>
+                                      <option>Doctor’s Prescriptions</option>
+                                      <option>Diagnosis Reports</option>
+                                      <option>Hospital Bills</option>
+                                      <option>FIR for Accidental Death</option>
+                                      <option>Nominee Bank Account Details</option>
+                                      <option>Graveyard Slip / Local Testimonial</option>
+                                      <option>Diverse License</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Upload PDF</label>
+                                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+                              </div>
+                          </div>
+                      </div>
+                      </div>
+
+                  <div class="row mt-3">
+                      <div class="col-12 text-center">
+                          <button type="button" class="btn btn-primary add-more-document-btn">Add More Document</button>
+                      </div>
+                  </div>
+              </div>
+
+            </div>
+
+            <!-- 📄 maternity Section -->
+            <div id="section-maternity" style="display:none;">
+          <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Doctors Name </label><input type="text" class="form-control" /></div></div>
+               
+              </div>
+              <div class="row">
+                 <div class="col-md-6"><div class="form-group"><label>Date of admission
+                </label><input type="text" class="form-control datepicker" /></div></div>
+                 <div class="col-md-6"><div class="form-group"><label>Date of Discharge
+                </label><input type="text" class="form-control datepicker" /></div></div>
+               
+              </div>
+
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Meternity NVD/Normal delivery </label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Maternity LUCS Cesarean </label><input type="text" class="form-control" /></div></div>
+               
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Maternity Legal abortion </label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Package cost</label><input type="text" class="form-control" /></div></div>
+               
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Claim Amount</label><input type="text" class="form-control" /></div></div>
+           
+              </div>
+             
+             <h5 class="mt-4">Cost Type in BDT  </h5>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Room Rent1</label><input type="text" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>ICU/CCU/NSU</label><input type="text" class="form-control" /></div></div>
+               
+              </div>
+              <div class="row">
+              
+                <div class="col-md-6"><div class="form-group"><label>Consultation fee 
+                </label><input type="number" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Ancillary
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Medical Investigation
+                </label><input type="number" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Others
+                </label><input type="number" class="form-control" /></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Package cost
+                </label><input type="number" class="form-control" /></div></div>
+              </div>
+             
+
+
+               <div id="section-bank-details" class="mt-4">
+                <h5 class="mb-3">Bank Details</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Name</label>
+                      <select class="form-control">
+                        <option value="">-- Select Bank --</option>
+                        <option value="Eastern Bank">Eastern Bank</option>
+                        <option value="Brac Bank">Brac Bank</option>
+                        <option value="Islami Bank">Islami Bank</option>
+                      
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Bank Account Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Holder Name" />
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Account No</label>
+                      <input type="text" class="form-control" placeholder="Enter Account Number" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Branch Name</label>
+                      <input type="text" class="form-control" placeholder="Enter Branch Name" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Routing No</label>
+                      <input type="text" class="form-control" placeholder="Enter Routing Number" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- 📄 Upload Document Section -->
+            <div class="document-upload-section" class="mt-4">
+                  <h5 class="mb-3">Upload Required Document</h5>
+                  <div class="document-fields-container">
+                      <div class="row document-row">
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Document Type</label>
+                                  <select class="form-control" name="documentType[]">
+                                      <option value="">-- Select Document --</option>
+                                      <option>Death Registration Certificate</option>
+                                      <option>Death Certificate from hospital</option>
+                                      <option>Copy of NID of Nominee & Policy Holder</option>
+                                      <option>Hospital Discharge Certificate</option>
+                                      <option>Doctor’s Prescriptions</option>
+                                      <option>Diagnosis Reports</option>
+                                      <option>Hospital Bills</option>
+                                      <option>FIR for Accidental Death</option>
+                                      <option>Nominee Bank Account Details</option>
+                                      <option>Graveyard Slip / Local Testimonial</option>
+                                      <option>Diverse License</option>
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="col-md-6">
+                              <div class="form-group">
+                                  <label>Upload PDF</label>
+                                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+                              </div>
+                          </div>
+                      </div>
+                      </div>
+
+                  <div class="row mt-3">
+                      <div class="col-12 text-center">
+                          <button type="button" class="btn btn-primary add-more-document-btn">Add More Document</button>
+                      </div>
+                  </div>
+              </div>
+
+
+            </div>
+            <div id="section-daycare" style="display:none;">
+              <h5 class="mt-4">Health - Daycare</h5>
+
+            </div>
+            <div id="section-opd-optical" style="display:none;">
+              <h5 class="mt-4">Health - OPD-Optical</h5>
+
+            </div>
+            <div id="section-opd-dental" style="display:none;">
+              <h5 class="mt-4">Health - OPD-Dental</h5>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-4">Submit</button>
+
+          </form>
+        </div>
+      </div>
+      {% include 'footer.html' %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="{% static 'js/formpickers.js' %}"></script>
+  <script src="{% static 'js/wizard.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function () {
+  const beneficiaryOptions = {
+    life: [
+      "Natural Death",
+      "Accidental Death",
+      "Permanent Total Disability",
+      "Partial Disability"
+    ],
+    health: [
+      "Health - IPD",
+      "Health - OPD",
+      "Health - Maternity",
+      "Health - Daycare",
+      "Health - OPD-Optical",
+      "Health - OPD-Dental"
+    ]
+  }
+
+  const sectionMap = {
+    "Natural Death": "#section-natural",
+    "Accidental Death": "#section-accidental",
+    "Permanent Total Disability": "#section-total-disability",
+    "Partial Disability": "#section-partial-disability",
+    "Health - IPD": "#section-ipd",
+    "Health - OPD": "#section-opd",
+    "Health - Maternity": "#section-maternity",
+    "Health - Daycare": "#section-daycare",
+    "Health - OPD-Optical": "#section-opd-optical",
+    "Health - OPD-Dental": "#section-opd-dental"
+    // Extend as needed...
+  }
+
+  function hideSections() {
+    Object.values(sectionMap).forEach(id => $(id).hide())
+  }
+
+  function populateBeneficiaryOptions(type) {
+    const $select = $('select[name="BeneficiaryType"]')
+    $select.empty().append('<option value="">-- Select Benefit Type --</option>')
+    if (beneficiaryOptions[type]) {
+      beneficiaryOptions[type].forEach(opt => {
+        $select.append(`<option value="${opt}">${opt}</option>`)
+      })
+    }
+    hideSections()
+  }
+
+  // Event handlers
+  $('select[name="ClaimType"]').change(function () {
+    const selectedType = $(this).val()
+    populateBeneficiaryOptions(selectedType)
+  })
+
+  $('select[name="BeneficiaryType"]').change(function () {
+    hideSections()
+    const selected = $(this).val()
+    if (sectionMap[selected]) {
+      const $currentVisibleSection = $(sectionMap[selected]);
+      $currentVisibleSection.show();
+      // যখন একটি সেকশন দৃশ্যমান হয়, তখন সেই সেকশনের মধ্যে থাকা
+      // 'Add More' বাটনের অবস্থা আপডেট করুন
+      updateAddMoreButtonState($currentVisibleSection);
+    }
+  })
+
+  // Initial setup on page load
+  const initialClaimType = $('select[name="ClaimType"]').val()
+  if (initialClaimType) {
+    populateBeneficiaryOptions(initialClaimType)
+  } else {
+    hideSections()
+  }
+
+  // Initialize datepickers
+  $('.datepicker').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true,
+    todayHighlight: true
+  })
+
+  // Form submission (placeholder)
+  $('#claim-form').submit(function (event) {
+    event.preventDefault()
+    console.log("Form submitted!")
+    // You can add your AJAX call here
+  })
+
+  // -------------------------------------------------------------------
+  // Dynamic Document Upload Section (Revised for multiple instances)
+  // -------------------------------------------------------------------
+
+  const MAX_DOCUMENTS = 4; // সর্বোচ্চ ৪টি ডকুমেন্ট ফিল্ডের লিমিট
+
+  // HTML for a new row of document fields
+  // ensure unique name attributes if needed, e.g., by adding an index
+  const newDocumentRowHTML = `
+      <div class="row document-row mt-3">
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label>Document Type</label>
+                  <select class="form-control" name="documentType[]">
+                      <option value="">-- Select Document --</option>
+                      <option>Death Registration Certificate</option>
+                      <option>Death Certificate from hospital</option>
+                      <option>Copy of NID of Nominee & Policy Holder</option>
+                      <option>Hospital Discharge Certificate</option>
+                      <option>Doctor’s Prescriptions</option>
+                      <option>Diagnosis Reports</option>
+                      <option>Hospital Bills</option>
+                      <option>FIR for Accidental Death</option>
+                      <option>Nominee Bank Account Details</option>
+                      <option>Graveyard Slip / Local Testimonial</option>
+                      <option>Diverse License</option>
+                  </select>
+              </div>
+          </div>
+
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label>Upload PDF</label>
+                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+              </div>
+          </div>
+      </div>
+  `;
+
+  // Function to check and update button state for a specific section
+  // It takes the main container of that section (e.g., #section-natural, #section-accidental)
+  function updateAddMoreButtonState($mainSectionContainer) {
+      // Find the add more button within this specific main section's document upload area
+      const $addMoreBtn = $mainSectionContainer.find('.add-more-document-btn');
+      // Find the document fields container within this specific main section's document upload area
+      const $documentFieldsContainer = $mainSectionContainer.find('.document-fields-container');
+
+      // Count the current number of document rows within THIS container
+      const currentDocumentCount = $documentFieldsContainer.find('.document-row').length;
+
+      if (currentDocumentCount >= MAX_DOCUMENTS) {
+          $addMoreBtn.prop('disabled', true);
+          $addMoreBtn.text('Maximum 4 documents added');
+      } else {
+          $addMoreBtn.prop('disabled', false);
+          $addMoreBtn.text('Add More Document');
+      }
+  }
+
+  // Attach a click event listener to ALL buttons with class 'add-more-document-btn'
+  // using event delegation for robustness
+  $(document).on('click', '.add-more-document-btn', function() {
+      const $clickedButton = $(this);
+      // Find the closest main section container (e.g., #section-natural, #section-accidental, etc.)
+      // that contains both the button and its respective document-fields-container.
+      // This is crucial because 'document-upload-section' is now a class and might be nested.
+      const $mainSectionContainer = $clickedButton.closest('[id^="section-"]'); // Finds the closest parent whose ID starts with "section-"
+
+      // Ensure we found a relevant main section container
+      if ($mainSectionContainer.length === 0) {
+          console.error("Could not find the main section container for the clicked button.");
+          return;
+      }
+
+      const $documentFieldsContainerForThisSection = $mainSectionContainer.find('.document-fields-container');
+
+      const currentDocumentCount = $documentFieldsContainerForThisSection.find('.document-row').length;
+
+      if (currentDocumentCount < MAX_DOCUMENTS) {
+          $documentFieldsContainerForThisSection.append(newDocumentRowHTML);
+          // Update button state for THIS specific section after adding a new row
+          updateAddMoreButtonState($mainSectionContainer);
+      }
+  });
+
+  // Initial check for all sections when the page loads
+  // Iterate through each main section that contains a document upload area
+  $('#section-natural, #section-accidental, #section-total-disability, #section-partial-disability, #section-ipd').each(function() {
+      updateAddMoreButtonState($(this));
+  });
+
+});
+</script>
+
+{% endblock %}

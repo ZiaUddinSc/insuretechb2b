@@ -1,0 +1,232 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}organizations board{% endblock title%}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+
+
+        <div class="row grid-margin mt">
+          <div class="col-12">
+            <div class="card card-statistics">
+              <div class="card-body">
+                <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                    
+                    <div class="statistics-item">
+                      <p>
+                        <i class="icon-sm fas fa-hourglass-half mr-2"></i>
+                        Registered Customer
+                      </p>
+                      <h2>0</h2>
+                    </div>
+                    <div class="statistics-item">
+                      <p>
+                        <i class="icon-sm fas fa-cloud-download-alt mr-2"></i>
+                        Policy Purchesed
+                      </p>
+                      <h2>0</h2>
+                    </div>
+                    <div class="statistics-item">
+                      <p>
+                        <i class="icon-sm fas fa-check-circle mr-2"></i>
+                        Purchased Volume
+                      </p>
+                      <h2>0</h2>
+                     
+                    </div>
+                    <div class="statistics-item">
+                      <p>
+                        <i class="icon-sm fas fa-chart-line mr-2"></i>
+                        Claim Volume
+                      </p>
+                      <h2>0</h2>
+                      
+                    </div>
+                   
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:5px;">
+          <div class="card-body">
+            <div class="row-container">
+            <img src="{% static 'images/faces/face5.jpg' %}" alt="profile" class="profile-image"  />
+            <h5 class="company-name">
+              Waadaa Ltd.
+            </h5>
+          </div>
+
+          <div class="multi-container">
+            <span>Email: </span>
+            <a href="mailto:touhid435213@gmail.com" class="multi-link">touhid435213@gmail.com</a>
+        </div>
+
+          <div class="multi-container">
+            <span>Contact Number:</span>
+            <a href="mailto:touhid435213@gmail.com" class="multi-link">8801771320777</a>
+        </div>
+
+          </div>
+        </div>
+      
+        <div class="card" style="margin-top:5px;">
+          <div class="card-body">
+            <div class="page-header">
+              <h5 class="">
+                Purchase Histories
+              </h5>
+            </div>
+
+            <div class="form-container">
+              
+              <div class="col-md-2">
+                <div>
+                  <label for="startDate">From Date:</label>
+                </div>
+                  <input type="date" id="startDate" placeholder="From Date" class="form-control">
+              </div>
+              <div class="col-md-2">
+                <div>
+                  <label for="endDate">To :</label>
+                </div>
+                  <input class="form-control" type="date" id="endDate" placeholder="To Date">
+              </div>
+
+              <div class="col-md-2">
+                <div>
+                  <label for="dropdown1">Organization :</label>
+                </div>
+                  <select id="dropdown1" class="organization form-control" style="width: 100%">
+                      <option value="option1">Choose one</option>
+                      <option value="option2">Close</option>
+                      <option value="option3">Close</option>
+                  </select>
+              </div>
+              <div class="col-md-2">
+                <div>
+                  <label for="dropdown2">
+                    Policy :</label>
+                </div>
+                  <select id="dropdown2" class="policy form-control" style="width: 100%">
+                      <option value="option1">Choose one</option>
+                      <option value="option2">Close</option>
+                      <option value="option3">Close</option>
+                  </select>
+              </div>
+              <div class="col-md-2">
+                <div>
+                  <label for="dropdown3">Status :</label>
+                </div>
+                  <select id="dropdown3" class="status form-control" style="width: 100%">
+                    <option value="option1">Choose one</option>
+                      <option value="option1">Active</option>
+                      <option value="option2">Close</option>
+                  </select>
+              </div>
+              <div class="btn-row">
+                  <button onclick="resetForm()" class="btn-reset">Reset</button>
+              
+                  <button onclick="applyFilter()" class="btn-filter">Filter</button>
+              </div>
+          </div>
+           
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="order-listing" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>Action</th>
+                          <th>Status</th>
+                          <th>Purchase ID</th>
+                          <th>Policy ID</th>
+                          <th>Policy Name</th>
+                          <th>Duration</th>
+                          <th>Duration type</th>
+                          <th>Installment type</th>
+                          <th>Policy amount</th>
+                          <th>Premium</th>
+                          <th>Total amount	</th>
+                          <th>Discount</th>
+                          <th>Remark</th>
+                          <th>Start date</th>
+                          <th>End date</th>
+                          <th>Next date</th>
+                          
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                    
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+<script src="{% static 'js/data-table.js' %}"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    // Initialize all fields with select2
+    $('.organization, .policy, .status').select2();
+});
+</script>
+
+</script>
+
+    <script>
+   
+
+      function resetForm() {
+          document.getElementById('startDate').value = '';
+          document.getElementById('endDate').value = '';
+          document.getElementById('dropdown').selectedIndex = 0;
+      }
+
+      function applyFilter() {
+          // Handle your filter logic here
+          alert("Filter applied!");
+      }
+  </script>
+  {% endblock extra_script %}

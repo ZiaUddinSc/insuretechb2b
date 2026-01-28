@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Required Documents
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+    <!-- partial -->
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="page-header">
+          <h3 class="page-title">Required Documents</h3>
+        </div>
+
+        <div class="container mt-4">
+  <div class="row">
+    <!-- Uploaded Documents -->
+    <div class="col-md-6">
+      <div class="document-card">
+        <div class="card-header text-white">
+          <h5 class="mb-0">Uploaded Documents</h5>
+        </div>
+        <div class="card-body">
+          <div class="document-item">Document 1</div>
+          <div class="document-item">Document 2</div>
+          <div class="document-item">Document 3</div>
+          <div class="document-item">Document 4</div>
+          <div class="document-item">Document 5</div>
+          <div class="document-item">Document 6</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Required Documents -->
+    <div class="col-md-6">
+      <div class="document-card">
+        <div class="card-header text-white">
+          <h5 class="mb-0">Required Documents</h5>
+        </div>
+        <div class="card-body">
+          <div class="document-item d-flex justify-content-between align-items-center">
+            <span>National ID</span>
+            <button class="btn btn-sm ">Upload</button>
+          </div>
+          <div class="document-item d-flex justify-content-between align-items-center">
+            <span>Passport Size Photo</span>
+            <button class="btn btn-sm ">Upload</button>
+          </div>
+          <div class="document-item d-flex justify-content-between align-items-center">
+            <span>Bank Statement</span>
+            <button class="btn btn-sm ">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:partials/_footer.html -->
+
+      <!-- partial -->
+
+      <!-- page-body-wrapper ends -->
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+  <!-- container-scroller -->
+{% endblock %}
+
+{% block extra_script %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}
+<!-- / Layout wrapper -->

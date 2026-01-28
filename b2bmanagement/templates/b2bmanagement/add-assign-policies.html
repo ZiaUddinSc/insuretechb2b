@@ -1,0 +1,101 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Add Policy Assign{% endblock title%}
+
+
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+           
+            
+                    
+                   
+                 
+
+                    <div class="col-12 grid-margin">
+                      <div class="card">
+                        <div class="card-body">
+                          <h4 class="card-title">Policy Assign</h4>
+                          <form class="form-sample">
+                           
+                            <div class="row">
+                            
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Policy :</label>
+                                  <div class="col-sm-9">
+                                    <select id="dropdown" class="select2 form-control" style="width: 100%;">
+                                      <option value="option1">Active</option>
+                                      <option value="option2">Close</option>
+                                  </select>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">B2B Organization :</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              
+                              
+                            
+                            </div>
+
+
+
+                          
+                            <input class="btn btn-primary" type="submit" value="Save">
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                    
+              
+                 
+           
+          </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+<script src="{% static 'js/form-validation.js' %}"></script>
+<script>
+$(document).ready(function() {
+  $('.select2').select2(); // Initialize the searchable dropdown
+});
+</script>
+  {% endblock extra_script %}

@@ -1,0 +1,479 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Organization Details{% endblock title%}
+
+{% block extra_head %}
+
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+  <style type="text/css">
+    {% comment %} .tableBankInfo,
+    .tableBankInfo th,
+    .tableBankInfo td {
+        border: none !important;
+    } {% endcomment %}
+    {% comment %} .page-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 80%;
+      z-index: 1050; 
+      background: white;
+      border-bottom: 1px solid red;
+      padding: 15px;
+  }
+  .content-wrapper {
+      margin-top: 140px; /* height of your header */
+  } {% endcomment %}
+</style>
+ 
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">    
+        <div class="card mt" >
+          <div class="card-body" >
+              <div class="page-header" style="top: 0; z-index: 10;">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h3 class="page-title mb-3">Organization Details</h3>
+                    </div>
+                    <div class="col-md-12 ">
+                      <!-- Logo + Info stacked vertically -->
+                      <div  class="d-flex align-items-center">
+                        {% if organization.company_logo %}
+                          <img src="{{ organization.company_logo }}" alt="Company Logo"
+                              class="img-fluid mb-2"
+                              style="width:200px; height:100px; object-fit:contain;">
+                        {% else %}
+                          <span class="mb-2">No logo available</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>  
+              </div>
+              <div class="col-md-12 grid-margin stretch-card" >
+                <div class="card">
+                  <div class="card-body "style="max-height:650px; overflow-y:auto;">
+                    <ul class="nav nav-pills nav-pills-primary" id="pills-tab" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Basic Information</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Contract Information</a>
+                      </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                        <div class="media">
+                          <div class="media-body">
+                            <table class="table tableBankInfo table-bordered">
+                              <tbody>
+                                <tr>
+                                <td width="10%"><strong>Company Name</td><td width="75%"><strong>{{organization.organization_name |default:"N/A" }}</strong>
+                              
+                                </tr>
+                                <tr>
+                                  <td> <strong>Organization Code</strong></td>   <td>{{organization.organization_code |default:"N/A" }}
+                                
+                                </tr>
+                                <tr>
+                                  <td><strong>Organization Type</strong></td>   <td>{{organization.company_type_display |default:"N/A" }}
+                                
+                                </tr>
+                                <tr>
+                                  <td><strong>Address</strong></td>   <td>{{organization.address |default:"N/A" }}
+                                </tr>
+                                <tr>
+                                  <td><strong>Website</strong></td>   <td>{{organization.website |default:"N/A" }}
+                                </tr>
+                                
+                              </tbody>
+                            </table>
+                            <br/>
+                            <h4>
+                                Contact Information 
+                            </h4>
+                            <table   class="table table-bordered">
+                              <thead>
+                              
+                                <tr>
+                                  <th>
+                                  SL
+                                  </th>
+                                  <th>
+                                  Name
+                                  </th>
+                                  <th>
+                                    Designation
+                                  </th>
+                                  <th>
+                                    Mobile No
+                                  </th>
+                                  <th>
+                                    Email Address
+                                  </th>
+                                  <th>
+                                    Status
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% for organization_contact in organization.contacts %}
+                                <tr>
+                                  <td>{{forloop.counter}}</td>
+                                  <td>{{organization_contact.name |default:"N/A" }}</td>   
+                                  <td>{{organization_contact.designation.title |default:"N/A" }}</td>   
+                                  <td>{{organization_contact.mobile_no |default:"N/A" }}</td>   
+                                  <td>{{organization_contact.email |default:"N/A" }}</td>     
+                                  <td>{{organization_contact.status_display |default:"N/A" }}</td>     
+                                </tr>
+            
+                                {% empty %}
+                                  <tr>
+                                    <td colspan="6">No contact available</td>
+                                  </tr>
+            
+                              {% endfor %}
+                                
+                              </tbody>
+                            </table>
+                            <br/>
+                            <br/>
+                            <h4>
+                                Bank Information 
+                            </h4>
+                            <table class="table tableBankInfo table-bordered">
+                              <tbody>
+                                <tr>
+                                <td width="10%"><strong>Bank Name</td><td width="75%"><strong>{{organization.bank.name |default:"N/A" }}</strong>
+                              
+                                </tr>
+                                <tr>
+                                  <td> <strong>Account Name</strong></td>   <td>{{organization.account_name |default:"N/A" }}
+                                
+                                </tr>
+                                <tr>
+                                  <td><strong>Account Number</strong></td>   <td>{{organization.account_number |default:"N/A" }}
+                                
+                                </tr>
+                                <tr>
+                                  <td><strong>Branch Name</strong></td>   <td>{{organization.branch_name |default:"N/A" }}
+                                </tr>
+                                <tr>
+                                  <td><strong>Routing Number</strong></td>   <td>{{organization.routing_number |default:"N/A" }}
+                                </tr>
+                                
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                        <table   class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>
+                              SL
+                              </th>
+                              <th>
+                              Contract ID
+                              </th>
+                              <th>
+                                Contract Title
+                              </th>
+                              <th>
+                                Policy Type
+                              </th>
+                              <th>
+                                Mode Of Policy
+                              </th>
+                              <th>
+                                Enrollment Date
+                              </th>
+                              <th>
+                                End Date
+                              </th>
+                              
+                              <th>
+                                Remaning Days
+                              </th>
+                              <th>
+                                Insurer Name
+                              </th>
+                              <th>
+                                Status
+                              </th>
+                              <th>
+                                Documents
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for org_policy in organization.organization_policies %}
+                            <tr>
+                              <td>{{forloop.counter}}</td>
+                              <td>{{org_policy.insurer_contract_no |default:"N/A" }}</td>   
+                              <td>{{org_policy.contract_title |default:"N/A" }}</td>   
+                              <td>{{org_policy.policy_type.name |default:"N/A" }}</td>   
+                              <td>{{org_policy.policy_mode_display |default:"N/A" }}</td>   
+                              <td>{{org_policy.enrollment_date_full |default:"N/A"}}</td>  
+                              <td>{{org_policy.end_date_full  |default:"N/A" }}</td>     
+                              <td>
+                                {% if org_policy.days_count %}
+                                {{ org_policy.days_count }} {% if org_policy.days_count == 1 %}day{% else %}days{% endif %}
+                                  {% else %}
+                                      N/A
+                                  {% endif %}
+                                </td>     
+                              <td> {{ org_policy.insurer.insurer_name |default:"N/A"}}</td>    
+                              <td> {{ org_policy.status_display |default:"N/A"}}</td>    
+                              <td>
+                                {% with docs=org_policy.org_policy_documents %}
+                                  {% for doc in docs %}
+                                      <a href="{{ doc.document }}" target="_blank" class="btn btn-primary btn-sm mb-1">
+                                          {% if docs|length > 1 %}
+                                              View File {{ forloop.counter }}
+                                          {% else %}
+                                              View File
+                                          {% endif %}
+                                      </a>
+                                  {% empty %}
+                                      <span class="text-muted">No documents</span>
+                                  {% endfor %}
+                                {% endwith %}
+                              </td>      
+                            </tr>
+                            <tr >
+                              <td colspan="11">
+                              <table class="table table-bordered companyPlan">
+                                <thead>
+                                 {% for compnay_plan in org_policy.org_plan_policy.company_plan_documents  %}
+                                  <tr>
+                                    <th colspan="8" class="py-1">
+                                      Plan - {{ compnay_plan.plan.name }}
+                                    </th>
+                                  </tr>  
+                                  <tr class="table-info">
+                                    <th>
+                                      Policy Type
+                                    </th>
+                                    <th>
+                                      Coverage Type
+                                    </th>
+                                    <th>
+                                      Coverage Amount
+                                    </th>
+                                    <th>
+                                      Premium Rate % 
+                                    </th>
+                                    <th>
+                                      Premium Amount
+                                    </th>
+                                    <th>
+                                      Insured Number of Beneficiary
+          
+                                    </th>
+                                    <th>
+                                      Total Premium 
+          
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for plan_item in compnay_plan.company_plan_items %}
+                                  
+                                  <tr>
+                                    <td>
+                                     {{plan_item.policy_type.name}}
+                                    </td>
+                                    <td>
+                                      {{plan_item.coverage_type.name}}
+                                    </td>
+                                    <td>
+                                      {{plan_item.coverage_amount}}
+                                    </td>
+                                    <td>
+                                      {{plan_item.premium_rate}}
+                                    </td>
+                                    <td>
+                                      {{plan_item.premium_amount}}
+                                    </td>
+                                    <td>
+                                      {{plan_item.insured_beneficiary_no}}
+                                    </td>
+                                    <td>
+                                      {{plan_item.total}}
+                                    </td>
+                                  </tr>
+                                  {% endfor %%}
+                                  <tr>
+                                    <td colspan="6">
+                                      <h6>Gross Total</h6>
+                                    </td>
+                                    <td>
+                                      {{compnay_plan.total_sum}}
+                                    </td>
+                                    
+                                  </tr>
+                                
+                                <tr>
+                                  <td>
+                                   Summary Document
+                                  </td>
+                                  
+                                  <td>
+                                    {% if compnay_plan.company_plan_doc %}
+                                        <a href="{{ compnay_plan.company_plan_doc }}" target="_blank" class="btn btn-primary btn-sm mb-1">
+                                          View Summary File 
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No document</span>
+                                    {% endif %}
+          
+                                  </td>  
+                                  
+                                </tr>
+                                </tbody>
+                             
+                                {% endfor %}
+                                <tr >
+        
+                                   <td colspan="11">
+                                    <table  style="text-align: center;" class="table table-bordered">
+                                      <tbody>
+                                        <td><strong>View Employee</strong></td>
+                                        <td>
+                                          <a href="/claim/employee-list-view/{{ org_policy.id }}/" target="_blank" class="btn btn-primary btn-sm mb-1">
+                                            View
+                                          </a>
+                                     
+                                        </td>
+                                      </tbody>  
+                                    </table>  
+                                   </td>
+                                </tr> 
+                              </table>
+                              </td>
+                             </tr> 
+                            {% empty %}
+                              <tr>
+                                <td colspan="6">No contact available</td>
+                              </tr>
+        
+                          {% endfor %}
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                    
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                    <table class="table table-bordered">
+                      <tbody>
+                        <td  style="text-align: center;" ><strong>Organization Status</strong></td>
+                        <td>
+                          {% if organization.status == 1 %}
+                          <button class="btn btn-success btn-sm status-btn" data-id="{{ organization.id }}">
+                              Active
+                          </button>
+                      {% else %}
+                          <button class="btn btn-danger btn-sm status-btn" data-id="{{ organization.id }}">
+                              Inactive
+                          </button>
+                      {% endif %}
+                        </td>
+                      </tbody>  
+                    </table>  
+                  </div>
+                  </div> 
+                </div>
+              </div>
+                <div id="pdfModal" style="display:none; position:fixed; top:5%; left:5%; width:90%; height:90%; background:#fff; border:2px solid #333; z-index:9999; overflow:auto; padding:10px;">
+                  <img id="imgViewer" style="display:none; max-width:800px; max-height:600px; border:1px solid #ccc;">
+                  <button id="closeModal" style="
+                  position: absolute;
+                  top: 10px;
+                  right: 10px;
+                  background: red;
+                  color: white;
+                  border: none;
+                  padding: 5px 10px;
+                  cursor: pointer;
+              ">Close</button>
+                  <canvas id="pdfCanvas" style="width:100%; border:1px solid #ccc;"></canvas>
+                </div>
+                <div id="loader" style="display:none;">
+                  <div class="loader-content">
+                      <img src="/static/images/loader/loader.gif" alt="Loading...">
+                  </div>
+              </div>
+            </div>
+          </div>
+    </div> 
+    {% include 'footer.html' %}
+    {% endblock content %} 
+    {% block extra_script %}
+    <script src="{% static 'js/tabs.js' %}"></script>
+    <script>
+      $(document).ready(function () {
+        //Button Status Change
+        $(document).on("click", ".status-btn", function (e) {
+          e.preventDefault()
+          let orgID = $(this).data("id");
+          let btn = $(this);
+          
+          let currentStatus = btn.hasClass("btn-success") ? "Active" : "Inactive";
+          let newStatus = btn.hasClass("btn-success") ? 0 : 1;
+          swal({
+              title: "Are you sure?",
+              text: "Do you want to change this status from " + currentStatus + "?",
+              icon: "warning",
+              buttons: [
+              'No',
+              'Yes'
+            ],
+            dangerMode: false,
+          }).then((isConfirm) => {
+              if (isConfirm) {
+                  $.ajax({
+                      url: "/b2bmanagement/organization-view-details/" + orgID + "/",
+                      method: "PUT",
+                      headers: { "X-CSRFToken": "{{ csrf_token }}" },
+                      data: JSON.stringify({"status":newStatus}),
+                      success: function (response) {
+                          if (response.success) {
+                              if (newStatus === 1) {
+                                  btn.removeClass("btn-danger").addClass("btn-success").text("Active");
+                              } else {
+                                  btn.removeClass("btn-success").addClass("btn-danger").text("Inactive");
+                              }
+                              swal("Updated!", "Status has been changed.", "success");
+                          } else {
+                            swal("Error!", "Update failed.", "error");
+                          }
+                      },
+                      error: function () {
+                        swal("Error!", "Something went wrong.", "error");
+                      }
+                  });
+              }
+          });
+        });
+
+    });
+    </script>  
+    {% endblock %}
+ 
+</div>
+</div>

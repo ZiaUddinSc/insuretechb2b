@@ -1,0 +1,50 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}invoice{% endblock title%}
+
+{% block extra_head %}
+
+
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+            <div class="page-header">
+              <h3 class="page-title">
+                Waadaa Ltd. Invoices (0)
+              </h3>
+           
+                 <a href="#"> <button type="button" class="btn btn-primary btn-fw" >Generate Invoices</button></a>
+             
+            </div>
+
+          </div>
+       
+      <div class='text-center'>
+        No invoice found.
+      </div>
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+  {% endblock extra_script %}

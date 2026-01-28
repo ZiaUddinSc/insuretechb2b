@@ -1,0 +1,211 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}life list{% endblock title%}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Life List
+              </h3>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                 <a href="{% url 'create-b2b-product' %}"> <button type="button" class="btn btn-primary btn-fw" >Add Life Insurance</button></a>
+                  
+                </ol>
+              </nav>
+            </div>
+
+            <div class="form-container">
+              <div class="col-md-3">
+                <div>
+                  <label for="startDate">From Date:</label>
+                </div>
+                  <input type="date" id="startDate" placeholder="From Date" class="form-control">
+              </div>
+              <div class="col-md-3">
+                <div>
+                  <label for="endDate">To :</label>
+                </div>
+                  <input class="form-control" type="date" id="endDate" placeholder="To Date">
+              </div>
+              <div>
+                <div>
+                  <label for="dropdown">Status :</label>
+                </div>
+                  <select id="dropdown" class="select2 form-control" style="width: 200px;">
+                      <option value="option1">Active</option>
+                      <option value="option2">Close</option>
+                  </select>
+              </div>
+              <div class="btn-row">
+                  <button onclick="resetForm()" class="btn-reset">Reset</button>
+              
+                  <button onclick="applyFilter()" class="btn-filter">Filter</button>
+              </div>
+          </div>
+           
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="order-listing" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>S/N</th>
+                          <th>Action</th>
+                          <th>ID</th>
+                          <th>Logo</th>
+                          <th>Organization Name</th>
+                          <th>Email</th>
+                          <th>Contact Number</th>
+                          <th>Status</th>
+                          <th>Creation Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                          <td>1</td>
+                          <td>
+                            <div class="action-buttons">
+                              <a href="#"><button title="View"><i class="bi bi-eye"></i></button></a>
+                             
+                              <a href="#"><button title="Edit"><i class="bi bi-pencil"></i></button></a>
+                            </div>
+                          </td>
+                          <td>WB000021</td>
+                          <td> <img src="{% static 'images/faces/face5.jpg' %}" alt="profile" /></td>
+                          <td>Waadaa Ltd.</td>
+                          <td>shihab1234@gmail.com</td>
+                          <td>880171320777</td>
+                          <td><label class="badge badge-success">Active</label></td>
+                          <td>03 Nov 24 11:31 AM</td>
+                          
+                          
+                      </tr>
+                      <tr>
+                          <td>2</td>
+                          <td>
+                            <div class="action-buttons">
+                              <a href="#"><button title="View"><i class="bi bi-eye"></i></button></a>
+                              
+                              <a href="#"><button title="Edit"><i class="bi bi-pencil"></i></button></a>
+                            </div>
+                          </td>
+                          <td>WB000021</td>
+                          <td> <img src="{% static 'images/faces/face5.jpg' %}" alt="profile" /></td>
+                          <td>Waadaa Ltd.</td>
+                          <td>shihab1234@gmail.com</td>
+                          <td>880177132077</td>
+                          <td><label class="badge badge-success">Active</label></td>
+                          <td>03 Nov 24 11:31 AM</td>
+                          
+                          
+                      </tr>
+                      <tr>
+                          <td>3</td>
+                          <td> 
+                            <div class="action-buttons">
+                              <a href="#"><button title="View"><i class="bi bi-eye"></i></button></a>
+                             
+                              <a href="#"><button title="Edit"><i class="bi bi-pencil"></i></button></a>
+                            </div>
+                          </td>
+                          <td>WB000021</td>
+                          <td> <img src="{% static 'images/faces/face5.jpg' %}" alt="profile" /></td>
+                          <td>Waadaa Ltd.</td>
+                          <td>shihab1234@gmail.com</td>
+                          <td>880177132077</td>
+                          <td><label class="badge badge-success">Active</label></td>
+                          <td>03 Nov 24 11:31 AM</td>
+                          
+                          
+                      </tr>
+                      <tr>
+                          <td>4</td>
+                          <td>
+                            <div class="action-buttons">
+                              <a href="#"><button title="View"><i class="bi bi-eye"></i></button></a>
+                              
+                              <a href="#"><button title="Edit"><i class="bi bi-pencil"></i></button></a>
+                            </div>
+                          </td>
+                          <td>WB000021</td>
+                          <td> <img src="{% static 'images/faces/face5.jpg' %}" alt="profile" /></td>
+                          <td>Waadaa Ltd.</td>
+                          <td>shihab1234@gmail.com</td>
+                          <td>801771320777</td>
+                          <td><label class="badge badge-success">Active</label></td>
+                          <td>03 Nov 24 11:31 AM</td>
+                          
+                          
+                      </tr>
+
+
+                     
+                    
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+<script src="{% static 'js/data-table.js' %}"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+      $(document).ready(function() {
+          $('.select2').select2(); // Initialize the searchable dropdown
+      });
+
+      function resetForm() {
+          document.getElementById('startDate').value = '';
+          document.getElementById('endDate').value = '';
+          document.getElementById('dropdown').selectedIndex = 0;
+      }
+
+      function applyFilter() {
+          // Handle your filter logic here
+          alert("Filter applied!");
+      }
+  </script>
+  {% endblock extra_script %}

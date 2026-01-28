@@ -1,0 +1,11 @@
+
+
+ [
+   {
+       "pk": 1,
+       "model": "waadaa_b2b.group",
+       "fields": {
+         "name":"Super Admin"
+       }
+   }
+]

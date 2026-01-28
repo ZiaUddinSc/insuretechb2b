@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  GoP
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="card mt">
+          <div class="card-body">
+            <div class="col-12 grid-margin">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Add GoP</h4>
+                  <form id="gop-create-form" action="{% url "gop" %}">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Hospital Name</label>
+                          <div class="col-sm-9">
+                            <select class="form-control hospital" name="hospital">
+                              <option value="">--Select Hospital --</option>
+                              {% for hospital in hospitals%}
+                              <option value="{{ hospital.id }}"
+                              
+                          >
+                              {{ hospital.hospital_name }}
+                          </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Bed/ Cabin/Word No:</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" name="bed_cabin_word_no"/>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Admission Date:</label>
+                          <div id="datepicker-popup" class="input-group date datepicker col-sm-9">
+                            <input type="text" class="form-control" name="date_of_admission"/>
+                            <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {% comment %} <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Policy Logo :</label>
+                          <div class="col-sm-9">
+                            <input class="form-control file-input" id="image" name="image" type="file" />
+                          </div>
+                        </div>
+                      </div> {% endcomment %}
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Diagnosis :</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" name="diagnosis"/>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Doctor advice</label>
+                          <div class="col-sm-9">
+                            <input class="form-control file-input" id="image" name="document" type="file" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Attendant Name :</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" name="attendant_name"/>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Attendant Mobile</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" name="attendant_mobile"/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Relation with Attendant</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" name="attendant_relation"/>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Gop</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" name="gop"/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row align-items-center justify-content-between">
+                      <div class="form-check">
+                        <label class="form-check-label text-muted"><input type="checkbox" class="form-check-input" />Status pending</label>
+                      </div>
+                      <input class="btn btn-primary" type="submit" value="Submit" />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- content-wrapper ends -->
+        <!-- partial:../../partials/_footer.html -->
+
+        <!-- partial -->
+      </div>
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+{% endblock %}
+<!-- container-scroller -->
+
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+  <script src="{% static 'js/formpickers.js' %}"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      (function($) {
+        'use strict';
+       var  validator = $.validator.setDefaults({
+          submitHandler: function() {
+            var form = $('#gop-create-form')
+            var rawForm = $('#gop-create-form')[0];   // Get raw form element
+            var formData = new FormData(rawForm);      // Convert to FormData
+            $.ajax({
+              type: "POST",
+              headers: {//<==
+                "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+              },
+              url: form.attr("action"), 
+              data: formData,
+              contentType: false,   // required for file upload
+              processData: false,   // required for file upload
+              success: function(response) {
+                if(response.success){
+                  $.toast({
+                    heading: 'Success',
+                    text: response.message,
+                    showHideTransition: 'slide',
+                    icon: 'success',
+                    loaderBg: '#f96868',
+                    position: 'top-right'
+                  })
+                  setTimeout(function() {
+                    window.location.replace("/b2bmanagement/gops/");
+                }, 2000);
+                 
+
+                  // Closing Model After submission 
+                  
+                  // Restting form After submission 
+                  //Resetting Error message
+                }else{
+                  if(response.data){
+                    if (response.data.hasOwnProperty("name")) {
+                      $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                    }
+                    
+                  }
+              
+                  $.toast({
+                    heading: 'Danger',
+                    text: response.message,
+                    showHideTransition: 'slide',
+                    icon: 'error',
+                    loaderBg: '#f2a654',
+                    position: 'top-right'
+                  })
+                }
+              }
+           });
+          }
+        });
+        $(function() {
+    
+          // validate organization form  on keyup and submit
+          $("#gop-create-form").validate({
+            rules: {
+              hospital: "required",
+              attendant_name : "required",
+            },
+            messages: {
+              hospital: "Please enter hospital name",
+              attendant_name: "Please enter attendant name",
+            },
+            errorPlacement: function(label, element) {
+              label.addClass('mt-2 text-danger');
+              label.insertAfter(element);
+            },
+            highlight: function(element, errorClass) {
+              $(element).parent().addClass('has-danger')
+              $(element).addClass('form-control-danger')
+            }
+          });
+       
+        });
+      })(jQuery);
+    })
+  </script>
+{% endblock %}

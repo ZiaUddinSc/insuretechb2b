@@ -1,0 +1,397 @@
+{% load static %} 
+{% block layout %}
+{% load group_tags %}
+<!-- Layout wrapper -->
+
+<!-- Menu -->
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+      <li class="nav-item nav-profile">
+        <div class="nav-link">
+          <div class="profile-image">
+            <img src="{% static 'images/faces/face5.jpg' %}" alt="image"/>
+          </div>
+          <div class="profile-name">
+            <p class="name">
+              {{ request.user.email|capfirst }}
+            </p>
+            <p class="designation">
+              
+              {% for group in user.groups.all %}
+                {{ group.name|capfirst }}
+              {% endfor %}
+              
+            </p>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item">
+       
+        {% if request.user|has_group:"ORGANIZATION HR"  %}
+        <a class="nav-link" href="{% url 'hr_admin_dashboard' %}">
+          <i class="fa fa-home menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+        {% elif request.user|has_group:"B2B Employee"  %}
+        <a class="nav-link" href="{% url 'b2b_employee_dashboard' %}">
+          <i class="fa fa-home menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+        {% elif  request.user|has_group:"Super Admin" %}
+        <a class="nav-link" href="{% url 'dashboard' %}">
+          <i class="fa fa-home menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+        {% elif  request.user|has_group:"Shield Operation" %}
+        <a class="nav-link" href="{% url 'insurer_dashboard' %}">
+          <i class="fa fa-home menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+        {% elif  request.user|has_group:"Insurer Claim Officer" %}
+        <a class="nav-link" href="{% url 'insurer_claim_dashboard' %}">
+          <i class="fa fa-home menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+        {% elif  request.user|has_group:"Insurer Audit Officer" %}
+        <a class="nav-link" href="{% url 'insurer_audit_dashboard' %}">
+          <i class="fa fa-home menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+        {% elif  request.user|has_group:"Claim Supervisor" %}
+        <a class="nav-link" href="{% url 'insurer_supervisor_dashboard' %}">
+          <i class="fa fa-home menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+        {% endif %}
+      </li>
+
+      
+     
+      {% comment %} <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#page-layouts" aria-expanded="false" aria-controls="page-layouts">
+          <i class="fab fa-trello menu-icon"></i>
+          <span class="menu-title">Policy Management</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="page-layouts">
+            <ul class="nav flex-column sub-menu">
+              
+              <li class="nav-item "> <a class="nav-link" href="{% url 'categories' %}"> <i class="fab fa-trello menu-icon"></i><span class="">Add Policy & Category</span></a></li>
+              <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">View All Policy</span></a></li>
+              <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Featured Policy List</span></a></li>
+              <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">View All Label</span></a></li>
+              <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Coverage List</span></a></li>
+              <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Review & Rating</span></a></li>
+              <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Loyalty points</span></a></li>
+              <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">View All Promo</span></a></li>
+              <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">View Referral code</span></a></li>
+            </ul>
+          </div>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" data-toggle="collapse" href="#sidebar-layouts" aria-expanded="false" aria-controls="sidebar-layouts">
+          <i class="fas fa-columns menu-icon"></i>
+          <span class="menu-title">Purchase Management</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="sidebar-layouts">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Create New Purchase</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">View All Purchase</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Health Insurance</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Travel Insurance</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Device Insurance</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Moto Insurance</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Life Insurance</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Surrender</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Others Insurance Policy</span></a></li>
+            </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+          <i class="far fa-compass menu-icon"></i>
+          <span class="menu-title">Customer Management</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="ui-basic">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Add New Customer</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">View All Customer</span></a></li>
+            <li class="nav-item "> <a class="nav-link" href="pages/layout/boxed-layout.html"> <i class="fab fa-trello menu-icon"></i><span class="">Information Update<br>Request</span></a></li>
+          
+        </ul>
+          </div>
+      </li> {% endcomment %}
+      
+      {% if request.user|has_group:"Super Admin" %}
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#ui-advanced" aria-expanded="false" aria-controls="ui-advanced">
+          <i class="fas fa-clipboard-list menu-icon"></i>
+          <span class="menu-title">Configuration</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="ui-advanced">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'insurer-view' %}">Insurer</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'b2b-organization-list' %}">Organization List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'hospitals' %}">Hospital List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'edit-logs' %}">Edit Logs</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'user-groups' %}">Groups</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'users' %}">Users</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'district' %}">District List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'currency-view' %}">Currency List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'email-configuration' %}">Email Configuration</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'template-view' %}">Email Templates</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'designation-view' %}">Designation</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'plan-view' %}">Plan</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'salary-range-view' %}">Salary Range</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'products' %}">Products</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'policies' %}">Policy List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'bank' %}">Bank List</a></li>
+            
+            {% comment %} <li class="nav-item"> <a class="nav-link" href="{% url 'add-new-b2b-orgonization' %}">Organization List</a></li> {% endcomment %}
+            {% comment %} <li class="nav-item"> <a class="nav-link" href="{% url 'create-b2b-organization' %}">Add New B2B organization</a></li> {% endcomment %}
+            <li class="nav-item"> <a class="nav-link" href="{% url 'company-type-view' %}">Company Types</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'gops' %}">GOP List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'database_backup' %}">Database Backup</a></li>
+
+            {% comment %} <li class="nav-item"> <a class="nav-link" href="{% url 'assign-policies' %}">Policy Assigned</a></li> {% endcomment %}
+          
+          </ul>
+        </div>
+      </li>
+      {% endif %}
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#form-claim-elements" aria-expanded="false" aria-controls="form-elements">
+          <i class="fas fa-clipboard-list menu-icon"></i>
+          <span class="menu-title">Claim</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="form-claim-elements">
+          <ul class="nav flex-column sub-menu">
+            {% if request.user|has_group:"ORGANIZATION HR" or request.user|has_group:"Insurer Finance" or request.user|has_group:"Claim Supervisor" or  request.user|has_group:"Super Admin" or request.user|has_group:"Insurer Audit Officer"   or request.user|has_group:"Insurer Claim Officer" or request.user|has_group:"Insurer Audit Officer" or  request.user|has_group:"B2B Employee" or  request.user|has_group:"Shield Operation"%} 
+
+            <li class="nav-item"> <a class="nav-link" href="{% url 'claim_list' %}">Claim List</a></li>
+            {% endif %}
+            {% if request.user|has_group:"ORGANIZATION HR" or  request.user|has_group:"Claim Supervisor" or  request.user|has_group:"Super Admin" or request.user|has_group:"Insurer Audit Officer"   or request.user|has_group:"Insurer Claim Officer" or request.user|has_group:"Insurer Audit Officer" or  request.user|has_group:"Shield Operation" or  request.user|has_group:"B2B Employee"%} 
+            <li class="nav-item"> <a class="nav-link" href="{% url 'received-claim-list' %}">Claim Pending List</a></li>
+            {% endif %}
+            {% comment %} <li class="nav-item"> <a class="nav-link" href="{% url 'life-list' %}">Life</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'IPD-hospitalization-coverage' %}">IPD/ Hospitalization Coverage</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'OPD-coverage-list' %}">OPD Coverage</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'critical-Illness-list' %}">Critical Illness</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'maternity-coverage-list' %}">Maternity Coverage</a></li> {% endcomment %}
+          </ul>
+        </div>
+      </li>
+
+      {% if request.user|has_group:"Super Admin" %}
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#form-employee-elements" aria-expanded="false" aria-controls="form-elements">
+          <i class="fas fa-clipboard-list menu-icon"></i>
+          <span class="menu-title">Employee</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="form-employee-elements">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'employees' %}">Employee List</a></li>
+            </ul>
+        </div>
+      </li>
+      {% endif %}
+      {% comment %} <li class="nav-item">
+        <a class="nav-link"  href="{% url 'claim-dashboard' %}" aria-expanded="false" aria-controls="form-elements">
+          <i class="fas fa-clipboard-list menu-icon"></i>
+          <span class="menu-title">Claim Dashboard</span>
+          <i class="menu-arrow"></i>
+        </a>
+        
+      </li> {% endcomment %}
+      {% comment %} <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+          <i class="fab fa-wpforms menu-icon"></i>
+          <span class="menu-title">Form elements</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="form-elements">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>                
+            <li class="nav-item"><a class="nav-link" href="pages/forms/advanced_elements.html">Advanced Elements</a></li>
+            <li class="nav-item"><a class="nav-link" href="pages/forms/validation.html">Validation</a></li>
+            <li class="nav-item"><a class="nav-link" href="pages/forms/wizard.html">Wizard</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#editors" aria-expanded="false" aria-controls="editors">
+          <i class="fas fa-pen-square menu-icon"></i>
+          <span class="menu-title">Editors</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="editors">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"><a class="nav-link" href="pages/forms/text_editor.html">Text editors</a></li>
+            <li class="nav-item"><a class="nav-link" href="pages/forms/code_editor.html">Code editors</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+          <i class="fas fa-chart-pie menu-icon"></i>
+          <span class="menu-title">Charts</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="charts">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/morris.html">Morris</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/flot-chart.html">Flot</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/google-charts.html">Google charts</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/sparkline.html">Sparkline js</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/c3.html">C3 charts</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/chartist.html">Chartists</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/charts/justGage.html">JustGage</a></li>
+          </ul>
+          </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+          <i class="fas fa-table menu-icon"></i>
+          <span class="menu-title">Tables</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="tables">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/tables/basic-table.html">Basic table</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/tables/data-table.html">Data table</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/tables/js-grid.html">Js-grid</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/tables/sortable-table.html">Sortable table</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="pages/ui-features/popups.html">
+          <i class="fas fa-minus-square menu-icon"></i>
+          <span class="menu-title">Popups</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="pages/ui-features/notifications.html">
+          <i class="fas fa-bell menu-icon"></i>
+          <span class="menu-title">Notifications</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
+          <i class="fa fa-stop-circle menu-icon"></i>
+          <span class="menu-title">Icons</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="icons">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/icons/flag-icons.html">Flag icons</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/icons/font-awesome.html">Font Awesome</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/icons/simple-line-icon.html">Simple line icons</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/icons/themify.html">Themify icons</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#maps" aria-expanded="false" aria-controls="maps">
+          <i class="fas fa-map-marker-alt menu-icon"></i>
+          <span class="menu-title">Maps</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="maps">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/maps/mapeal.html">Mapeal</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/maps/vector-map.html">Vector Map</a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/maps/google-maps.html">Google Map</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+          <i class="fas fa-window-restore menu-icon"></i>
+          <span class="menu-title">User Pages</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="auth">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/login.html"> Login </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/login-2.html"> Login 2 </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/register.html"> Register </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/register-2.html"> Register 2 </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/lock-screen.html"> Lockscreen </a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#error" aria-expanded="false" aria-controls="error">
+          <i class="fas fa-exclamation-circle menu-icon"></i>
+          <span class="menu-title">Error pages</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="error">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/error-404.html"> 404 </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/error-500.html"> 500 </a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#general-pages" aria-expanded="false" aria-controls="general-pages">
+          <i class="fas fa-file menu-icon"></i>
+          <span class="menu-title">General Pages</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="general-pages">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/profile.html"> Profile </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/faq.html"> FAQ </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/faq-2.html"> FAQ 2 </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/news-grid.html"> News grid </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/timeline.html"> Timeline </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/search-results.html"> Search Results </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/portfolio.html"> Portfolio </a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#apps" aria-expanded="false" aria-controls="apps">
+          <i class="fas fa-briefcase menu-icon"></i>
+          <span class="menu-title">Apps</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="apps">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/apps/email.html"> Email </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/apps/calendar.html"> Calendar </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/apps/todo.html"> Todo </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/apps/gallery.html"> Gallery </a></li>
+          </ul>`
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#e-commerce" aria-expanded="false" aria-controls="e-commerce">
+          <i class="fas fa-shopping-cart menu-icon"></i>
+          <span class="menu-title">E-commerce</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="e-commerce">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/invoice.html"> Invoice </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/pricing-table.html"> Pricing Table </a></li>
+            <li class="nav-item"> <a class="nav-link" href="pages/samples/orders.html"> Orders </a></li>
+          </ul>
+        </div>
+      </li> {% endcomment %}
+      
+    </ul>
+  </nav>
+
+
+{% endblock layout %}
+

@@ -1,0 +1,425 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}District List{% endblock title%}
+
+{% block extra_head %}
+
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+
+ 
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                District List
+              </h3>
+              <nav aria-label="breadcrumb">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addDistrictModal" data-whatever="@mdo">Add New District</button>
+              </nav>
+            </div>
+          <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="district-list" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>Name</th>
+                          <th>Code</th> 
+                          <th>Status</th> 
+                          <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="addDistrictModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Add New District</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="errors">
+                    {% comment %} <li style="color:red">Coffee</li> {% endcomment %}
+                  </ul>
+                  
+                  <form id="form-district-information" method="POST" action="{% url "create-district" %}">
+                    <div class="form-group">
+                      <label for="name" class="col-form-label">Name</label>
+                      <input type="text" class="form-control" name="name">
+                    </div>
+                    <div class="form-group">
+                      <label for="code" class="col-form-label">Code</label>
+                      <input type="text" class="form-control" name="code">
+                    </div>
+                    {% comment %} <div class="form-group d-flex align-items-center">
+                      <span>Active Status</span>
+
+                      <label class="switch mb-0 me-10">
+                        <input type="checkbox" class="switch-input" name="is_active">
+                        <span class="slider"></span>
+                      </label>
+                    </div>  {% endcomment %}
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" id="save_bank" class="btn btn-success">Save</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="updateDistrictModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Update District Information</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="update_errors">
+                    {% comment %} <li style="color:red">Coffee</li> {% endcomment %}
+                  </ul>
+                  
+                  <form id="form-district-update-information" method="PUT" action="{% url "create-district" %}">
+                    <div class="form-group">
+                      <label for="district_name" class="col-form-label">Name</label>
+                      <input type="text" id="district_name" class="form-control" name="district_name">
+                    </div>
+                    <div class="form-group">
+                      <label for="district_code" class="col-form-label">Code</label>
+                      <input type="text" id="district_code" class="form-control" name="district_code">
+                    </div>
+                    <div class="form-group d-flex align-items-center">
+                      <span>Active Status</span>
+
+                      <label class="switch mb-0 me-10">
+                        <input type="checkbox" class="switch-input" name="is_active" id="is_active">
+                        <span class="slider"></span>
+                      </label>
+                    </div> 
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" data-id="" id="district_update" class="btn btn-success">Update</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+
+    <script>
+      var districtTable
+      $(document).ready(function() {
+        //Displaying Data by API
+
+        districtTable=$('#district-list').DataTable({
+          "pageLength" : 10,
+          "processing": true,
+          "serverSide": true,
+          "filter": true,
+          "responsive": true,
+          "order": [0, 'desc'],
+          ajax: {
+            "processing":false,
+            "url": "{% url 'district-list' %}",
+            "dataSrc": function (response) {
+              return response.data;
+           }
+          },      
+          columns: [
+              {"mData":"name"},
+              {"mData":"code"},
+              {"mData": function (source) {
+                return source.is_active == 1 ? "Active" : "Inactive";
+                }
+              },
+              {"mData": function (source) {
+
+                return  `<div class="action-buttons">
+                  <a data-id="${source.id}" class="btn btn-outline-primary edit_view">Edit</a>
+                </div>`
+                }
+              },
+              
+             
+            
+          ],
+          buttons: [
+          'pdf',
+          'excel',
+          'print',
+          'csv'
+          ]
+        });
+        //Validation and Submit data
+
+        (function($) {
+          'use strict';
+         var  validator = $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-district-information')
+              $.ajax({
+                type: "POST",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action"), 
+                data: form.serialize(), // serializes the form's elements.
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    // Closing Model After submission 
+                    $("#addDistrictModal .close").click()
+                    $().removeClass("errors");
+                    // Restting form After submission 
+                    $("#form-district-information")[0].reset();
+                    //Resetting Error message
+                    $('.errors li').remove();
+                     districtTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("name")) {
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                      }
+                      if (response.data.hasOwnProperty("code")){
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">'+response.data.code[0]+'</li>')
+                      }
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          $(function() {
+      
+            // validate organization form  on keyup and submit
+            $("#form-district-information").validate({
+              rules: {
+                name: "required",
+              },
+              messages: {
+                name: "Please enter name",
+              },
+              errorPlacement: function(label, element) {
+                label.addClass('mt-2 text-danger');
+                label.insertAfter(element);
+              },
+              highlight: function(element, errorClass) {
+                $(element).parent().addClass('has-danger')
+                $(element).addClass('form-control-danger')
+              }
+            });
+         
+          });
+        })(jQuery);
+        
+        //Viewing data after clicking edit button in table
+
+        $('#district-list').on('click','.edit_view',function(){
+          var id = $(this).attr('data-id')
+          var form= $('#form-district-update-information')
+          $('#updateDistrictModal').modal('toggle')
+          $.ajax({
+            type: "GET",
+            headers: {//<==
+              "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+            },
+            url: '/b2bmanagement/district-details/'+id+'/', 
+            success: function(response) {
+               if(response.success){
+                $('#district_name').val(response.data.name)
+                $('#district_code').val(response.data.code)
+                form.find('#is_active').prop('checked', response.data.is_active);
+                $('#district_update').attr('data-id', response.data.id)
+               }else{
+                alert("Something error")
+               }
+            }
+         });
+        })
+        //Update data submit and  validation
+        $(function() {
+          $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-district-update-information')
+              var id =$('#district_update').attr('data-id')
+              $.ajax({
+                type: "PUT",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action")+id+'/', 
+                data:{
+                  name:$('#district_name').val(),
+                  code:$('#district_code').val(),
+                  is_active:$('#is_active').prop('checked')
+                },
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    //Closing Modal after submission
+
+                    $("#updateDistrictModal .close").click()
+                    //Clearing Submit form
+                    $("#form-district-update-information")[0].reset();
+                    //Resetting Error message
+                    $('.update_errors li').remove();
+                     districtTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("name")) {
+                        $('.update_errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                      }
+                      if (response.data.hasOwnProperty("code")){
+                        $('.update_errors').append('<li  class="li-style"style="color:red;text-transform:capitalize">'+response.data.code[0]+'</li>')
+                      }
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          // validate organization form  on keyup and submit
+          $("#form-district-update-information").validate({
+            rules: {
+              name: "required",
+            },
+            messages: {
+              name: "Please enter name",
+            },
+            errorPlacement: function(label, element) {
+              label.addClass('mt-2 text-danger');
+              label.insertAfter(element);
+            },
+            highlight: function(element, errorClass) {
+              $(element).parent().addClass('has-danger')
+              $(element).addClass('form-control-danger')
+            }
+          });
+       
+        });
+
+        //Delete Module
+        $('#district-list').on('click', '.district-delete', function (event) {      
+          var row = districtTable.row($(this).parents('tr'));
+          var id = ($(this).attr('data-id'))
+          swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this data!",
+            icon: "warning",
+            buttons: [
+              'Cancel',
+              'Confirm'
+            ],
+            dangerMode: true,
+          }).then(function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                  type:'DELETE',
+                  headers: {//<==
+                    "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                  },
+                  url:'/b2bmanagement/create-district/'+id+'/',
+                  success: function(data){
+                    if(data.error){  //You are checking for true/false not yes or no.
+                      $.toast({
+                        heading: 'Danger',
+                        text: "Something wrong.data didn't delete",
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        loaderBg: '#f2a654',
+                        position: 'top-right'
+                      })
+                    }else{
+                      districtTable.ajax.reload();
+                    }
+                  }
+                });
+            } else {
+              swal("Cancelled", "Your data is safe :)", "error");
+            }
+          })
+         
+        });
+
+      });
+     
+  </script>
+  {% endblock extra_script %}

@@ -1,0 +1,1030 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Update Claim {% endblock %}
+
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container-fluid page-body-wrapper">
+  {% include 'layout.html' %}
+  <div class="main-panel">
+    <div class="content-wrapper">
+      <div class="card">
+        <div class="card-body">
+          <h3>Update Claim</h3>
+          <form id="update-claim-form" action="#">
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group benificiary-info"><label>Claim For</label>
+                  <select class="form-control" id="claim_for" name="claim_for" readonly required>
+                    <option value="">-- Select Claim For --</option>
+                    {% for claim_relation in claim_relations %}
+                      <option data-id="{{claim_relation.id}}"  data-memeberid="{{claim_relation.member_id}}" data-memebername="{{claim_relation.member_name}}" value="{{claim_relation.relation_name}}">{{claim_relation.relation_name}}</option>
+                     {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group benificiary-info"><label>Beneficiary ID</label><input type="text" readonly=true id="beneficiary-search" class="form-control" name="beneficiary_search" required/>
+                
+                </div>
+                <input id="benificiary_id" name="benificiary_id" type="hidden">
+              </div>
+              <div class="col-md-6">
+                <div class="form-group benificiary-info"><label>Beneficiary Name</label><input type="text" readonly=true class="form-control" id="beneficiary_name" name="beneficiary_name" required/></div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group benificiary-info"><label>Claim Type</label>
+                <select class="form-control" name="ClaimType" required>
+                    <option value="">-- Select Claim Type --</option>
+                    {% for product in products %}
+                      <option value="{{product.id}}">{{product.name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6 benificiary-info">
+                <div class="form-group"><label>Benefit Type</label>
+                  <select class="form-control"  id="BeneficiaryType" name="BeneficiaryType" required>
+                    <option value="">-- Select Benefit Type --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <!-- 📄 natural date Section -->
+            <div id="section-natural" class="section-visual" style="display:none;">
+              <h5 class="mt-4">Natural Death Details</h5>
+              <div class="row">
+                <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Death Date</label><input type="text" class="form-control datepicker" name="death_date"/></div></div>
+                               
+              </div>
+              <div class="row">
+                 <div class="col-md-6"><div class="form-group"><label>Cause of Death</label><input type="text" class="form-control" name="death_cause"/></div></div>
+
+                <div class="col-md-6"><div class="form-group"><label>Hospital Name (If Applicable)</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Doctor's Name (If Applicable)</label><input type="text" class="form-control" name="doctor_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total Amount</label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div>
+              
+            </div>
+
+            <!-- 📄 accidental Section -->
+            <div id="section-accidental" class="section-visual" style="display:none;">
+              <h5 class="mt-4">Cost type: </h5>
+              <div class="row">
+               <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Funeral Expenses: </label><input type="text" class="form-control funeral_expense" name="funeral_expense"/></div></div>
+                 </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Outstanding Medical Bills</label><input type="text" class="form-control outstanding_medical_bill" name="outstanding_medical_bill"/></div></div>
+             
+                <div class="col-md-6"><div class="form-group"><label>Other </label><input type="text" class="form-control other" name="others"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total Amount</label><input type="number" class="form-control total_amount" name="total_amount"/></div></div>
+              </div>
+            </div>
+
+            <!-- 📄 total-disability Section -->
+            <div id="section-total-disability" class="section-visual" style="display:none;">
+              <h5 class="mt-4">Cost Description </h5>
+              <div class="row">
+                <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Hospital Name</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Incident Date
+                  </label><input type="text" class="form-control datepicker"  name="incident_date"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Cause of Treatment </label><input type="text" class="form-control" name="cause_of_treatment"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total Amount</label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div> 
+            </div>
+
+             <!-- 📄 partial-disability Section -->
+            <div id="section-partial-disability" class="section-visual" style="display:none;">
+               <h5 class="mt-4">Cost Description </h5>
+              <div class="row">
+                <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Incident Date</label><input type="text" class="form-control datepicker" name="incident_date"/></div></div>
+              
+                <div class="col-md-6"><div class="form-group"><label>Cause of Treatment </label><input type="text" class="form-control cause_of_treatment" name="cause_of_treatment"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total Amount</label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div>
+            </div>
+
+
+             <!-- 📄 ipd Section -->  
+            <div id="section-ipd" class="section-visual" style="display:none;">
+             
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Date of admission
+                </label><input type="text" class="form-control datepicker" name="date_of_admission"/></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Date of Discharge
+                </label><input type="text" class="form-control datepicker" name="date_of_discharge"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Cause of Admission
+                </label><input type="text" class="form-control" name="cause_of_admission"/></div></div>
+              </div>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Doctor’s Name 
+                </label><input type="text" class="form-control" name="doctor_name"/></div></div>
+              </div>
+              <h5 class="mt-4">Cost Description</h5>
+              <div class="row">
+                <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Room Rent1</label><input type="text" class="form-control" name="room_rent_1"/></div></div>
+                
+              </div>
+              <div class="row">
+              <div class="col-md-6"><div class="form-group"><label>ICU/CCU/NSU</label><input type="text" class="form-control" name="icu_or_ccu_or_nsu"/></div></div>
+               
+                <div class="col-md-6"><div class="form-group"><label>Consultation fee 
+                </label><input type="number" class="form-control" name="consultation_fee"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Ancillary
+                </label><input type="number" class="form-control" name="ancillary"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Medical Investigation
+                </label><input type="number" class="form-control" name="medical_investigation"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" name="medicine"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Others
+                </label><input type="number" class="form-control" name="others"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total Amount
+                </label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div>
+            </div>
+         
+            <!-- 📄 opd Section -->
+            <div id="section-opd" class="section-visual" style="display:none;">
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Treatment Date
+                </label><input type="text" class="form-control datepicker" name="date_of_treatment"/></div></div>
+              </div>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Cause of Treatment
+                </label><input type="text" class="form-control" name="cause_of_treatment"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Doctor Name</label><input type="text" class="form-control" name="doctor_name"/></div></div>
+              </div>
+             
+                <h5 class="mt-4">Cost description</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Consultation Fee </label><input type="text" class="form-control" name="consultation_fee"/></div></div>
+            
+              </div>
+              <div class="row">
+                  <div class="col-md-6"><div class="form-group"><label>Investigation</label><input type="text" class="form-control" name="investigation_fee"/></div></div>
+               
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" name="medicine"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Day care  amount
+                </label><input type="number" class="form-control" name="day_care_amount"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Other With description </label><input type="text" class="form-control" name="other_with_description"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total  Amount
+                </label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div>
+            </div>
+
+            <!-- 📄 maternity Section -->
+            <div id="section-maternity" class="section-visual" style="display:none;">
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Doctors Name </label><input type="text" class="form-control" name="doctor_name"/></div></div>
+               
+              </div>
+              <div class="row">
+                 <div class="col-md-6"><div class="form-group"><label>Date of admission
+                </label><input type="text" class="form-control datepicker" name="date_of_admission"/></div></div>
+                 <div class="col-md-6"><div class="form-group"><label>Date of Discharge
+                </label><input type="text" class="form-control datepicker" name="date_of_discharge"/></div></div>
+               
+              </div>
+
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Meternity NVD/Normal delivery </label><input type="text" class="form-control" name="meternity_nvd_or_normal_delivery"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Maternity LUCS Cesarean </label><input type="text" class="form-control" name="maternity_lucs_cesarean"/></div></div>
+               
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Maternity Legal abortion </label><input type="text" class="form-control" name="maternity_legal_abortion"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Package cost</label><input type="text" class="form-control" name="package_cost"/></div></div>
+               
+              </div>
+            
+             
+             <h5 class="mt-4">Cost Description</h5>
+              <div class="row">
+                 <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Room Rent1</label><input type="text" class="form-control" name="room_rent_1"/></div></div>
+               
+              </div>
+              <div class="row">
+               <div class="col-md-6"><div class="form-group"><label>ICU/CCU/NSU</label><input type="text" class="form-control" name="icu_or_ccu_or_nsu"/></div></div>
+               
+                <div class="col-md-6"><div class="form-group"><label>Consultation fee 
+                </label><input type="number" class="form-control" name="consultation_fee"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Ancillary
+                </label><input type="number" class="form-control" name="ancillary"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Medical Investigation
+                </label><input type="number" class="form-control" name="medical_investigation"/></div></div>
+               
+              </div>
+              <div class="row">
+                 <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" name="medicine"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Others
+                </label><input type="number" class="form-control" name="others"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Package cost
+                </label><input type="number" class="form-control" name="package_cost"/></div></div>
+                 <div class="col-md-6"><div class="form-group"><label>Total Amount</label><input type="text" class="form-control" name="total_amount"/></div></div>
+
+              </div>
+             
+
+
+               
+
+
+            
+
+
+            </div>
+            <div id="section-daycare" class="section-visual" style="display:none;">
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Date of admission
+                </label><input type="text" class="form-control datepicker" name="date_of_admission"/></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Date of Discharge
+                </label><input type="text" class="form-control datepicker" name="date_of_discharge"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Cause of Admission
+                </label><input type="text" class="form-control" name="cause_of_admission"/></div></div>
+              </div>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Doctor’s Name 
+                </label><input type="text" class="form-control" name="doctor_name"/></div></div>
+              </div>
+              <h5 class="mt-4">Cost Description</h5>
+              <div class="row">
+                <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Room Rent1</label><input type="text" class="form-control" name="room_rent_1"/></div></div>
+                
+              </div>
+              <div class="row">
+              <div class="col-md-6"><div class="form-group"><label>ICU/CCU/NSU</label><input type="text" class="form-control" name="icu_or_ccu_or_nsu"/></div></div>
+               
+                <div class="col-md-6"><div class="form-group"><label>Consultation fee 
+                </label><input type="number" class="form-control" name="consultation_fee"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Ancillary
+                </label><input type="number" class="form-control" name="ancillary"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Medical Investigation
+                </label><input type="number" class="form-control" name="medical_investigation"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" name="medicine"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Others
+                </label><input type="number" class="form-control" name="others"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total Amount
+                </label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div>
+
+            </div>
+
+
+           
+            <!-- 📄 opd-optical Section -->
+            <div id="section-opd-optical" class="section-visual" style="display:none;">
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Treatment Date
+                </label><input type="text" class="form-control datepicker" name="date_of_treatment"/></div></div>
+              </div>
+             <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Cause of Treatment
+                </label><input type="text" class="form-control" name="cause_of_treatment"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Doctor Name</label><input type="text" class="form-control" name="doctor_name"/></div></div>
+              </div>
+             
+                <h5 class="mt-4">Cost description</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Consultation Fee </label><input type="text" class="form-control" name="consultation_fee"/></div></div>
+              
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Investigation</label><input type="text" class="form-control" name="investigation_fee"/></div></div>
+               
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" name="medicine"/></div></div>
+               
+              </div>
+              <div class="row">
+                 <div class="col-md-6"><div class="form-group"><label>Day care  amount
+                </label><input type="number" class="form-control" name="day_care_amount"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Other With description </label><input type="text" class="form-control" name="other_with_description"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total  Amount
+                </label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div>
+
+            </div>
+
+            <!-- 📄 opd-dental Section -->
+            <div id="section-opd-dental" class="section-visual" style="display:none;">
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Treatment Date
+                </label><input type="text" class="form-control datepicker" name="date_of_treatment"/></div></div>
+              </div>
+             <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Cause of Treatment
+                </label><input type="text" class="form-control" name="cause_of_treatment"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Doctor Name</label><input type="text" class="form-control" name="doctor_name"/></div></div>
+              </div>
+             
+                <h5 class="mt-4">Cost description</h5>
+                <div class="row">
+                   <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Consultation Fee </label><input type="text" class="form-control" name="consultation_fee"/></div></div>
+                
+              </div>
+              <div class="row">
+              <div class="col-md-6"><div class="form-group"><label>Investigation</label><input type="text" class="form-control" name="investigation_fee"/></div></div>
+               
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" name="medicine"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Day care  amount
+                </label><input type="number" class="form-control" name="day_care_amount"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Other With description </label><input type="text" class="form-control" name="other_with_description"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total  Amount
+                </label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div>
+
+            </div>
+
+            <!-- 📄 critical-illness Section -->
+            <div id="section-critical-illness" class="section-visual" style="display:none;">
+            <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Hospital/Clinic Name</label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Date of admission
+                </label><input type="text" class="form-control datepicker" name="date_of_admission"/></div></div>
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Date of Discharge
+                </label><input type="text" class="form-control datepicker" name="date_of_discharge"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Cause of Admission
+                </label><input type="text" class="form-control" name="cause_of_admission"/></div></div>
+              </div>
+              <div class="row">
+                
+                <div class="col-md-6"><div class="form-group"><label>Doctor’s Name 
+                </label><input type="text" class="form-control" name="hospital_or_clinic_name"/></div></div>
+              </div>
+              <h5 class="mt-4">Cost Description</h5>
+              <div class="row">
+                <div class="col-md-6">
+                 <div class="form-group">
+                    <label>Currency</label>
+                    <select class="form-control currency-select" name="currency"></select>
+                  </div>
+                  </div>
+                <div class="col-md-6"><div class="form-group"><label>Room Rent1</label><input type="text" class="form-control" name="room_rent_1"/></div></div>
+                
+              </div>
+              <div class="row">
+              <div class="col-md-6"><div class="form-group"><label>ICU/CCU/NSU</label><input type="text" class="form-control" name="icu_or_ccu_or_nsu"/></div></div>
+               
+                <div class="col-md-6"><div class="form-group"><label>Consultation fee 
+                </label><input type="number" class="form-control" name="consultation_fee"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Ancillary
+                </label><input type="number" class="form-control" name="ancillary"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Medical Investigation
+                </label><input type="number" class="form-control" name="medical_investigation"/></div></div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6"><div class="form-group"><label>Medicine
+                </label><input type="number" class="form-control" name="medicine"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Others
+                </label><input type="number" class="form-control" name="others"/></div></div>
+                <div class="col-md-6"><div class="form-group"><label>Total Amount
+                </label><input type="number" class="form-control" name="total_amount"/></div></div>
+              </div>
+
+            </div>  
+
+            <div id="section-bank-details" class="mt-4" style="display:none;">
+              <h5 class="mb-3">Bank Details</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Bank Name</label>
+                    <select class="form-control" name="bank">
+                      <option value="">-- Select Bank --</option>
+                      {% for bank in banks %}
+                        <option value="{{bank.id}}">{{bank.name}}</option>
+                      {% endfor %}
+                    
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Bank Account Name</label>
+                    <input type="text" class="form-control" placeholder="Enter Account Holder Name" name="account_name"/>
+                  </div>
+                </div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Account No</label>
+                    <input type="text" class="form-control" placeholder="Enter Account Number" name="account_number"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Branch Name</label>
+                    <input type="text" class="form-control" placeholder="Enter Branch Name" name="branch_name"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label>Routing No</label>
+                    <input type="text" class="form-control" placeholder="Enter Routing Number" name="routing_number"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+           
+            <br>
+            <!-- 📄 Upload Document Section -->
+            <div class="document-upload-section" id="document-upload-section" class="mt-4" style="display:none;">
+                <h5 class="mb-3">Upload Required Document</h5>
+                <div class="document-fields-container">
+                    <div class="row document-row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Document Type</label>
+                                <select class="form-control" name="documentType[]">
+                                  <option value="">-- Select Document --</option>
+                                  <option value="drc">Death Registration Certificate</option>
+                                  <option value="dcfh">Death Certificate from hospital</option>
+                                  <option value="cnnph">Copy of NID of Nominee & Policy Holder</option>
+                                  <option value="hdc">Hospital Discharge Certificate</option>
+                                  <option value="dp">Doctor’s Prescriptions</option>
+                                  <option value="dr">Diagnosis Reports</option>
+                                  <option value="hb">Hospital Bills</option>
+                                  <option value="fad">FIR for Accidental Death</option>
+                                  <option value="nbad">Nominee Bank Account Details</option>
+                                  <option value="gs/lt">Graveyard Slip / Local Testimonial</option>
+                                  <option value="dl">Diverse License</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Upload PDF</label>
+                                <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                <div class="row mt-3">
+                    <div class="col-12 text-center">
+                        <button type="button" class="btn btn-primary add-more-document-btn" >Add More Document</button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end"> 
+            <button type="submit" id="claim-submit" class="btn btn-primary mt-4">Update</button>
+            </div>
+            <div id="uploaded_doc">
+            <h4 class="card-title">Existing Document</h4>
+            <table id="pdfTable" border="1"  class="table table-bordered">
+              <thead>
+                  <tr>
+                      <th>Document Type</th>
+                      <th>View Documents</th>
+                  </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <br/>
+            </form>
+            <div>
+          <div id="pdfModal" style="display:none; position:fixed; top:5%; left:5%; width:90%; height:90%; background:#fff; border:2px solid #333; z-index:9999; overflow:auto; padding:10px;">
+            <img id="imgViewer" style="display:none; max-width:800px; max-height:600px; border:1px solid #ccc;">
+            <button id="closeModal" style="
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        ">Close</button>
+            <canvas id="pdfCanvas" style="width:100%; border:1px solid #ccc;"></canvas>
+          </div>
+          <div id="loader" style="display:none;">
+            <div class="loader-content">
+                <img src="/static/images/loader/loader.gif" alt="Loading...">
+            </div>
+        </div>
+        </div>
+      </div>
+      {% include 'footer.html' %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom-claim.css' %}">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="{% static 'js/formpickers.js' %}"></script>
+  <script src="{% static 'js/wizard.js' %}"></script>
+  <script src="{% static 'js/jquery-file-upload.js' %}"></script>
+  <script src="{% static 'js/custom/custom-update-claim.js' %}"></script>
+  <script src="{% static 'js/pdf.min.js' %}"></script>
+  <script src="{% static 'js/pdf.worker.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+$(document).ready(function () {
+  const beneficiaryOptions = {
+    life: [
+    { key: "nd", value: "Natural Death" },
+    { key: "ad", value: "Accidental Death" },
+    { key: "ptd", value: "Permanent Total Disability" },
+    { key: "pd", value: "Partial Disability" }
+    ],
+    health: [
+    { key: "hipd", value: "Health - IPD" },
+    { key: "hopd", value: "Health - OPD" },
+    { key: "hm", value: "Health - Maternity" },
+    { key: "hdc", value: "Health - Daycare" },
+    { key: "hopdo", value: "Health - OPD-Optical" },
+    { key: "hopdd", value: "Health - OPD-Dental" },
+    { key: "hci", value: "Critical Illness" },
+    ]
+  }
+
+  const sectionMap = {
+    "Natural Death": "#section-natural",
+    "Accidental Death": "#section-accidental",
+    "Permanent Total Disability": "#section-total-disability",
+    "Partial Disability": "#section-partial-disability",
+    "Health - IPD": "#section-ipd",
+    "Health - OPD": "#section-opd",
+    "Health - Maternity": "#section-maternity",
+    "Health - Daycare": "#section-daycare",
+    "Health - OPD-Optical": "#section-opd-optical",
+    "Health - OPD-Dental": "#section-opd-dental",
+    "Critical Illness": "#section-critical-illness"
+    // Extend as needed...
+  }
+
+  function hideSections() {
+    Object.values(sectionMap).forEach(id => $(id).hide())
+  }
+
+  function populateBeneficiaryOptions(type) {
+
+    const $select = $('select[name="BeneficiaryType"]')
+    $select.empty().append('<option value="">-- Select Benefit Type --</option>')
+    if (beneficiaryOptions[type]) {
+      beneficiaryOptions[type].forEach(opt => {
+        $select.append(`<option value="${opt.key}">${opt.value}</option>`)
+      })
+    }
+    hideSections()
+  }
+
+
+  // Event handlers
+  $('select[name="ClaimType"]').change(function () {
+    const selectedType = $(this).val()
+    if(selectedType){
+      $.ajax({
+          url: '/b2bproduct/policy-details/?product_id='+selectedType,  // Django URL to fetch policies
+          success: function(response){
+          let data = response.data
+          options=`<option value="">-- Select Benefit Type --</option>`
+          $.each(data, function(index, policy){
+              options += '<option value="' + policy.id + '">' + policy.name + '</option>';
+          });
+          $('#BeneficiaryType').html(options);
+          }
+      });
+  } 
+    $('#section-bank-details').hide()
+    $('#document-upload-section').hide()
+    $('#section-bank-details input[type="text"]').val('');
+    $('#section-bank-details select').val('');
+    // Clear file inputs
+    $('#document-upload-section input[type="file"]').val('');
+    $('#document-upload-section select').val('');
+    populateBeneficiaryOptions(selectedType)
+  })
+
+  $('select[name="BeneficiaryType"]').change(function () {
+    hideSections()
+
+    const selected = $(this).find('option:selected').text()
+    if (sectionMap[selected]) {      
+      const $currentVisibleSection = $(sectionMap[selected]);
+      $currentVisibleSection.show();
+      updateAddMoreButtonState($currentVisibleSection);
+    }
+  })
+
+
+  // Initial setup on page load
+  const initialClaimType = $('select[name="ClaimType"]').val()
+  if (initialClaimType) {
+    populateBeneficiaryOptions(initialClaimType)
+  } else {
+    hideSections()
+  }
+
+  // Initialize datepickers
+  $('.datepicker').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true,
+    todayHighlight: true
+  })
+
+  // Form submission (placeholder)
+ 
+
+  // -------------------------------------------------------------------
+  // Dynamic Document Upload Section (Revised for multiple instances)
+  // -------------------------------------------------------------------
+
+  const MAX_DOCUMENTS = 15; 
+
+  // HTML for a new row of document fields
+  // ensure unique name attributes if needed, e.g., by adding an index
+  const newDocumentRowHTML = `
+      <div class="row document-row mt-3">
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label>Document Type</label>
+                  <select class="form-control" name="documentType[]">
+                    <option value="">-- Select Document --</option>
+                    <option value="drc">Death Registration Certificate</option>
+                    <option value="dcfh">Death Certificate from hospital</option>
+                    <option value="cnnph">Copy of NID of Nominee & Policy Holder</option>
+                    <option value="hdc">Hospital Discharge Certificate</option>
+                    <option value="dp">Doctor’s Prescriptions</option>
+                    <option value="dr">Diagnosis Reports</option>
+                    <option value="hb">Hospital Bills</option>
+                    <option value="fad">FIR for Accidental Death</option>
+                    <option value="nbad">Nominee Bank Account Details</option>
+                    <option value="gs/lt">Graveyard Slip / Local Testimonial</option>
+                    <option value="dl">Diverse License</option>
+                  </select>
+              </div>
+          </div>
+
+          <div class="col-md-4">
+              <div class="form-group">
+                  <label>Upload PDF</label>
+                  <input type="file" class="form-control-file" accept="application/pdf" name="documentFile[]" />
+              </div>
+              
+          </div>
+          <div class="col-md-2">
+          <div class="form-group">
+            <button class="add btn btn-danger font-weight-bold todo-list-add-btn removeDocument" >-</button>
+          </div>  
+        </div>
+      </div>
+  `;
+
+  // Function to check and update button state for a specific section
+  // It takes the main container of that section (e.g., #section-natural, #section-accidental)
+  function updateAddMoreButtonState($mainSectionContainer) {
+      // Find the add more button within this specific main section's document upload area
+      const $addMoreBtn = $mainSectionContainer.find('.add-more-document-btn');
+      // Find the document fields container within this specific main section's document upload area
+      const $documentFieldsContainer = $mainSectionContainer.find('.document-fields-container');
+
+      // Count the current number of document rows within THIS container
+      const currentDocumentCount = $documentFieldsContainer.find('.document-row').length;
+
+      if (currentDocumentCount >= MAX_DOCUMENTS) {
+          $addMoreBtn.prop('disabled', true);
+          $addMoreBtn.text('Maximum 4 documents added');
+      } else {
+          $addMoreBtn.prop('disabled', false);
+          $addMoreBtn.text('Add More Document');
+      }
+  }
+
+  // Attach a click event listener to ALL buttons with class 'add-more-document-btn'
+  // using event delegation for robustness
+  $(document).on('click', '.add-more-document-btn', function() {
+      const $clickedButton = $(this);
+      // Find the closest main section container (e.g., #section-natural, #section-accidental, etc.)
+      // that contains both the button and its respective document-fields-container.
+      // This is crucial because 'document-upload-section' is now a class and might be nested.
+      const $mainSectionContainer = $clickedButton.closest('[id^="document-upload-section"]'); // Finds the closest parent whose ID starts with "section-"
+      // Ensure we found a relevant main section container
+      if ($mainSectionContainer.length === 0) {
+          console.error("Could not find the main section container for the clicked button.");
+          return;
+      }
+
+      const $documentFieldsContainerForThisSection = $mainSectionContainer.find('.document-fields-container');
+
+      const currentDocumentCount = $documentFieldsContainerForThisSection.find('.document-row').length;
+
+      if (currentDocumentCount < MAX_DOCUMENTS) {
+          $documentFieldsContainerForThisSection.append(newDocumentRowHTML);
+          // Update button state for THIS specific section after adding a new row
+          updateAddMoreButtonState($mainSectionContainer);
+      }
+  });
+
+  // Initial check for all sections when the page loads
+  // Iterate through each main section that contains a document upload area
+  $('#section-natural, #section-accidental, #section-total-disability, #section-partial-disability, #section-ipd').each(function() {
+      updateAddMoreButtonState($(this));
+  });
+
+  $(document).on('click', '.removeDocument', function () {
+    const currentDocumentCount = $('#document-upload-section').find('.document-row').length;
+    if(currentDocumentCount<=4){
+      $('#document-upload-section').find('.add-more-document-btn').prop('disabled', false);
+      $('#document-upload-section').find('.add-more-document-btn').text('Add More Document');
+    }
+    $(this).closest('.document-row').remove();
+  });
+
+
+  const currencyNames = {
+  AED: "United Arab Emirates Dirham",
+  AFN: "Afghan Afghani",
+  ALL: "Albanian Lek",
+  AMD: "Armenian Dram",
+  ANG: "Netherlands Antillean Guilder",
+  AOA: "Angolan Kwanza",
+  ARS: "Argentine Peso",
+  AUD: "Australian Dollar",
+  AWG: "Aruban Florin",
+  AZN: "Azerbaijani Manat",
+  BDT: "Bangladeshi Taka",
+  BGN: "Bulgarian Lev",
+  BHD: "Bahraini Dinar",
+  BIF: "Burundian Franc",
+  BMD: "Bermudian Dollar",
+  BND: "Brunei Dollar",
+  BOB: "Bolivian Boliviano",
+  BRL: "Brazilian Real",
+  BSD: "Bahamian Dollar",
+  BTN: "Bhutanese Ngultrum",
+  BWP: "Botswana Pula",
+  BYN: "Belarusian Ruble",
+  BZD: "Belize Dollar",
+  CAD: "Canadian Dollar",
+  CHF: "Swiss Franc",
+  CLP: "Chilean Peso",
+  CNY: "Chinese Yuan",
+  COP: "Colombian Peso",
+  CRC: "Costa Rican Colón",
+  CUP: "Cuban Peso",
+  CZK: "Czech Koruna",
+  DKK: "Danish Krone",
+  DOP: "Dominican Peso",
+  DZD: "Algerian Dinar",
+  EGP: "Egyptian Pound",
+  ERN: "Eritrean Nakfa",
+  ETB: "Ethiopian Birr",
+  EUR: "Euro",
+  FJD: "Fijian Dollar",
+  FKP: "Falkland Islands Pound",
+  GBP: "British Pound",
+  GEL: "Georgian Lari",
+  GHS: "Ghanaian Cedi",
+  GIP: "Gibraltar Pound",
+  GMD: "Gambian Dalasi",
+  GNF: "Guinean Franc",
+  GTQ: "Guatemalan Quetzal",
+  GYD: "Guyanese Dollar",
+  HKD: "Hong Kong Dollar",
+  HNL: "Honduran Lempira",
+  HRK: "Croatian Kuna",
+  HTG: "Haitian Gourde",
+  HUF: "Hungarian Forint",
+  IDR: "Indonesian Rupiah",
+  ILS: "Israeli New Shekel",
+  INR: "Indian Rupee",
+  IQD: "Iraqi Dinar",
+  IRR: "Iranian Rial",
+  ISK: "Icelandic Króna",
+  JMD: "Jamaican Dollar",
+  JOD: "Jordanian Dinar",
+  JPY: "Japanese Yen",
+  KES: "Kenyan Shilling",
+  KGS: "Kyrgyzstani Som",
+  KHR: "Cambodian Riel",
+  KMF: "Comorian Franc",
+  KRW: "South Korean Won",
+  KWD: "Kuwaiti Dinar",
+  KYD: "Cayman Islands Dollar",
+  KZT: "Kazakhstani Tenge",
+  LAK: "Lao Kip",
+  LBP: "Lebanese Pound",
+  LKR: "Sri Lankan Rupee",
+  LRD: "Liberian Dollar",
+  LSL: "Lesotho Loti",
+  LYD: "Libyan Dinar",
+  MAD: "Moroccan Dirham",
+  MDL: "Moldovan Leu",
+  MGA: "Malagasy Ariary",
+  MKD: "Macedonian Denar",
+  MMK: "Myanmar Kyat",
+  MNT: "Mongolian Tögrög",
+  MOP: "Macanese Pataca",
+  MRU: "Mauritanian Ouguiya",
+  MUR: "Mauritian Rupee",
+  MVR: "Maldivian Rufiyaa",
+  MWK: "Malawian Kwacha",
+  MXN: "Mexican Peso",
+  MYR: "Malaysian Ringgit",
+  MZN: "Mozambican Metical",
+  NAD: "Namibian Dollar",
+  NGN: "Nigerian Naira",
+  NIO: "Nicaraguan Córdoba",
+  NOK: "Norwegian Krone",
+  NPR: "Nepalese Rupee",
+  NZD: "New Zealand Dollar",
+  OMR: "Omani Rial",
+  PAB: "Panamanian Balboa",
+  PEN: "Peruvian Sol",
+  PGK: "Papua New Guinean Kina",
+  PHP: "Philippine Peso",
+  PKR: "Pakistani Rupee",
+  PLN: "Polish Złoty",
+  PYG: "Paraguayan Guaraní",
+  QAR: "Qatari Riyal",
+  RON: "Romanian Leu",
+  RSD: "Serbian Dinar",
+  RUB: "Russian Ruble",
+  RWF: "Rwandan Franc",
+  SAR: "Saudi Riyal",
+  SBD: "Solomon Islands Dollar",
+  SCR: "Seychellois Rupee",
+  SDG: "Sudanese Pound",
+  SEK: "Swedish Krona",
+  SGD: "Singapore Dollar",
+  SHP: "Saint Helena Pound",
+  SLL: "Sierra Leonean Leone",
+  SOS: "Somali Shilling",
+  SRD: "Surinamese Dollar",
+  SSP: "South Sudanese Pound",
+  STN: "São Tomé and Príncipe Dobra",
+  SYP: "Syrian Pound",
+  SZL: "Swazi Lilangeni",
+  THB: "Thai Baht",
+  TJS: "Tajikistani Somoni",
+  TMT: "Turkmenistani Manat",
+  TND: "Tunisian Dinar",
+  TOP: "Tongan Paʻanga",
+  TRY: "Turkish Lira",
+  TTD: "Trinidad and Tobago Dollar",
+  TWD: "New Taiwan Dollar",
+  TZS: "Tanzanian Shilling",
+  UAH: "Ukrainian Hryvnia",
+  UGX: "Ugandan Shilling",
+  USD: "US Dollar",
+  UYU: "Uruguayan Peso",
+  UZS: "Uzbekistani Som",
+  VES: "Venezuelan Bolívar",
+  VND: "Vietnamese Đồng",
+  VUV: "Vanuatu Vatu",
+  WST: "Samoan Tālā",
+  XAF: "Central African CFA Franc",
+  XCD: "East Caribbean Dollar",
+  XOF: "West African CFA Franc",
+  XPF: "CFP Franc",
+  YER: "Yemeni Rial",
+  ZAR: "South African Rand",
+  ZMW: "Zambian Kwacha",
+  ZWL: "Zimbabwean Dollar"
+};
+
+function populateCurrencyDropdown(selector) {
+  const $dropdown = $(selector);
+  $dropdown.empty(); // Clear existing options
+  $dropdown.append(`<option value="">-- Select Currency --</option>`);
+
+  $.each(currencyNames, function(code, name) {
+    $dropdown.append(`<option value="${code}">${name} (${code})</option>`);
+  });
+}
+
+$(document).ready(function () {
+  $('.currency-select').each(function () {
+    populateCurrencyDropdown(this);
+  });
+});
+
+});
+</script>
+
+{% endblock %}

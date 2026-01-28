@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  My Family
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+    <div class="card">
+  <div class="card-body">
+
+    <!-- Customer Profile -->
+    <h4 class="mb-3">Customer Profile</h4>
+
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <th style="width: 200px;">Organization Name</th>
+          <td colspan="3"></td>
+          {% comment %} <th></th>
+          <td></td> {% endcomment %}
+          <td rowspan="6" style="text-align:center; vertical-align:middle; width:150px;">
+            <img src="{% static 'images/samples/person-placeholder.jpg' %}" style="width:120px; height: 115px;">
+          </td>
+        </tr>
+
+        <tr>
+          <th>Beneficiary Name</th>
+          <td></td>
+          <th>Beneficiary ID</th>
+          <td></td>
+          
+        </tr>
+
+        <tr>
+          <th>Sex</th>
+          <td></td>
+          <th>Name</th>
+          <td></td>
+         
+        </tr>
+
+        <tr>
+          <th>Mobile No</th>
+          <td></td>
+           <th>Date of Birth</th>
+          <td></td>
+          
+        </tr>
+
+        <tr>
+          <th>Designation</th>
+          <td></td>
+          <th>Age</th>
+          <td></td>
+         
+        </tr>
+
+        <tr>
+          <th>Department</th>
+          <td></td>
+          <th>Email Address</th>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br>
+    <br>
+
+    <!-- Family Section -->
+   <h4 class="mb-3">Family</h4>
+
+<table class="table table-bordered">
+  <thead class="table-light ">
+    <tr>
+      <th>Family Member</th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Mobile</th>
+      <th>Nominee</th>
+    </tr>
+  </thead>
+
+  <tbody class="">
+    <tr>
+      <th>Spouse</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>Yes</td>
+    </tr>
+
+    <tr>
+      <th>Child 1</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <th>Child 2</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <th>Father</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <th>Mother</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+   <br>
+    <br>
+
+    <!-- Bank Information -->
+    <h4 class="mb-3">Bank Information</h4>
+
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <th style="width:250px; background-color:#f8f9fa;">Bank Name</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th style="width:250px; background-color:#f8f9fa;">Bank Account Name</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th style="width:250px; background-color:#f8f9fa;">Account Number</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th style="width:250px; background-color:#f8f9fa;">Branch</th>
+          <td></td>
+        </tr>
+        <tr>
+          <th style="width:250px; background-color:#f8f9fa;">Routing Number</th>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+      </div>
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+{% endblock %}
+{% block extra_script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>
+  <script src="{% static '/js/wizard.js' %}"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>
+
+  <script>
+    ;(function ($) {
+      'use strict'
+      $.validator.setDefaults({
+        submitHandler: function () {
+          var form = $('#org-form-create')
+          $('.errors li').remove()
+          $.ajax({
+            type: 'POST',
+            headers: {
+              //<==
+              'X-CSRFTOKEN': '{{ csrf_token }}' //<==
+            },
+            url: form.attr('action'),
+            data: form.serialize(), // serializes the form's elements.
+            success: function (response) {
+              if (response.success) {
+                $.toast({
+                  heading: 'Success',
+                  text: response.data.message,
+                  showHideTransition: 'slide',
+                  icon: 'success',
+                  loaderBg: '#f96868',
+                  position: 'top-right'
+                })
+                window.location.replace('/b2bmanagement/b2b-organization-list/')
+              } else {
+                if (response.data.hasOwnProperty('organization_code')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.organization_code[0] + '</li>')
+                }
+                if (response.data.hasOwnProperty('organization_name')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.organization_name[0] + '</li>')
+                }
+                if (response.data.hasOwnProperty('email')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.email[0] + '</li>')
+                }
+              }
+            }
+          })
+        }
+      })
+    
+      $(function () {
+        // validate organization form  on keyup and submit
+        $('#org-form-create').validate({
+          rules: {
+            organization_code: 'required',
+            organization_name: 'required',
+            organization_address: 'required',
+            email: {
+              required: true,
+              email: true
+            }
+          },
+          messages: {
+            organization_code: 'Please enter  organization code',
+            organization_name: 'Please enter  organization name',
+            organization_address: 'Please enter  organization address',
+            email: 'Please enter a valid email address'
+          },
+          errorPlacement: function (label, element) {
+            label.addClass('mt-2 text-danger')
+            label.insertAfter(element)
+          },
+          highlight: function (element, errorClass) {
+            $(element).parent().addClass('has-danger')
+            $(element).addClass('form-control-danger')
+          }
+        })
+      })
+    })(jQuery)
+  </script>
+{% endblock %}

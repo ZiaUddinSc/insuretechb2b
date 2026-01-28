@@ -1,0 +1,224 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Edit Logs{% endblock title%}
+
+{% block extra_head %}
+
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+
+ 
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Edit Logs
+              </h3>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="edit-logs" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th style="width:6%">#</th>
+                          <th>Model</th>
+                          <th>Object ID</th>
+                          <th>Field</th>
+                          <th>Change</th>
+                          <th>User</th>
+                          <th>Changed</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+
+    <script>
+      var userTable
+      $(document).ready(function() {
+        //Displaying Data by API
+        userTable=$('#edit-logs').DataTable({
+          "pageLength" : 10,
+          "processing": true,
+          "serverSide": true,
+          "filter": true,
+          "responsive": true,
+          "order": [0, 'desc'],
+          ajax: {
+            "processing":false,
+            "url": "{% url 'logs' %}",
+            "dataSrc": function (response) {
+              return response.data;
+           }
+          },      
+          columns: [
+          {
+            data: null,
+            title: "#",
+            orderable: false,
+            searchable: false,
+            render: function(data, type, row, meta) {
+              return meta.row + meta.settings._iDisplayStart + 1;
+            }
+          },
+          { data: "model_name", title: "Model" },
+          { data: "object_id", title: "Object ID" },
+          { data: "field_name", title: "Field" },
+          {
+            data: null,
+            title: "Change",
+            render: function(data, type, row) {
+              const oldVal = (row.old_value === null || row.old_value === "") ? "NULL" : row.old_value;
+            const newVal = (row.new_value === null || row.new_value === "") ? "NULL" : row.new_value;
+
+          return `<del style="color:red;">${oldVal}</del> → 
+            <strong style="color:green;">${newVal}</strong>`;
+            }
+          },
+          { data: "user_display", title: "User" },
+          { data: "time_ago", title: "Changed" }
+          ],
+          buttons: [
+          'pdf',
+          'excel',
+          'print',
+          'csv'
+          ]
+        });
+        //Validation and Submit data
+
+        (function($) {
+          'use strict';
+        var  validator = $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-user-add-information')
+              $.ajax({
+                type: "POST",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action"), 
+                data: form.serialize(), // serializes the form's elements.
+                success: function(response) {
+                  console.log(response)
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    // Closing Model After submission 
+                    $("#addUserModal .close").click()
+                    $().removeClass("errors");
+                    // Restting form After submission 
+                    $("#form-user-add-information")[0].reset();
+                    //Resetting Error message
+                    $('.errors li').remove();
+                     userTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("email")) {
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">Email Already Exists</li>')
+                      }
+                      if (response.data.hasOwnProperty("username")){
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">User Name already Exists</li>')
+                      }
+                      if (response.data.hasOwnProperty("phone_number")){
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">Phone Number already Exists</li>')
+                      }
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: "User creation failed",
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          $(function() {
+      
+            // validate organization form  on keyup and submit
+            $("#form-user-add-information").validate({
+              rules: {
+                email: "required",
+                username : "required",
+                password : "required",
+                confirm_password: {
+                  required: true,
+                  equalTo: "#password" // Must match password field ID
+                }
+              },
+              messages: {
+                email: "Please enter name",
+                username: "Please enter user name",
+                password: {
+                  required: "Please enter your password",
+                  minlength: "Password must be at least 6 characters long"
+                },
+                confirm_password: {
+                  required: "Please confirm your password",
+                  equalTo: "Passwords do not match"
+                }
+              },
+              errorPlacement: function(label, element) {
+                label.addClass('mt-2 text-danger');
+                label.insertAfter(element);
+              },
+              highlight: function(element, errorClass) {
+                $(element).parent().addClass('has-danger')
+                $(element).addClass('form-control-danger')
+              }
+            });
+         
+          });
+        })(jQuery);
+
+      });
+     
+  </script>
+  {% endblock extra_script %}

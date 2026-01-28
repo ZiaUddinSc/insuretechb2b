@@ -1,0 +1,298 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Create B2B Organization {% endblock title%}
+
+
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+          <div class="col-12 grid-margin">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Add new organization</h4>
+
+                <form class="form-sample" id="org-form-create"  method="post" action="{% url "add-b2b-organization" %}">
+                   {% csrf_token %}
+                   <ul class="errors">
+                  </ul>
+                  <div class="row">
+                   
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="organization_code">Organization Code :</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control"  name='organization_code' />
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="organization_name">Organization Name :</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control"  name='organization_name' />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label" for="organization_address">Address</label>
+                          <div class="col-sm-9">
+                            <textarea class="form-control"
+                              id="exampleFormControlTextarea1"
+                              name="organization_address"
+                              rows="3"
+                              required>{{form.organization_address}}</textarea>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Contract Date</label>
+                          <div class="col-sm-9">
+                            <div id="contract_datepicker_popup" class="input-group date datepicker">
+                              <input type="text" class="form-control" name='contract_date'  >
+                              <span class="input-group-addon input-group-append border-left">
+                                <span class="far fa-calendar input-group-text"></span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Contract Term</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" name="contract_term"   />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label">Commencement Date: </label>
+                          <div class="col-sm-9">
+                            <div id="commencement_datepicker_popup" class="input-group date datepicker">
+                              <input type="text" class="form-control" name='commencement_date'>
+                              <span class="input-group-addon input-group-append border-left">
+                                <span class="far fa-calendar input-group-text"></span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>  
+
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Organization Renewal Date: </label>
+                        <div class="col-sm-9">
+                          <div id="renewal-datepicker-popup" class="input-group date datepicker">
+                            <input type="text" class="form-control" name="renewal_date" />
+                            <span class="input-group-addon input-group-append border-left">
+                              <span class="far fa-calendar input-group-text"></span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Profit Commision:</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" name="profit_commision" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                  </div>
+
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Management Expense:</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" name="management_expense" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Phone No:</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" name="phone_no" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+                  
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="email">Email</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" name='email'/>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Offered/Marketed/Referred By</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" name='reffered_by' />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {% comment %} Todo:Please don't remove it .It can be enabled in future {% endcomment %}
+                  {% comment  %} 
+                    <div class="row">                            
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Employee ID:</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" name='employee_id'/>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Employee Name:</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" name='employee_name'/>
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+
+                  <div class="row">                       
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Status:</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" name='status'/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endcomment %}
+                  <input class="btn btn-primary" type="submit" value="Save">
+                  <button class="btn btn-light">Cancel</button>
+                </form>
+              </div>
+            </div>
+          </div>
+           
+          </div>
+          </div>
+    </div> 
+{% include 'footer.html' %}   
+{% endblock content %}
+</div>
+</div>
+{% block extra_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="{% static "/js/formpickers.js" %}"></script>
+<script>
+  (function($) {
+    'use strict';
+    $.validator.setDefaults({
+      submitHandler: function() {
+        var form = $('#org-form-create')
+        $('.errors li').remove();
+        $.ajax({
+          type: "POST",
+          headers: {//<==
+            "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+          },
+          url: form.attr("action"), 
+          data: form.serialize(), // serializes the form's elements.
+          success: function(response) {
+            if(response.success){
+              $.toast({
+                heading: 'Success',
+                text: response.data.message,
+                showHideTransition: 'slide',
+                icon: 'success',
+                loaderBg: '#f96868',
+                position: 'top-right'
+              })
+              window.location.replace("/b2bmanagement/b2b-organization-list/");
+            }else{
+
+              if (response.data.hasOwnProperty("organization_code")) {
+                $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">'+response.data.organization_code[0]+'</li>')
+              }
+              if (response.data.hasOwnProperty("organization_name")) {
+                $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">'+response.data.organization_name[0]+'</li>')
+              }
+              if (response.data.hasOwnProperty("email")) {
+                $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">'+response.data.email[0]+'</li>')
+              }
+
+            }
+          }
+       });
+      }
+    });
+
+  $(function() {
+
+    // validate organization form  on keyup and submit
+    $("#org-form-create").validate({
+      rules: {
+        organization_code: "required",
+        organization_name : "required",
+        organization_address : "required",
+        email: {
+          required: true,
+          email: true
+        },
+      },
+      messages: {
+        organization_code: "Please enter  organization code",
+        organization_name: "Please enter  organization name",
+        organization_address: "Please enter  organization address",
+        email: "Please enter a valid email address",
+      },
+      errorPlacement: function(label, element) {
+        label.addClass('mt-2 text-danger');
+        label.insertAfter(element);
+      },
+      highlight: function(element, errorClass) {
+        $(element).parent().addClass('has-danger')
+        $(element).addClass('form-control-danger')
+      }
+    });
+ 
+  })  })(jQuery);
+</script>
+
+{% endblock extra_script %}

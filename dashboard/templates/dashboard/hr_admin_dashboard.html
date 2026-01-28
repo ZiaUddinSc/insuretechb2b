@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  HR Admin Dashboard
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+    <!-- partial -->
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="page-header">
+          <h3 class="page-title">HR Admin Dashboard</h3>
+        </div>
+<div class="col-md-12 custom-card-w-o-h mb-4 row ">
+          <h5>Start Date: 20-12-2024</h5>
+          <h5>End Date: 20-12-2025</h5>
+        </div>
+        <div class="row grid-margin" style="margin-top:32px;">
+          <!-- Self Claim Card -->
+          <div class="col-md-6 stretch-card">
+            <a href={%url "b2b_employee_dashboard" %} class="claim-card">
+              <!-- SVG Icon for Self Claim -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <div class="claim-label">Self Claim</div>
+            </a>
+          </div>
+          <!-- Create Claim Card -->
+          <div class="col-md-6 stretch-card">
+            <a href={%url "group-claim" %} class="claim-card">
+              <!-- SVG Icon for Create Claim -->
+              <svg width="120" height="104" viewBox="0 0 151 134" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M75.5 75.875C82.263 75.875 88.749 73.1884 93.5312 68.4062C98.3134 63.624 101 57.138 101 50.375C101 43.612 98.3134 37.126 93.5312 32.3438C88.749 27.5616 82.263 24.875 75.5 24.875C68.737 24.875 62.251 27.5616 57.4688 32.3438C52.6866 37.126 50 43.612 50 50.375C50 57.138 52.6866 63.624 57.4688 68.4062C62.251 73.1884 68.737 75.875 75.5 75.875ZM75.5 75.875C65.3555 75.875 55.6264 79.9049 48.4532 87.0782C41.2799 94.2514 37.25 103.98 37.25 114.125V133.25M75.5 75.875C85.6445 75.875 95.3736 79.9049 102.547 87.0782C109.72 94.2514 113.75 103.98 113.75 114.125V133.25M81.875 24.875C84.4505 14.267 94.7206 5.75 107.375 5.75C121.221 5.75 132.748 17.1612 132.875 31.25C132.748 45.3388 121.221 56.75 107.375 56.75M107.375 56.75H101M107.375 56.75C128.336 56.75 145.625 73.8733 145.625 95V107.75M69.125 24.875C66.5495 14.267 56.2794 5.75 43.625 5.75C29.7785 5.75 18.2525 17.1612 18.125 31.25C18.2525 45.3388 29.7785 56.75 43.625 56.75M43.625 56.75H50M43.625 56.75C22.664 56.75 5.375 73.8733 5.375 95V107.75" stroke="black" stroke-width="10" />
+              </svg>
+
+              <div class="claim-label">Group Claim</div>
+            </a>
+          </div>
+        </div>
+
+        <div class="modal fade" id="PasswordChangeModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Change Your Passowrd</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                 <h6>Your password is system generated.Please change it</h6>
+                <form id="form-user-password-update" method="POST" >
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="old_password" class="col-form-label">Old Password</label>
+                    <input type="text" class="form-control" id="old_password" name="old_password">
+                  </div>
+                  <div class="form-group">
+                    <label for="password" class="col-form-label">New Password</label>
+                    <input type="text" class="form-control" id="password" name="password">
+                    <small id="password-strength" class="form-text text-muted"></small>
+                  </div>
+                  <div class="form-group">
+                    <label for="conf_password" class="col-form-label">Confirm password</label>
+                    <input type="text" class="form-control" id="conf_password" name="confirm_password">
+                  </div>
+                  <div id="error-msg" class="text-danger mt-2"></div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" id="update-password" class="btn btn-success">Update Password</button>
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+              </div>
+            </form>
+            </div>
+       </div>
+      </div>
+      <!-- content-wrapper ends -->
+      {% include 'footer.html' %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_script %}
+  <script src="{% static 'js/dashboard.js' %}"></script>
+  <script>
+    var showModal = '{{ show_system_gen_popup }}'
+    if (showModal === 'Y' || showModal === 'y') {
+      $(document).ready(function () {
+        $('#PasswordChangeModal').modal('show')
+      })
+    }
+  </script>
+{% endblock %}

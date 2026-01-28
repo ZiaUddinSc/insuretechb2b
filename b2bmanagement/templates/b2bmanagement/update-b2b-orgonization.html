@@ -1,0 +1,1602 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Add New Organization
+{% endblock %}
+{% block extra_head %}
+<style>
+.row-item {
+  display: flex;
+  justify-content: center; /* centers horizontally */
+  align-items: center;     /* centers vertically if needed */
+  height: 50px;            /* optional: for vertical centering */
+}
+.companyPlan input.total {
+  width: 100px;          /* smaller than other inputs */
+  min-width: 80px;       /* minimum width */
+  max-width: 120px;      /* maximum width */
+  font-size: 14px;       /* optional: smaller text */
+}
+/* Action column (last column) */
+.companyPlan th:last-child,
+.companyPlan td:last-child {
+  width: 80px;         /* narrow column */
+  text-align: center;
+  white-space: nowrap;
+}
+
+.companyPlan select.planPolicyType,
+.companyPlan select.coverageType {
+  width: 120px;          /* set fixed width */
+  max-width: 100%;       /* don’t exceed column width */
+  display: inline-block; /* ensure it stays inline */
+}
+
+.companyPlan input[type="number"] {
+  width: auto;          /* allow width to adjust */
+  min-width: 130px;      /* default width */
+  max-width: 200px;     /* prevent too much stretching */
+}
+</style>
+{% endblock %}
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="card">
+          <div class="card-body">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Update Organization</h4>
+
+                  <form id="add-org-form" >
+                    <div>                    
+                      <h3> Organization Information</h3>
+                      <input type="text"  value="{{form.id}}" readonly id="organization_id" >
+                      <section   class="contract-section">
+                          
+                        <div id="contract-section">
+                          {%for policy_doc in form.organization_policies%}
+                          <div class="contract-info" data-index="{{forloop.counter0}}">      
+                            <input type="text" value={{policy_doc.id}} readonly id="company_plan_id_{{forloop.counter0}}" >
+                            <div class="row">
+                              <div class="col-md-6">
+                                <strong>Contract No:</strong>
+                              </div> 
+                              <div class="col-md-6">
+                                <p id="contract_no_{{forloop.counter0}}"></p>
+                              </div> 
+                            </div>                     
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Policy Type{{form.policy_type.id}}</label>
+                                  <select class="form-control policyType" style="height: 45px;" name="policy_type[{{forloop.counter0}}]">
+                                    <option value="">--Select Policy Type --</option>
+                                    {% for product in products%}
+                                    <option value={{product.id}}  
+                                    {% if policy_doc.policy_type.id == product.id %}
+                                    selected
+                                  {% endif %}
+                                    >{{product.name}}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Mode Of Policy</label>
+                                  <select class="form-control policyMode" style="height: 45px;" name="policy_mode[{{forloop.counter0}}]">
+                                    <option value="">--Mode Of Policy--</option>
+                                    <option value="1" {% if policy_doc.policy_mode == 1 %}selected{% endif %}>Family Flotter</option>
+                                    <option value="2" {% if policy_doc.policy_mode == 1 %}selected{% endif %}>Per Disability</option>
+                                    <option value="3" {% if policy_doc.policy_mode == 1 %}selected{% endif %}>Per Year</option>
+                                    <option value="4" {% if policy_doc.policy_mode == 1 %}selected{% endif %}>Per Decease<x/option>
+                                  
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Contract Title</label>
+                                  <input type="text" class="form-control policyName" placeholder="Contract Title" name="contract_title[0]"/>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Remark</label>
+                                  <textarea class="form-control"
+                                  id="remark"
+                                  name="remark[0]"
+                                  placeholder="Remark"
+                                  rows="3"
+                                  ></textarea>
+                                </div>
+                              </div>  
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Enrollment Date</label>
+                                    <div id="datepicker-enrollment-0"  class="input-group date datepicker">
+                                      <input type="text" value={{policy_doc.enrollment_date}}  name="enroolment_date[0]" placeholder="Enrollment Date" class="form-control" />
+                                      <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>End Date</label>
+                                    <div id="datepicker-end-0"  class="input-group date datepicker">
+                                      <input type="text" value={{policy_doc.end_date}} name="end_date[0]" placeholder="End Date" class="form-control" />
+                                      <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Insurer Name</label>
+                                  <select class="form-control InsurerField" style="height: 45px;" name="insurer[0]">
+                                    <option value="">--Select Insurer --</option>
+                                    {% for insurer in insurers%}
+                                    <option value={{insurer.id}}
+                                     {% if policy_doc.insurer.id == insurer.id %}
+                                    selected
+                                  {% endif %}
+                                    >{{insurer.insurer_name}}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Insurer Code</label>
+                                    <input type="text" value="{{policy_doc.insurer.insurer_code}}" class="form-control insurerCode" placeholder="Insurer Code" readonly/>
+                                </div>
+                              </div>
+                              <br>
+                              <div class="row child-container">
+                                <div class="col-md-12">
+                                <table class="table table-bordered org_document_info" >
+                                  <thead>
+                                    <tr>
+                                      <th>
+                                        Documents
+                                      </th>
+                                      <th>
+                                        Action
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>
+                                        <div class="form-group">
+                                          <div class="input-group col-xs-6 col-md-6">
+                                            <input type="file" class="form-control-file" accept="application/pdf" name="upload_document_file[0][]">
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td>
+                                        <button type="button" class="btn btn btn-primary add-more-document"   >+</button>
+                                      </td>
+                                    </tr>
+                                   
+                                  </tbody>
+                                </table>
+                              </div>
+                              <br/>
+                              {% for item in policy_doc.org_plan_policy.company_plan_documents %}
+                              <div class="row">
+                                <div class="col-md-12">
+                                  {% for plan in plans %}
+                                  <div class="row plan-row {% if not forloop.first %}d-none{% endif %}"  data-id="{{ plan.id }}">
+                                   
+                                      <table class="table table-bordered companyPlan">
+                                        <thead>
+                                          <tr>
+                                            <th colspan="8">
+                                              Plan - {{ plan.name }}
+                                            </th>
+                                          </tr>  
+                                          <tr>
+                                            <th >
+                                              Policy Type
+                                            </th>
+                                            <th>
+                                              Coverage Type
+                                            </th>
+                                            <th>
+                                              Coverage Amount
+                                            </th>
+                                            <th>
+                                              Premium Rate % 
+                                            </th>
+                                            <th>
+                                              Premium Amount
+                                            </th>
+                                            <th>
+                                              Insured Number of Beneficiary
+                  
+                                            </th>
+                                            <th>
+                                              Total Premium 
+                  
+                                            </th>
+                                            <th style="width:100px;">Action
+                                            </th>
+                                          
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {% for existingPlan in item.company_plan_items %}
+
+                                          <tr>
+                                            <td>
+                                              <select class="form-control planPolicyType" style="height: 45px;" name="product_type[]">
+                                                <option value="">--Select Policy --</option>
+                                                {% for product in products%}
+                                                <option value={{product.id}}
+                                                {% if existingPlan.policy_type.id == product.id %}selected{% endif %}
+                                                >{{product.name}}</option>
+                                                {% endfor %}
+                                              </select>
+                                            </td>
+                                            <td>
+                                              <select class="form-control coverageType"  data-selected="{{ existingPlan.coverage_type.id }}" style="height: 45px;" name="coverage_type[]">
+                                                <option value="">--Select Coverage Type --</option>
+                                              </select>
+                                            </td>
+                                            <td>
+                                              <input type="number" value="{{ existingPlan.coverage_amount }}" min="0" class="form-control no-arrows coverageAmount" placeholder="Coverage Amount" name="coverage_amount[]"/>
+                                            </td>
+                                            <td>
+                                              <input type="number" value="{{ existingPlan.premium_rate }}" min="0" class="form-control no-arrows premiumRate" placeholder="Premium Rate %" name="premium_rate[]"/>
+                                            </td>
+                                            <td>
+                                              <input type="number"  value="{{ existingPlan.premium_amount }}" min="0" class="form-control no-arrows premiumAmount" placeholder="Premium Amount" name="premium_amount[]"/>
+                                            </td>
+                                            <td>
+                                              <input type="number" min="0"  value="{{ existingPlan.insured_beneficiary_no }}" class="form-control no-arrows insuredBeneficiary" placeholder="Insured Number of Beneficiary" name="insured_beneficiary_no[]"/>
+                                            </td>
+                                            <td>
+                                              <input type="number" min="0" readonly class="form-control no-arrows total" value="{{ existingPlan.total }}" placeholder="Total" name="total[]"/>
+                                            </td>
+                                            <td style="width:100px;">
+                                              <button class=" btn btn-primary add-more-plan" >+</button>
+                                            </td>
+                                            
+                                          </tr>
+                                          {%endfor%}
+                                          <tr>
+                                            <td colspan="6">
+                                            
+                                            </td>
+                                    
+                                            
+                                            <td>
+                                              <h6>Gross Total</h6>
+                                            </td>
+                                            <td>
+                                              <input type="number" min="0" readonly class="form-control grossTotal" placeholder="Gross Total" name="grossTotal"/>
+                                            </td>
+                                            
+                                          </tr>
+                                        
+                                        <tr>
+                                          <td>
+                                            Upload Documents
+                                          </td>
+                                          
+                                          <td>
+                                            <input type="file" class="form-control-file" accept="application/pdf" name="upload_document_file">
+                  
+                                          </td>  
+                                          <td colspan="4">
+                  
+                                          </td>  
+                                          <td>
+                                            <button type="button" class="btn btn-primary saveContinue"  >Save & Continue</button>
+                  
+                                          </td>
+                                          <td>
+                                            <button type="button" class="btn btn-danger saveExit" >Save & Exit</button>
+                                          </td>
+                                        </tr>
+                  
+                  
+                                        </tbody>
+                                      </table>
+                                  </div>  
+                                  {% endfor %}
+                                </div> 
+                              </div>                     
+                              {%endfor%}
+                            </div>  
+                            <br/>
+                            <div class="row">
+                                <div class="col-sm-5">
+                                  <div class="form-check">
+                                    <label class="form-check-label">
+                                      <input type="radio" class="form-check-input employeeDataSelect" name="data_entry_select_0" id="data-entry-select_1_0" value="0" checked>
+                                      Bulk Upload
+                                    <i class="input-helper"></i></label>
+                                  </div>
+                                </div>
+                                  <div class="col-sm-5">
+                                    <div class="form-check">
+                                      <label class="form-check-label">
+                                        <input type="radio" class="form-check-input employeeDataSelect" name="data_entry_select_0" id="data-entry-select2_0" value="1">
+                                        Single Entry
+                                      <i class="input-helper"></i></label>
+                                    </div>
+                                  </div>
+                            </div> 
+                            <div class="single-entry bulk-upload-btn">
+                              <button type="button" class="btn btn-info bulk-upload" data-id="">Bulk Upload</button>
+                            </div>   
+                            <div class="single-entry single-entry-form" style="display:none;" data-id="">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Employee Name</label>
+                                  <input type="text" class="form-control employeeName" placeholder="Employee Name" name="employee_name"/>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Employee ID</label>
+                                  <input type="text" class="form-control employeeID" placeholder="Employee ID" name="employee_id"/>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Member ID</label>
+                                  <input type="text" class="form-control memberID" placeholder="Member ID" name="member_id"/>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Member Name</label>
+                                  <input type="text" class="form-control memberName" placeholder="Member Name" name="member_name"/>
+                                </div>
+                              </div>  
+                              <div class="row">
+                                <div class="col-md-6">
+                                    <label>Relation</label>
+                                    <select class="form-control relationField" style="height: 45px;" name="relation">
+                                      <option value="">--Select Relation --</option>
+                                      <option value="self">Self</option>
+                                      <option value="wife">Wife</option>
+                                      <option value="child">Child 1</option>
+                                      <option value="child2">Child 2</option>
+                                      <option value="child3">Child 3</option>
+                                      <option value="child4">Child 4</option>
+                                      <option value="child5">Child 5</option>
+                                      <option value="child5">Child 6</option>
+                                      <option value="father">Father</option>
+                                      <option value="mother">Mother</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Nominee</label>
+                                  <select class="form-control nomineeField" style="height: 45px;" name="nominee">
+                                    <option value="">--Select Nominee --</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                    <label>Designiation</label>
+                                    <select class="form-control empDesignationField" style="height: 45px;" name="emp_designation">
+                                      <option value="">--Select Designation --</option>
+                                      {% for designation in designations%}
+                                      <option value={{designation.id}}>{{designation.title}}</option>
+                                      {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Department</label>
+                                  <select class="form-control empDesignationField" style="height: 45px;" name="emp_department">
+                                    <option value="">--Select Department --</option>
+                                        {% for department in departments%}
+                                        <option value={{department.id}}>{{department.name}}</option>
+                                        {% endfor %}
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Mobile No</label>
+                                  <input type="text" class="form-control empMobileNo" placeholder="Member ID" name="emp_mobile_no"/>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Email</label>
+                                  <input type="text" class="form-control empEmail" placeholder="Member Name" name="emp_email"/>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>DOB</label>
+                                    <div id="dob"  class="input-group date datepicker">
+                                      <input type="text" name="dob" placeholder="DOB" class="form-control" />
+                                      <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Age</label>
+                                  <input type="number" min="0" class="form-control no-arrows age" placeholder="Age" name="age"/>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Sex</label>
+                                  <select class="form-control empSexField" style="height: 45px;" name="sex">
+                                    <option value="">--Select Sex --</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                  </select>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Maritial Status</label>
+                                  <select class="form-control empMaritialField" style="height: 45px;"  name="maritial_status">
+                                    <option value="">--Select Maritial Status --</option>
+                                    <option value="S">Sinlge</option>
+                                    <option value="M">Married</option>
+                                    <option value="D">Divorced</option>
+                                    <option value="W">Widowed</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Salary</label>
+                                  <input type="number" min="0" class="form-control no-arrows empSalary" placeholder="Salary" name="salary"/>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Sum Assured Life</label>
+                                  <input type="number" min="0" class="form-control no-arrows empSumAssuredLife" placeholder="Sum Assured Life" name="sum_assured_life"/>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Membership Date</label>
+                                  <div id="membership_date"  class="input-group date datepicker">
+                                    <input type="text" name="membership_date" placeholder="Membership Date" class="form-control" />
+                                    <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>Account Type</label>
+                                  <select class="form-control empAccountTypelField" style="height: 45px;" name="account_type">
+                                    <option value="">--Select Account Type --</option>
+                                    <option value="bank">Bank</option>
+                                    <option value="mfs">Mobile Financial Service</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Bank Name</label>
+                                    <select class="form-control" style="height: 45px;" name="emp_bank">
+                                      <option value="">-- Select Bank --</option>
+                                      {% for bank in banks %}
+                                        <option value="{{bank.id}}">{{bank.name}}</option>
+                                      {% endfor %}
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Account Name</label>
+                                    <input type="text" class="form-control" placeholder="Account name" name="emp_account_name"/>
+                                  </div>
+                                </div>
+                              </div>
+      
+                              <div class="row">
+                              
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Account Number</label>
+                                    <input type="number" class="form-control no-arrows" placeholder="Account Number" name="emp_account_number"/>
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Branch Name</label>
+                                    <input type="text" class="form-control" placeholder="Branch name" name="emp_branch_name"/>
+                                  </div>
+                                </div>
+                              
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label>Routing Number</label>
+                                    <input type="number" class="form-control no-arrows" placeholder="Routing Number" name="emp_routing_number"/>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label>Plan</label>
+                                  <select class="form-control empPlanField" style="height: 45px;" name="emp_plan">
+                                    <option value="">--Select Plan --</option>
+                                    {% for plan in plans %}
+                                    <option value={{plan.id}}>{{plan.name}}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                                <div class="col-md-6">
+                                  <label>HR Admin</label>
+                                  <select class="form-control empSexField" style="height: 45px;" name="hr_type">
+                                    <option value="">--Select HR Admin --</option>
+                                    <option value="y">Yes</option>
+                                    <option value="n">No</option>
+                                  </select>
+                                </div>
+                                
+                              </div>
+                              <div class="row">
+                                <div class="col-md-12"  style="text-align: right;">
+                                  <button type="button" class="btn btn-info saveSingleEntry" id="addSingleEntryData"  >Save Employee</button>
+                                </div>
+                              </div>
+                            </div>  
+                          </div>
+                          {% endfor %}
+                        </div>
+                      <br/>  
+                      <div class="row-item">
+                        <button type="button" class="btn btn-info" id="addRowPolicy"  >Add More</button>
+                       </div>
+                      </section>
+                    
+                      <section class="company-info-section">
+                        <h4> Organization Information</h4>
+                        
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label> Organization Code</label>
+                              <input type="text" value={{form.organization_code}} readonly class="form-control" id="org_code" name="organization_code"  placeholder="Organization Code" />
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Organization Name</label>
+                              <input type="text" class="form-control" value={{form.organization_name}} placeholder="Organization Name" name="organization_name"/>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">  
+                          <div class="form-group">
+                            <label>Address</label>
+                            <textarea placeholder="Address"  class="form-control" rows="1" name="organization_address">
+                              {{form.organization_address}}
+                            </textarea>
+                          </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Website</label>
+                              <input type="text" class="form-control" value={{form.website}} placeholder="Website" name="website" />
+                            </div>
+                          </div>
+                        </div> 
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Company Logo
+                                {% if form.company_logo %}
+                                <a href={{form.company_logo}}>
+                                  View Company Logo</a>
+                                {%endif%}  
+                              </label>
+                              
+                              <input type="file"   accept="image/*" name="company_logo" class="file-upload-default file-upload">
+                              <div class="input-group col-xs-12">
+                                <input type="text" class="form-control file-upload-info file-upload" disabled placeholder="Company Logo">
+                                <span class="input-group-append">
+                                  <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                </span>
+                              </div>
+                            </div>
+                         
+                          </div>
+                          <div class="col-md-6">
+                            <label>Company Type</label>
+                            <select class="form-control "  style="height: 45px;" name="company_type">
+                              <option  value="">--Select Company Type --</option>
+                              {% for company_type in company_types %}
+                              <option value={{company_type.id}}
+                              {% if form.company_type == company_type.id %}
+                              selected
+                            {% endif %}
+
+                              >{{company_type.name}}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Trade License No
+                                
+                              </label>
+                              <input type="text" value={{form.trade_license_no}} class="form-control" placeholder="Trade License No" name="trade_license_no"/>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Trade License upload
+                                {% if form.trade_license_file %}
+                                <a href={{form.trade_license_file}}>
+                                  View Trade License upload</a>
+                                {%endif%}  
+                              </label>
+                              <input type="file" name="trade_license_file" accept=".pdf,.png,application/pdf,image/png" class="file-upload-default file-upload">
+                              <div class="input-group col-xs-12">
+                                <input type="text"  class="form-control file-upload-info" disabled placeholder="Upload File">
+                                <span class="input-group-append">
+                                  <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                </span>
+                              </div>
+                            </div>
+                         
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Bin Number</label>
+                              <input type="text" class="form-control" value={{form.bin_number}} placeholder="Bin Number" name="bin_number"/>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Bin upload
+                                {% if form.bin_file %}
+                                <a href={{form.bin_file}}>
+                                  View Bin upload</a>
+                                {%endif%}  
+                              </label>
+                              <input type="file"  accept=".pdf,.png,application/pdf,image/png" name="bin_file" class="file-upload-default file-upload">
+                              <div class="input-group col-xs-12">
+                                <input type="text" class="form-control file-upload-info file-upload" disabled placeholder="Upload File">
+                                <span class="input-group-append">
+                                  <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                </span>
+                              </div>
+                            </div>
+                         
+                          </div>
+                        </div>
+                        
+                      </section>
+                      <h3>Contact information</h3>
+                      <section class="contact-info-section">
+                        <div class="table-responsive">
+                          <table class="table table-bordered" id="org_contact_info">
+                            <thead>
+                              <tr>
+                                <th>
+                                  Name
+                                </th>
+                                <th>
+                                  Designation
+                                </th>
+                                <th>
+                                  Mobile No
+                                </th>
+                                <th>
+                                  Email
+                                </th>
+                                <th>
+                                  Action
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {%for contact in form.contacts %}
+                              <tr>
+                                <td>
+                                  <input type="text" value={{contact.name}} class="form-control nameField" placeholder="Name" name="name[]"/>
+                                </td>
+                                <td>
+                                <select class="form-control designationField" style="height: 45px;" name="designation[]">
+                                  <option value="">--Select Designation --</option>
+                                  {% for designation in designations %}
+                                  <option value={{designation.id}}
+                                  {% if designation.id == contact.designation.id %}
+                                  selected
+                                {% endif %}
+                                  >{{designation.title}}</option>
+                                  {% endfor %}
+                                </select>
+                                </td>
+                                <td>
+                                  <input type="text" value={{contact.mobile_no}} class="form-control mobileField" placeholder="Mobile No" name="mobile_no[]"/>
+                                </td>
+                                <td>
+                                  <input type="text" value={{contact.email}} class="form-control emailField" placeholder="Email" name="email[]"/>
+                                </td>
+                                <td>
+                                  
+                                  {% if forloop.first %}
+                                    <!-- Only show + button in the first row -->
+                                    <button class=" btn btn-primary font-weight-bold" id="add-more-contact">+</button>
+                                  {% else %}
+                                    <!-- Show remove button for all other rows -->
+                                    <button class="add btn btn-danger font-weight-bold todo-list-add-btn removeRow" >-</button>
+
+                                  {% endif %}
+                                </td>
+                              </tr>
+                              {%endfor%}
+                            </tbody>
+                          </table>
+                        </div>
+                      </section>
+                      <h3>Bank information</h3>
+                      <section class="bank-info-section">
+                        <h4>Bank information</h4>
+                        <ul class="errors">
+                        </ul>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Bank Name</label>
+                              <select class="form-control" style="height: 45px;" name="bank">
+                                <option value="">-- Select Bank --</option>
+                                {% for bank in banks %}
+                                <option value="{{bank.id}}"
+                                  {% if form.bank.id == bank.id %}
+                                  selected
+                                {% endif %}
+                                  >{{bank.name}}</option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Account Name</label>
+                              <input type="text" value="{{form.account_name}}" class="form-control" placeholder="Account name" name="account_name"/>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                        
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Account Number</label>
+                              <input type="number" value="{{form.account_number}}" class="form-control no-arrows" placeholder="Account Number" name="account_number"/>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Branch Name</label>
+                              <input type="text" class="form-control" value="{{form.branch_name}}" placeholder="Branch name" name="branch_name"/>
+                            </div>
+                          </div>
+                         
+                        </div>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Routing Number</label>
+                              <input type="number" class="form-control no-arrows" value="{{form.routing_number}}" placeholder="Routing Number" name="routing_number"/>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      <h3>Partnership Information</h3>
+                     
+                    </div>
+                  </form>
+                  <div id="loader" style="display:none;">
+                    <div class="loader-content">
+                        <img src="/static/images/loader/loader.gif" alt="Loading...">
+                    </div>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="bulkUploadModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Upload Employee Information : <span id="display_contract_no"></span></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  
+                  <form id="form-bulk-upload-information" method="POST" >
+                    <input type="hidden" readonly id="organization_id" name="organization_id">
+                    <div class="form-group">
+                      <label for="name" class="col-form-label">Upload Excel</label>
+                      <input type="file" id="excel_file" name="excel_file" class="form-control-file" accept=".xlsx" required />
+                    </div>
+                    <div id="loader" style="display:none;">Processing... Please wait.</div>
+                      <div id="popup" style="display:none;">
+                          <h3>Upload Results</h3>
+                          <div id="popupContent"></div>
+                      </div>
+                   
+                </div>
+                <div class="modal-footer">
+                  <a href="{% url 'download_excel_template' %}">Download Excel Template</a>
+                  <button type="submit" id="upload_bulk_data" class="btn btn-success">Upload</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+{% endblock %}
+{% block extra_script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="{% static '/js/custom/org-create.js' %}"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>  
+  <script src="{% static '/js/custom/validation.js' %}"></script>
+  <script>
+    $(document).ready(function () {
+    $('#add-more-contact').click(function (e) {
+      e.preventDefault(); // prevent default form submission
+      const newRow = `
+        <tr>
+          <td><input type="text" name="name[]" class="form-control nameField" placeholder="Name" />
+          </td>
+          <td><select class="form-control designationField" style="height: 45px;" name="designation[]">
+            <option value="">--Select Designation --</option>
+            {% for designation in designations%}
+            <option value={{designation.id}}>{{designation.title}}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <input type="text" class="form-control mobileField" placeholder="Mobile No" name="mobile_no[]" />
+        </td>
+        <td><input type="text" class="form-control emailField" placeholder="Email" name="email[]" />
+        </td>
+          <td>
+            <button class="add btn btn-danger font-weight-bold todo-list-add-btn removeRow" >-</button>
+          </td>
+        </tr>
+      `;
+      $('#org_contact_info tbody').append(newRow);
+    });
+    let rowIndex = 1;
+    $(document).on('click','#addRowPolicy',function(e){
+      e.preventDefault(); // prevent default form submission
+      let contract =$("#contract_no_0").text()
+      let nextLetter = getNextContractLetter();
+      let baseContract = contract.slice(0, contract.lastIndexOf("-"));
+      let newContract = `${baseContract}-${nextLetter}`;
+      
+      var newParent = $(`
+      <div class="contract-info" data-index="${rowIndex}">
+        <input type="readonly" readonly id="company_plan_id_${rowIndex}" >
+        <div class="row-item">
+          <button type="button" class="btn btn-warning removePolicy" >Remove</button>
+         </div>
+         <div class="row">
+          <div class="col-md-6">
+            <strong>Contract No:</strong>
+          </div> 
+          <div class="col-md-6">
+            <p id="contract_no_${rowIndex}">${newContract}</p>
+          </div> 
+        </div> 
+         <div class="row">
+        <div class="col-md-6">
+          <label>Policy Type</label>
+          <select class="form-control policyType" style="height: 45px;" name="policy_type[${rowIndex}]">
+            <option value="">--Select Policy Type --</option>
+            {% for product in products%}
+            <option value={{product.id}}>{{product.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label>Mode Of Policy</label>
+          <select class="form-control policyMode" style="height: 45px;" name="policy_mode[${rowIndex}]">
+            <option value="">--Mode Of Policy--</option>
+            <option value="1">Family Flotter</option>
+            <option value="2">Per Disability</option>
+            <option value="3">Per Year</option>
+            <option value="4">Per Decease<x/option>
+          
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Contract Title</label>
+          <input type="text" class="form-control policyName" placeholder="Contract Title" name="contract_title[${rowIndex}]"/>
+        </div>
+        <div class="col-md-6">
+          <label>Remark</label>
+          <textarea class="form-control"
+          id="remark"
+          name="remark[${rowIndex}]"
+          placeholder="Remark"
+          rows="3"
+          ></textarea>
+        </div>
+      </div>  
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Enrollment Date</label>
+            <div id="datepicker-enrollment-${rowIndex}"  class="input-group date datepicker">
+              <input type="text" name="enroolment_date[${rowIndex}]" placeholder="Enrollment Date" class="form-control" />
+              <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>End Date</label>
+            <div id="datepicker-end-${rowIndex}" class="input-group date datepicker">
+              <input type="text"  name="end_date[${rowIndex}]" placeholder="End Date" class="form-control" />
+              <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Insurer Name</label>
+          <select class="form-control InsurerField" style="height: 45px;" name="insurer[${rowIndex}]">
+            <option value="">--Select Insurer --</option>
+            {% for insurer in insurers%}
+            <option value={{insurer.id}}>{{insurer.insurer_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+            <label>Insurer Code</label>
+            <input type="text" class="form-control insurerCode" placeholder="Insurer Code" readonly/>
+        </div>
+      </div>
+      <br>
+      <div class="row child-container">
+        <div class="col-md-12">
+        <table class="table table-bordered org_document_info" >
+          <thead>
+            <tr>
+              <th>
+                Documents
+              </th>
+              <th>
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="form-group">
+                  <div class="input-group col-xs-6 col-md-6">
+                    <input type="file" class="form-control-file" accept="application/pdf" name="upload_document_file[${rowIndex}][]">
+                  </div>
+                </div>
+              </td>
+              <td>
+                <button type="button" class="btn btn btn-primary add-more-document">+</button>
+              </td>
+            </tr>
+          
+          </tbody>
+        </table>
+      </div>     
+      <div class="row">
+        <div class="col-md-12">
+      {% for plan in plans %}
+      <div class="row plan-row {% if not forloop.first %}d-none{% endif %}"  data-id="{{ plan.id }}">
+               <div class="table-responsive">
+          <table class="table table-bordered companyPlan">
+            <thead>
+              <tr>
+                <th colspan="8">
+                  Plan - {{ plan.name }}
+                </th>
+              </tr>  
+              <tr>
+                <th>
+                  Policy Type
+                </th>
+                <th>
+                  Coverage Type
+                </th>
+                <th>
+                  Coverage Amount
+                </th>
+                <th>
+                  Premium Rate % 
+                </th>
+                <th>
+                  Premium Amount
+                </th>
+                <th>
+                  Insured Number of Beneficiary
+
+                </th>
+                <th>
+                  Total Premium 
+
+                </th>
+                <th>Action
+                </th>
+               
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <select class="form-control planPolicyType" style="height: 45px;" name="product_type[]">
+                    <option value="">--Select Policy --</option>
+                    {% for product in products%}
+                    <option value={{product.id}}>{{product.name}}</option>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td>
+                  <select class="form-control coverageType" style="height: 45px;" name="coverage_type[]">
+                    <option value="">--Select Coverage Type --</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="number" min="0" class="form-control no-arrows coverageAmount" placeholder="Coverage Amount" name="coverage_amount[]"/>
+                </td>
+                <td>
+                  <input type="number" min="0" class="form-control no-arrows premiumRate" placeholder="Premium Rate %" name="premium_rate[]"/>
+                </td>
+                <td>
+                  <input type="number" min="0" class="form-control no-arrows premiumAmount" placeholder="Premium Amount" name="premium_amount[]"/>
+                </td>
+                <td>
+                  <input type="number" min="0" class="form-control no-arrows insuredBeneficiary" placeholder="Insured Number of Beneficiary" name="insured_beneficiary_no[]"/>
+                </td>
+                <td>
+                  <input type="number" min="0" readonly class="form-control no-arrows total" placeholder="Total" name="total[]"/>
+                </td>
+                <td>
+                  <button class=" btn btn-primary add-more-plan" >+</button>
+                </td>
+                
+              </tr>
+              <tr>
+                <td colspan="6">
+                
+                </td>
+         
+                
+                <td>
+                  <h6>Gross Total</h6>
+                </td>
+                <td>
+                  <input type="number" min="0" readonly class="form-control grossTotal" placeholder="Gross Total" name="grossTotal"/>
+                </td>
+                
+              </tr>
+             
+            <tr>
+              <td>
+                Upload Documents
+              </td>
+              
+              <td>
+                <input type="file" class="form-control-file" accept="application/pdf" name="upload_document_file">
+
+              </td>  
+              <td colspan="4">
+
+              </td>  
+              <td>
+                <button type="button" class="btn btn-primary saveContinue"  >Save & Continue</button>
+
+              </td>
+              <td>
+                <button type="button" class="btn btn-danger saveExit" >Save & Exit</button>
+              </td>
+            </tr>
+
+
+            </tbody>
+          </table>
+        </div>
+      </div>  
+      {% endfor %}
+    </div>
+      </div>
+        
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+          <div class="form-check">
+            <label class="form-check-label">
+              <input type="radio" class="form-check-input employeeDataSelect" name="data_entry_select_${rowIndex}" id="data-entry-select1_${rowIndex}" value="0" checked>
+              Bulk Upload
+            <i class="input-helper"></i></label>
+          </div>
+        </div>
+          <div class="col-sm-5">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input employeeDataSelect" name="data_entry_select_${rowIndex}" id="data-entry-select2_${rowIndex}" value="1">
+                Single Entry
+              <i class="input-helper"></i></label>
+            </div>
+          </div>
+    </div> 
+    <div class="single-entry bulk-upload-btn">
+      <button type="button" class="btn btn-info bulk-upload" data-id="${newContract}">Bulk Upload</button>
+    </div>   
+    <div class="single-entry single-entry-form" style="display:none;" data-id="${newContract}">
+      <div class="row">
+        <div class="col-md-6">
+          <label>Employee Name</label>
+          <input type="text" class="form-control employeeName" placeholder="Employee Name" name="employee_name"/>
+        </div>
+        <div class="col-md-6">
+          <label>Employee ID</label>
+          <input type="text" class="form-control employeeID" placeholder="Employee ID" name="employee_id"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Member ID</label>
+          <input type="text" class="form-control memberID" placeholder="Member ID" name="member_id"/>
+        </div>
+        <div class="col-md-6">
+          <label>Member Name</label>
+          <input type="text" class="form-control memberName" placeholder="Member Name" name="member_name"/>
+        </div>
+      </div>  
+      <div class="row">
+        <div class="col-md-6">
+            <label>Relation</label>
+            <select class="form-control relationField" style="height: 45px;" name="relation">
+              <option value="">--Select Relation --</option>
+              <option value="self">Self</option>
+              <option value="wife">Wife</option>
+              <option value="child">Child 1</option>
+              <option value="child2">Child 2</option>
+              <option value="child3">Child 3</option>
+              <option value="child4">Child 4</option>
+              <option value="child5">Child 5</option>
+              <option value="child5">Child 6</option>
+              <option value="father">Father</option>
+              <option value="mother">Mother</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+          <label>Nominee</label>
+          <select class="form-control nomineeField" style="height: 45px;" name="nominee">
+            <option value="">--Select Nominee --</option>
+            <option value="y">Yes</option>
+            <option value="n">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+            <label>Designiation</label>
+            <select class="form-control empDesignationField" style="height: 45px;" name="emp_designation">
+              <option value="">--Select Designiation --</option>
+              {% for designation in designations%}
+              <option value={{designation.id}}>{{designation.title}}</option>
+              {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+          <label>Department</label>
+          <select class="form-control empDesignationField" style="height: 45px;" name="emp_department">
+            <option value="">--Select Department --</option>
+              {% for department in departments%}
+              <option value={{department.id}}>{{department.name}}</option>
+              {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Mobile No</label>
+          <input type="text" class="form-control empMobileNo" placeholder="Member ID" name="emp_mobile_no"/>
+        </div>
+        <div class="col-md-6">
+          <label>Email</label>
+          <input type="text" class="form-control empEmail" placeholder="Member Name" name="emp_email"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>DOB</label>
+            <div id="dob"  class="input-group date datepicker">
+              <input type="text" name="dob" placeholder="DOB" class="form-control" />
+              <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Age</label>
+          <input type="number" min="0" class="form-control no-arrows age" placeholder="Age" name="age"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Sex</label>
+          <select class="form-control empSexField" style="height: 45px;" name="sex">
+            <option value="">--Select Sex --</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label>Maritial Status</label>
+          <select class="form-control empMaritialField" style="height: 45px;"  name="marital_status">
+            <option value="">--Select Maritial Status --</option>
+            <option value="S">Sinlge</option>
+            <option value="M">Married</option>
+            <option value="D">Divorced</option>
+            <option value="W">Widowed</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Salary</label>
+          <input type="number" min="0" class="form-control no-arrows empSalary" placeholder="Salary" name="salary"/>
+        </div>
+        <div class="col-md-6">
+          <label>Sum Assured Life</label>
+          <input type="number" min="0" class="form-control no-arrows empSumAssuredLife" placeholder="Sum Assured Life" name="sum_assured_life"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Membership Date</label>
+          <div id="membership_date"  class="input-group date datepicker">
+            <input type="text" name="membership_date" placeholder="Membership Date" class="form-control" />
+            <span class="input-group-addon input-group-append border-left"><span class="far fa-calendar input-group-text"></span></span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label>Account Type</label>
+          <select class="form-control empAccountTypelField" style="height: 45px;" name="ac_type">
+            <option value="">--Select Account Type --</option>
+            <option value="bank">Bank</option>
+            <option value="mfs">Mobile Financial Service</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Bank Name</label>
+            <select class="form-control" style="height: 45px;" name="emp_bank">
+              <option value="">-- Select Bank --</option>
+              {% for bank in banks %}
+                <option value="{{bank.id}}">{{bank.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Account Name</label>
+            <input type="text" class="form-control" placeholder="Account name" name="emp_account_name"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+      
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Account Number</label>
+            <input type="text" class="form-control" placeholder="Account Number" name="emp_account_number"/>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Branch Name</label>
+            <input type="text" class="form-control" placeholder="Branch name" name="emp_branch_name"/>
+          </div>
+        </div>
+      
+      </div>
+      <div class="row">
+      
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Routing Number</label>
+            <input type="text" class="form-control" placeholder="Routing Number" name="emp_routing_number"/>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label>Plan</label>
+          <select class="form-control empPlanField" style="height: 45px;" name="emp_plan">
+            <option value="">--Select Plan --</option>
+            {% for plan in plans %}
+            <option value={{plan.id}}>{{plan.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label>HR Admin</label>
+          <select class="form-control empSexField" style="height: 45px;" name="hr_type">
+            <option value="">--Select Sex --</option>
+            <option value="y">Yes</option>
+            <option value="n">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12"  style="text-align: right;">
+          <button type="button" class="btn btn-info saveSingleEntry" id="addSingleEntryData"  >Save Employee</button>
+        </div>
+      </div>  
+      </div> 
+      `);  
+     
+      $("#contract-section").append(newParent);
+      $('.contract-info[data-index="'+rowIndex+'"]').find('.datepicker').datepicker({
+        enableOnReadonly: true,
+        todayHighlight: true,
+        format: 'dd-mm-yyyy'
+      });
+      rowIndex++;
+
+    });
+    // Remove row
+    $(document).on('click', '.add-more-plan', function (e) {
+      e.preventDefault(); // prevent default form submission
+      let table =$(this).closest("table"); 
+      const newRow = $(`<tr>
+        <td>
+          <select class="form-control planPolicyType" style="height: 45px;" name="product_type[]">
+            <option value="">--Select Policy --</option>
+            {% for product in products%}
+            <option value={{product.id}}>{{product.name}}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <select class="form-control coverageType" style="height: 45px;" name="coverage_type[]">
+            <option value="">--Select Coverage Type --</option>
+          </select>
+        </td>
+        <td>
+          <input type="number" min="0" class="form-control no-arrows coverageAmount" placeholder="Coverage Amount" name="coverage_amount[]"/>
+        </td>
+        <td>
+          <input type="number" min="0" class="form-control no-arrows premiumRate" placeholder="Premium Rate %" name="premium_rate[]"/>
+        </td>
+        <td>
+          <input type="number" min="0" class="form-control no-arrows premiumAmount" placeholder="Premium Amount" name="premium_amount[]"/>
+        </td>
+        <td>
+          <input type="number" min="0" class="form-control no-arrows insuredBeneficiary" placeholder="Insured Number of Beneficiary" name="insured_beneficiary_no[]"/>
+        </td>
+        <td>
+          <input type="number" min="0" readonly class="form-control no-arrows total" placeholder="Total" name="total[]"/>
+        </td>
+        <td>
+          <button class="btn btn-danger add-remove-plan" >-</button>
+          <button class=" btn btn-primary add-more-plan" >+</button>
+        </td>
+        
+      </tr>`);
+      table.find("tbody tr").eq(-2).before(newRow);
+
+    });   
+    $(document).on('click', '.add-remove-plan', function (e) {
+      e.preventDefault(); // prevent default form submission
+      $(this).closest("tr").remove();
+
+    });   
+    $(document).on('click', '.removePolicy', function (e) {
+      e.preventDefault(); // prevent default form submission
+     let currentDiv=$(this).closest('.contract-info')
+     let currentIndex=currentDiv.attr('data-index')
+     let contract_no =$('#contract_no_'+currentIndex).text()
+     let org_id =$('#organization_id').val()
+        $.ajax({
+          type:"POST",
+          headers: {'X-CSRFToken': "{{ csrf_token }}"}, // CSRF token
+          data:{"contract_no":contract_no,"org_id":org_id},
+          url: '/b2bmanagement/organization-policy-delete/', 
+          success: function(response){
+            console.log(response)
+              if(response.success){
+                currentDiv.remove()
+              }          
+          }
+        });
+    });
+
+    $(document).on('click', '.add-more-document', function (e) {
+      e.preventDefault(); // prevent default form submission
+      const parentDiv = $(this).closest('.contract-info')
+      const docIndex =parentDiv.data('index'); 
+      let tableBody = parentDiv.find(".org_document_info tbody");
+      const newRow = $(`<tr>
+        <td>
+          <div class="form-group">
+            <div class="input-group col-xs-6 col-md-6">
+              <input type="file" class="form-control-file" accept="application/pdf" name="upload_document_file[${docIndex}][]">
+            </div>
+          </div>
+        </td>
+        <td>
+          <button type="button" class="btn btn btn-primary add-more-document">+</button>
+          <button type="button" class="btn btn btn-danger remove-document">-</button>
+        </td>
+      </tr>`);
+      tableBody.append(newRow);
+
+    });
+
+    
+
+    $(document).on('click', '.remove-document', function (e) {
+      e.preventDefault();    
+      $(this).closest('tr').remove();
+    });
+   
+    $(document).on('click', '.removeRow', function (e) {
+      e.preventDefault(); // prevent default form submission
+      $(this).closest('tr').remove();
+    });
+
+ 
+    $(document).on("change",'.planPolicyType',function (e) {
+      e.preventDefault(); 
+      var $el = $(this);
+      const selectedType = $(this).val()
+      let coverageDropdown = $(this).closest("tr").find(".coverageType");
+      let selectedCoverageId = coverageDropdown.data("selected");
+      coverageDropdown.empty().append('<option value="">--Select Coverage Type--</option>');
+      $.ajax({
+        url: '/b2bproduct/policy-details/?product_id='+selectedType,  // Django URL to fetch policies
+        success: function(response){
+        let data = response.data
+            $.each(data, function (i, item) {
+            coverageDropdown.append(
+              $('<option>', { 
+                  value: item.id, 
+                  text: item.name,
+                  selected: (item.id == selectedCoverageId)   // 👈 auto-select here
+              })
+            );
+            });
+            
+        }
+      });
+      
+    });
+
+    $(document).ready(function () {
+      $('.planPolicyType').each(function () {
+        
+          $(this).trigger('change');
+        
+      });
+  });
+
+    $(document).on('click', '.bulk-upload', function (event) {  
+      var id = ($(this).attr('data-id'))
+      let index=$(this).closest('.contract-info').attr("data-index")
+      let contract_no =$(this).closest('.contract-info').find("#contract_no_"+index).text()
+      $('#display_contract_no').html(contract_no)
+      $('#bulkUploadModal').modal('show');    
+    });
+
+    $(document).on('submit','#form-bulk-upload-information', function(e) {
+      e.preventDefault();
+      var formData = new FormData();
+      var fileInput = $('#excel_file')[0];
+      let org_id =$('#organization_id').val()
+      let contract_no=$('#display_contract_no').text()
+      if (fileInput.files.length === 0) {
+        $('#message').text('Please select a file.');
+        return;
+      }
+      $("#loader").show(); // show loader
+      formData.append('organization', org_id);
+      formData.append('org_contract_id', contract_no);
+      formData.append('excel_file', fileInput.files[0]);
+      $.ajax({
+        url: '/dashboard/upload-excel/',  // your Django URL for upload
+        type: 'POST',
+        data: formData,
+        processData: false,  // Important for file upload
+        contentType: false,  // Important for file upload
+        headers: {'X-CSRFToken': "{{ csrf_token }}"}, // CSRF token
+        success: function(response) {
+          $("#popupContent").html('');
+          $("#loader").hide();
+        if(response.status==true){
+         
+          $('#excel_file').val('');
+            html=""
+            if(response.inserted.length>0){
+              html += "<br><strong>Uploaded data</strong><br>";
+            }
+            if(response.duplicates.length>0){ 
+            html += "<br><strong>Duplicates:</strong><br>";
+                  response.duplicates.forEach(item => {
+                      html += `Member Name: ${item.member_name}, Member id: ${item.employee_id} }<br>`;
+                  });
+            }      
+
+              $("#popupContent").html(html);
+              $("#popup").show();
+         }else{
+            alert(JSON.stringify(response.message))
+         }
+        },
+        error: function(xhr) {
+          $("#loader").hide();
+          alert(JSON.stringify(xhr.responseJSON.error || "Upload failed"));
+        }
+      });
+    });
+
+    // Remove row
+    $(document).on('click', '.documentRemoveRow', function (e) {
+      e.preventDefault(); // prevent default form submission
+      $(this).closest('tr').remove();
+    });
+
+ 
+
+    $(document).on("change",'.employeeDataSelect',function() {
+      if ($(this).val() === "0") {
+        $(this).closest('.contract-info').find('.single-entry-form').hide();
+        $(this).closest('.contract-info').find('.bulk-upload-btn').show();
+      } else {
+        $(this).closest('.contract-info').find('.bulk-upload-btn').hide();
+        $(this).closest('.contract-info').find('.single-entry-form').show();
+      }
+    });
+
+    function getNextContractLetter() {
+      // Count existing contract rows
+      let existingCount = $(".contract-info").length; 
+      return getNextLetters(existingCount);  // generate next letter
+    }
+
+    function getNextLetters(n) {
+      let letters = "";
+      while (n >= 0) {
+          letters = String.fromCharCode(65 + (n % 26)) + letters;
+          n = Math.floor(n / 26) - 1;
+      }
+      return letters;
+    }
+  });
+
+  </script>
+{% endblock %}

@@ -1,0 +1,432 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Plan List{% endblock title%}
+
+{% block extra_head %}
+
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+
+ 
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Plan List
+              </h3>
+              <nav aria-label="breadcrumb">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addplanModal" data-whatever="@mdo">Add plan</button>
+              </nav>
+            </div>
+          <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="plan-list" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>Plan</th>
+                          <th>Salary Range</th> 
+                          <th>Designation</th> 
+                          <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="addplanModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Add New plan</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="errors">
+                  </ul>
+                  
+                  <form id="form-plan-information" method="POST" action="{% url "create-plan" %}">
+                    <div class="form-group">
+                      <label for="name" class="col-form-label">Plan Name</label>
+                      <input type="text" class="form-control" name="name">
+                    </div>
+                    <div class="form-group">
+                      <label for="salary_range" class="col-form-label">Salary Range:</label>
+                      <select  id="salary_range" name="salary_range"  class="select2 form-control">
+                        {% for salaryRng in salaryRange %}
+                        <option value={{salaryRng.id}}>{{salaryRng.initial_amount}}-{{salaryRng.final_amount}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="designnation" class="col-form-label">Designation:</label>
+                      <select  id="designation" name="designation"  class="select2 form-control">
+                        {% for designation in designations %}
+                        <option value={{designation.id}}>{{designation.title}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" id="save_plan" class="btn btn-success">Save</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="updateplanModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Update plan Information</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="update_errors">
+                  </ul>
+                  
+                  <form id="form-plan-update-information" method="PUT" action="{% url "create-plan" %}">
+                    <div class="form-group">
+                      <label for="plan_name" class="col-form-label">Plan Name</label>
+                      <input type="text" class="form-control" id="plan_name" name="plan_name">
+                    </div>
+                    <div class="form-group">
+                      <label for="plan_salary_range" class="col-form-label">Salary Range:</label>
+                      <select  id="plan_salary_range" name="plan_salary_range"  class="select2 form-control">
+                        {% for salaryRng in salaryRange %}
+                        <option value={{salaryRng.id}}>{{salaryRng.initial_amount}}-{{salaryRng.final_amount}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="plan_designation" class="col-form-label">Designation:</label>
+                      <select  id="plan_designation" name="plan_designation"  class="select2 form-control">
+                        {% for designation in designations %}
+                        <option value={{designation.id}}>{{designation.title}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" data-id="" id="plan_update" class="btn btn-success">Update</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+
+    <script>
+      var planTable
+      $(document).ready(function() {
+        //Displaying Data by API
+
+        planTable=$('#plan-list').DataTable({
+          "pageLength" : 10,
+          "processing": true,
+          "serverSide": true,
+          "filter": true,
+          "responsive": true,
+          "order": [0, 'desc'],
+          ajax: {
+            "processing":false,
+            "url": "{% url 'plans' %}",
+            "dataSrc": function (response) {
+              return response.data;
+           }
+          },      
+          columns: [
+              {"mData":"name",defaultContent:"N/A"},
+              {"mData": function (source) {
+                return source?.salary_range ? source?.salary_range?.initial_amount+ '-' + source?.salary_range?.final_amount :'N/A'
+              }
+              },
+              {"mData": function (source) {
+                return source?.designation?.title ?? 'N/A'
+              }
+              },
+              {"mData": function (source) {
+
+                return  `<div class="action-buttons">
+                  <a data-id="${source?.id}" class="btn btn-outline-primary edit_view">Edit</a>
+                  <a data-id="${source?.id}" class="btn btn-outline-danger plan-delete">Delete</a>
+                </div>`
+                }
+              },
+              
+             
+            
+          ],
+          buttons: [
+          'pdf',
+          'excel',
+          'print',
+          'csv'
+          ]
+        });
+        //Validation and Submit data
+
+        (function($) {
+          'use strict';
+         var  validator = $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-plan-information')
+              $('.errors li').remove();
+              $.ajax({
+                type: "POST",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action"), 
+                data: form.serialize(), // serializes the form's elements.
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    // Closing Model After submission 
+                    $("#addplanModal .close").click()
+                    
+                    // Restting form After submission 
+                    $("#form-plan-information")[0].reset();
+                    //Resetting Error message
+                     planTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("name")) {
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                      }
+                      
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          $(function() {
+      
+            // validate organization form  on keyup and submit
+            $("#form-plan-information").validate({
+              rules: {
+                name: "required",
+                company_type : "required",
+              },
+              messages: {
+                name: "Please enter plan company name",
+                company_type: "Please enter plan company type",
+              },
+              errorPlacement: function(label, element) {
+                label.addClass('mt-2 text-danger');
+                label.insertAfter(element);
+              },
+              highlight: function(element, errorClass) {
+                $(element).parent().addClass('has-danger')
+                $(element).addClass('form-control-danger')
+              }
+            });
+         
+          });
+        })(jQuery);
+        
+        //Viewing data after clicking edit button in table
+
+        $('#plan-list').on('click','.edit_view',function(){
+          var id = $(this).attr('data-id')
+          $('#updateplanModal').modal('toggle')
+          $.ajax({
+            type: "GET",
+            headers: {//<==
+              "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+            },
+            url: '/b2bmanagement/plan-details/'+id+'/', 
+            success: function(response) {
+               if(response.success){
+                $('#plan_name').val(response.data.name)
+                $("#plan_company_type").val(response.data.salary_range).change();
+                $("#plan_salary_range").val(response.data.salary_range).change();
+                $("#plan_designation").val(response.data.designation).change();
+                $('#plan_update').attr('data-id', response.data.id)
+               }else{
+                alert("Something error")
+               }
+            }
+         });
+        })
+        //Update data submit and  validation
+        $(function() {
+          $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-plan-update-information')
+              var id =$('#plan_update').attr('data-id')
+              $('.update_errors li').remove();
+              $.ajax({
+                type: "PUT",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action")+id+'/', 
+                data:{
+                  name:$('#plan_name').val(),
+                  salary_range:$('#plan_salary_range').val(),
+                  designation:$('#plan_designation').val(),
+                },
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    //Closing Modal after submission
+
+                    $("#updateplanModal .close").click()
+                    //Clearing Submit form
+                    $("#form-plan-update-information")[0].reset();
+                    //Resetting Error message
+                     planTable.ajax.reload();
+                  }else{
+                      if (response.data.hasOwnProperty("name")) {
+                        $('.update_errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                      }
+                    
+                    
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          // validate organization form  on keyup and submit
+          $("#form-plan-update-information").validate({
+            rules: {
+              plan_name: "required",
+              plan_company_type : "required",
+            },
+            messages: {
+              plan_name: "Please enter insurance company name ",
+              plan_company_type: "Please enter insurance company type",
+            },
+            errorPlacement: function(label, element) {
+              label.addClass('mt-2 text-danger');
+              label.insertAfter(element);
+            },
+            highlight: function(element, errorClass) {
+              $(element).parent().addClass('has-danger')
+              $(element).addClass('form-control-danger')
+            }
+          });
+       
+        });
+
+        //Delete Module
+        $('#plan-list').on('click', '.plan-delete', function (event) {      
+          var row = planTable.row($(this).parents('tr'));
+          var id = ($(this).attr('data-id'))
+          swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this data!",
+            icon: "warning",
+            buttons: [
+              'Cancel',
+              'Confirm'
+            ],
+            dangerMode: true,
+          }).then(function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                  type:'DELETE',
+                  headers: {//<==
+                    "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                  },
+                  url:'/b2bmanagement/create-plan/'+id+'/',
+                  success: function(data){
+                    if(data.error){  //You are checking for true/false not yes or no.
+                      $.toast({
+                        heading: 'Danger',
+                        text: "Something wrong.data didn't delete",
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        loaderBg: '#f2a654',
+                        position: 'top-right'
+                      })
+                    }else{
+                      planTable.ajax.reload();
+                    }
+                  }
+                });
+            } else {
+              swal("Cancelled", "Your data is safe :)", "error");
+            }
+          })
+         
+        });
+
+      });
+     
+  </script>
+  {% endblock extra_script %}

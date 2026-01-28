@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Table Temp
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="card">
+          <div class="card-body">
+            <div class="col-12">
+              <h3>Welcome to Tabile</h3>
+
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr style="text-align: center;">
+                              <th style="font-size: 14px;">Sl</th>
+                              <th style="font-size: 14px;">Beneficiary<br/>Name</th>
+                              <th style="font-size: 14px;">Beneficiary<br/>ID</th>
+                              <th style="font-size: 14px;">Relationship</th>
+                              <th style="font-size: 14px;">Claim Type</th>
+                              <th style="font-size: 14px;">Claim Amount</th>
+                              <th style="font-size: 14px;">Claim Date</th>
+                              <th style="font-size: 14px;">Settled Amount</th>
+                              <th style="font-size: 14px;">Settled Date</th>
+                              <th style="font-size: 14px;">HR Action</th>
+                              <th style="font-size: 14px;">HR Action Date</th>
+                              <th style="font-size: 14px;">Additional Documents Submit Date</th>
+                              <th style="font-size: 14px;">HR Feedabck</th>
+                              <th style="font-size: 14px;">HR Feedback Date</th>
+                              <th style="font-size: 14px;">STATUS</th>
+                              <th style="font-size: 14px;">Document Required</th>
+                              <th style="font-size: 14px;">Document Required Date</th>
+                              <th style="font-size: 14px;">Document Submit</th>
+                              <th style="font-size: 14px;">Document Submit Date</th>
+                              <th style="font-size: 14px;">Paid</th>
+                              <th style="font-size: 14px;">Paid DATE</th>
+                              <th style="font-size: 14px;">Mode of Payment</th>
+                              <th style="font-size: 14px;">Payor</th>
+                              <th style="font-size: 14px;">Payor Account Name</th>
+                              <th style="font-size: 14px;">Payor Accoung Number</th>
+                              <th style="font-size: 14px;">Date</th>
+                              <th style="font-size: 14px;">Beneficiary<br/>Account Name</th>
+                              <th style="font-size: 14px;">Beneficiary<br/>Account Number</th>
+                              <th style="font-size: 14px;">Beneficiary<br/>Bank Name</th>
+                              <th style="font-size: 14px;">Transection ID /Cheque NO</th>
+                              <th class="sticky-col-2" style="font-size: 14px;">Current Status</th>
+                              <th class="sticky-col" style="font-size: 14px;">View Details</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>2000</td>
+                              <td>8/28/2025</td>
+                              <td>1200</td>
+                              <td>9/10/2025</td>
+                              <td>Approve</td>
+                              <td>8/28/2025</td>
+                              <td>8/29/2025</td>
+                              <td>Approve</td>
+                              <td>8/30/2025</td>
+                              <td>Under Process</td>
+                              <td>Yes </td>
+                              <td>8/29/2025</td>
+                              <td>YES</td>
+                              <td>8/28/2025</td>
+                              <td>1200</td>
+                              <td>8/28/2025</td>
+                              <td>Bank</td>
+                              <td>CLICL</td>
+                              <td></td>
+                              <td>Bank Account </td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                             
+                              <td class="sticky-col-2">Under Process</td>
+                              <td class="sticky-col">
+                                <label class="badge badge-danger badge-pill">View Details</label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>1</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>2000</td>
+                              <td>8/28/2025</td>
+                              <td>1200</td>
+                              <td>9/10/2025</td>
+                              <td>Approve</td>
+                              <td>8/28/2025</td>
+                              <td>8/29/2025</td>
+                              <td>Approve</td>
+                              <td>8/30/2025</td>
+                              <td>Under Process</td>
+                              <td>Yes </td>
+                              <td>8/29/2025</td>
+                              <td>YES</td>
+                              <td>8/28/2025</td>
+                              <td>1200</td>
+                              <td>8/28/2025</td>
+                              <td>Bank</td>
+                              <td>CLICL</td>
+                              <td></td>
+                              <td>Bank Account </td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                             
+                              <td class="sticky-col-2">Under Process</td>
+                              <td class="sticky-col">
+                                <label class="badge badge-danger badge-pill">View Details</label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>1</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>2000</td>
+                              <td>8/28/2025</td>
+                              <td>1200</td>
+                              <td>9/10/2025</td>
+                              <td>Approve</td>
+                              <td>8/28/2025</td>
+                              <td>8/29/2025</td>
+                              <td>Approve</td>
+                              <td>8/30/2025</td>
+                              <td>Under Process</td>
+                              <td>Yes </td>
+                              <td>8/29/2025</td>
+                              <td>YES</td>
+                              <td>8/28/2025</td>
+                              <td>1200</td>
+                              <td>8/28/2025</td>
+                              <td>Bank</td>
+                              <td>CLICL</td>
+                              <td></td>
+                              <td>Bank Account </td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                             
+                              <td class="sticky-col-2">Under Process</td>
+                              <td class="sticky-col">
+                                <label class="badge badge-danger badge-pill">View Details</label>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>1</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>2000</td>
+                              <td>8/28/2025</td>
+                              <td>1200</td>
+                              <td>9/10/2025</td>
+                              <td>Approve</td>
+                              <td>8/28/2025</td>
+                              <td>8/29/2025</td>
+                              <td>Approve</td>
+                              <td>8/30/2025</td>
+                              <td>Under Process</td>
+                              <td>Yes </td>
+                              <td>8/29/2025</td>
+                              <td>YES</td>
+                              <td>8/28/2025</td>
+                              <td>1200</td>
+                              <td>8/28/2025</td>
+                              <td>Bank</td>
+                              <td>CLICL</td>
+                              <td></td>
+                              <td>Bank Account </td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                             
+                              <td class="sticky-col-2">Under Process</td>
+                              <td class="sticky-col">
+                                <label class="badge badge-danger badge-pill">View Details</label>
+                              </td>
+                            </tr>
+                            
+                            
+                            
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+{% endblock %}
+{% block extra_script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>
+  <script src="{% static '/js/wizard.js' %}"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>
+
+  <script>
+    ;(function ($) {
+      'use strict'
+      $.validator.setDefaults({
+        submitHandler: function () {
+          var form = $('#org-form-create')
+          $('.errors li').remove()
+          $.ajax({
+            type: 'POST',
+            headers: {
+              //<==
+              'X-CSRFTOKEN': '{{ csrf_token }}' //<==
+            },
+            url: form.attr('action'),
+            data: form.serialize(), // serializes the form's elements.
+            success: function (response) {
+              if (response.success) {
+                $.toast({
+                  heading: 'Success',
+                  text: response.data.message,
+                  showHideTransition: 'slide',
+                  icon: 'success',
+                  loaderBg: '#f96868',
+                  position: 'top-right'
+                })
+                window.location.replace('/b2bmanagement/b2b-organization-list/')
+              } else {
+                if (response.data.hasOwnProperty('organization_code')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.organization_code[0] + '</li>')
+                }
+                if (response.data.hasOwnProperty('organization_name')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.organization_name[0] + '</li>')
+                }
+                if (response.data.hasOwnProperty('email')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.email[0] + '</li>')
+                }
+              }
+            }
+          })
+        }
+      })
+    
+      $(function () {
+        // validate organization form  on keyup and submit
+        $('#org-form-create').validate({
+          rules: {
+            organization_code: 'required',
+            organization_name: 'required',
+            organization_address: 'required',
+            email: {
+              required: true,
+              email: true
+            }
+          },
+          messages: {
+            organization_code: 'Please enter  organization code',
+            organization_name: 'Please enter  organization name',
+            organization_address: 'Please enter  organization address',
+            email: 'Please enter a valid email address'
+          },
+          errorPlacement: function (label, element) {
+            label.addClass('mt-2 text-danger')
+            label.insertAfter(element)
+          },
+          highlight: function (element, errorClass) {
+            $(element).parent().addClass('has-danger')
+            $(element).addClass('form-control-danger')
+          }
+        })
+      })
+    })(jQuery)
+  </script>
+{% endblock %}

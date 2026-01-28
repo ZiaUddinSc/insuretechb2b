@@ -1,0 +1,149 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Policy Categories List {% endblock title%}
+
+
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Policy category List and Add New policy
+              </h3>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                 <a href="{% url 'policy-categorie-create' %}"> <button type="button" class="btn btn-primary btn-fw" >Add New Category</button></a>
+                  
+                </ol>
+              </nav>
+            </div>
+           
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="order-listing" class="table">
+                    <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Action</th>
+                          <th>Icon</th>
+                          <th>Name</th>
+                          <th>Sort Note</th>
+                          <th>Policies Added</th>
+                          <th>Add New Policy</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                          <td>1</td>
+                          <td>
+                            <div>
+                              <i class="fa fa-edit"></i>
+                              <i class="remove fa fa-times-circle"></i>
+                            </div>
+                          </td>
+                          <td><i class="fa fa-heart"></i></td>
+                          <td>Health</td>
+                          <td>Your shield against the financial burden of medical emergencies, ensuring access to quality healthcare when you need it most.</td>
+                          <td>37 Policies Added [View]</td>
+                          <td>
+                            <a href="{% url 'policies-create-health' %}"><button type="button" class="btn btn-info btn-fw">+ Add New Policy</button></a>
+                          </td>
+                          
+                      </tr>
+
+
+                      <tr>
+                        <td>2</td>
+                        <td>
+                          <div>
+                            <i class="fa fa-edit"></i>
+                            <i class="remove fa fa-times-circle"></i>
+                          </div>
+                        </td>
+                        <td><i class="fa fa-heart"></i></td>
+                        <td>Rabbi</td>
+                        <td>Your shield against the financial burden of medical emergencies, ensuring access to quality healthcare when you need it most.</td>
+                        <td>37 Policies Added [View]</td>
+                        <td>
+                          <button type="button" class="btn btn-info btn-fw">+ Add New Policy</button>
+                        </td>
+                        
+                    </tr>
+
+
+                    <tr>
+                      <td>3</td>
+                      <td>
+                        <div>
+                          <i class="fa fa-edit"></i>
+                          <i class="remove fa fa-times-circle"></i>
+                        </div>
+                      </td>
+                      <td><i class="fa fa-heart"></i></td>
+                      <td>Health</td>
+                      <td>Your shield against the financial burden of medical emergencies, ensuring access to quality healthcare when you need it most.</td>
+                      <td>37 Policies Added [View]</td>
+                      <td>
+                        <button type="button" class="btn btn-info btn-fw">+ Add New Policy</button>
+                      </td>
+                      
+                  </tr>
+
+
+                  <tr>
+                    <td>4</td>
+                    <td>
+                      <div>
+                        <i class="fa fa-edit"></i>
+                        <i class="remove fa fa-times-circle"></i>
+                      </div>
+                    </td>
+                    <td><i class="fa fa-heart"></i></td>
+                    <td>Health</td>
+                    <td>Your shield against the financial burden of medical emergencies, ensuring access to quality healthcare when you need it most.</td>
+                    <td>37 Policies Added [View]</td>
+                    <td>
+                      <button type="button" class="btn btn-info btn-fw">+ Add New Policy</button>
+                    </td>
+                    
+                </tr>
+                    
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+<script src="{% static 'js/data-table.js' %}"></script>
+  {% endblock extra_script %}

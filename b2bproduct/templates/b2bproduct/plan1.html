@@ -1,0 +1,447 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+  Create Plan 1
+{% endblock %}
+
+<!-- Layout wrapper -->
+{% block content %}
+  {% include 'navbar.html' %}
+
+  <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="card">
+          <div class="card-body">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <form id="example-form" action="#">
+                    <div>
+                      <h3>Life Coverage</h3>
+                      <section class="company-info-section">
+                        <div class="row">
+                          {% comment %}colom 1{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Select Plan</label>
+                              <select class="form-control" style="height: 45px;" name="status">
+                                <option value="">-- Select Plan --</option>
+                                <option value="yes">Catagory 1</option>
+                                <option value="no">Catagory 1</option>
+                              </select>
+                            </div>
+
+                            <div class="form-group">
+                              <label>Sum Assured</label>
+                              <input type="text" class="form-control" placeholder="Enter Sum Assured" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 2{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Select Insurer Name</label>
+                              <select class="form-control" style="height: 45px;" name="status">
+                                <option value="">-- Select Insurer Name --</option>
+                                <option value="yes">Insurer Name 1</option>
+                                <option value="no">Insurer Name 1</option>
+                              </select>
+                            </div>
+
+                            <div class="form-group">
+                              <label>Premium Rate</label>
+                              <input type="text" class="form-control" placeholder="Enter Premium Rate" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 3{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Life Coverage</label>
+                              <input type="text" class="form-control" placeholder="Enter Life Coverage" />
+                            </div>
+                            <div class="form-group">
+                              <label>Premium Amount</label>
+                              <input type="text" class="form-control" placeholder="Enter Premium Amount" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Accidental Death Benefit</label>
+                          <input type="text" class="form-control" placeholder="Enter Accidental Death Benefit" />
+                        </div>
+
+                        <div class="row">
+                          {% comment %}colom 1{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Sum Assured</label>
+                              <input type="text" class="form-control" placeholder="Enter Sum Assured" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 2{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Premium Rate</label>
+                              <input type="text" class="form-control" placeholder="Enter Premium Rate" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 3{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Life Coverage</label>
+                              <input type="text" class="form-control" placeholder="Enter Life Coverage" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Permanent Total Disability (PTD)</label>
+                          <input type="text" class="form-control" placeholder="Enter Permanent Total Disability (PTD)" />
+                        </div>
+
+                        <div class="row">
+                          {% comment %}colom 1{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Sum Assured</label>
+                              <input type="text" class="form-control" placeholder="Enter Sum Assured" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 2{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Premium Rate</label>
+                              <input type="text" class="form-control" placeholder="Enter Premium Rate" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 3{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Life Coverage</label>
+                              <input type="text" class="form-control" placeholder="Enter Life Coverage" />
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label>Permanent Partial Disability (PPD)</label>
+                          <input type="text" class="form-control" placeholder="Enter Permanent Partial Disability (PPD)" />
+                        </div>
+
+                        <div class="row">
+                          {% comment %}colom 1{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Sum Assured</label>
+                              <input type="text" class="form-control" placeholder="Enter Sum Assured" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 2{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Premium Rate</label>
+                              <input type="text" class="form-control" placeholder="Enter Premium Rate" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 3{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Life Coverage</label>
+                              <input type="text" class="form-control" placeholder="Enter Life Coverage" />
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      <h3>IPD/ Hospitalization Coverage</h3>
+                      <section class="bank-info-section">
+                        <div class="form-group">
+                          <label>IPD/ Hospitalization Coverage (fixed amount)</label>
+                          <input type="text" class="form-control" placeholder="Enter IPD/ Hospitalization Coverage (fixed amount)" />
+                        </div>
+
+                        <div class="row">
+                          {% comment %}colom 1{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Room rent Amount</label>
+                              <input type="text" class="form-control" placeholder="Enter Room rent" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 2{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>consultation, investigation, surgery, procedure</label>
+                              <input type="text" class="form-control" placeholder="Enter consultation, investigation, surgery, procedure " />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 3{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Premium Amount</label>
+                              <input type="text" class="form-control" placeholder="Enter Premium Amount" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Per Disability Coverage</label>
+                          <input type="text" class="form-control" placeholder="Enter Per Disability Coverage" />
+                        </div>
+
+                        <div class="row">
+                          {% comment %}colom 1{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Room rent Amount</label>
+                              <input type="text" class="form-control" placeholder="Enter Room rent" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 2{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>consultation, investigation, surgery, procedure</label>
+                              <input type="text" class="form-control" placeholder="Enter consultation, investigation, surgery, procedure " />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 3{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Rate add</label>
+                              <select class="form-control" style="height: 45px;" name="status">
+                                <option value="">-- Select Rate --</option>
+                                <option value="yes">3%</option>
+                                <option value="no">5%%</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label>Per Disease Coverage</label>
+                          <input type="text" class="form-control" placeholder="Enter Per Disease Coverage " />
+                        </div>
+
+                        <div class="row">
+                          {% comment %}colom 1{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Room rent Amount</label>
+                              <input type="text" class="form-control" placeholder="Enter Room rent" />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 2{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>consultation, investigation, surgery, procedure</label>
+                              <input type="text" class="form-control" placeholder="Enter consultation, investigation, surgery, procedure " />
+                            </div>
+                          </div>
+
+                          {% comment %}colom 3{% endcomment %}
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label>Rate add</label>
+                              <select class="form-control" style="height: 45px;" name="status">
+                                <option value="">-- Select Rate --</option>
+                                <option value="yes">3%</option>
+                                <option value="no">5%%</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      <h3>OPD Coverage</h3>
+                      <section class="contact-info-section">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>OPD Coverage</label>
+                              <input type="text" class="form-control" placeholder="Enter OPD Coverage" />
+                            </div>
+
+                            <div class="form-group">
+                              <label>Consultation</label>
+                              <input type="text" class="form-control" placeholder="Consultation" />
+                            </div>
+                            <div class="form-group">
+                              <label>Investigation</label>
+                              <input type="em" class="form-control" placeholder="Email Investigation" />
+                            </div>
+                          </div>
+
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>OPD Type</label>
+                              <select class="form-control" style="height: 45px;" name="status">
+                                <option value="">--Select OPD Type --</option>
+                                <option value="yes">Genarel OPD</option>
+                                <option value="no">OPD includeing Dentel and Optical</option>
+                              </select>
+                            </div>
+
+                            <div class="form-group">
+                              <label>Investigation</label>
+                              <input type="text" class="form-control" placeholder="Investigation" />
+                            </div>
+                            <div class="form-group">
+                              <label>Medicine</label>
+                              <input type="em" class="form-control" placeholder="Medicine" />
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      <h3>Critical Illness</h3>
+
+                      <section class="contract-section">
+                        <div class="form-group">
+                          <label>Critical Illness</label>
+                          <input type="text" class="form-control" placeholder="Enter Critical Illness" />
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Diseases Name</label>
+                              <input type="text" class="form-control" placeholder="Diseases Name" />
+                            </div>
+
+                            <div class="form-group">
+                              <label>Premium Rate</label>
+                              <input type="text" class="form-control" placeholder="Premium Rate" />
+                            </div>
+                          </div>
+
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label>Amount</label>
+                              <input type="text" class="form-control" placeholder="Amount" />
+                            </div>
+                            <div class="form-group">
+                              <label>Premium Amount</label>
+                              <input type="em" class="form-control" placeholder="Premium Amount" />
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                      <h3>Maternity Coverage</h3>
+
+                      <section class="contract-section">
+                        <div class="form-group">
+                          <label>Maternity Coverage LUCS</label>
+                          <input type="text" class="form-control" placeholder="Enter Amount" />
+                        </div>
+                        <div class="form-group">
+                          <label>Normal Delivery (NVD)</label>
+                          <input type="text" class="form-control" placeholder="Enter Amount" />
+                        </div>
+                        <div class="form-group">
+                          <label>Legal Abortion</label>
+                          <input type="text" class="form-control" placeholder="Enter Amount" />
+                        </div>
+                       
+                      </section>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% include 'footer.html' %}
+    </div>
+  </div>
+{% endblock %}
+{% block extra_script %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>
+  <script src="{% static '/js/wizard.js' %}"></script>
+  <script src="{% static '/js/formpickers.js' %}"></script>
+
+  <script>
+    ;(function ($) {
+      'use strict'
+      $.validator.setDefaults({
+        submitHandler: function () {
+          var form = $('#org-form-create')
+          $('.errors li').remove()
+          $.ajax({
+            type: 'POST',
+            headers: {
+              //<==
+              'X-CSRFTOKEN': '{{ csrf_token }}' //<==
+            },
+            url: form.attr('action'),
+            data: form.serialize(), // serializes the form's elements.
+            success: function (response) {
+              if (response.success) {
+                $.toast({
+                  heading: 'Success',
+                  text: response.data.message,
+                  showHideTransition: 'slide',
+                  icon: 'success',
+                  loaderBg: '#f96868',
+                  position: 'top-right'
+                })
+                window.location.replace('/b2bmanagement/b2b-organization-list/')
+              } else {
+                if (response.data.hasOwnProperty('organization_code')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.organization_code[0] + '</li>')
+                }
+                if (response.data.hasOwnProperty('organization_name')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.organization_name[0] + '</li>')
+                }
+                if (response.data.hasOwnProperty('email')) {
+                  $('.errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">' + response.data.email[0] + '</li>')
+                }
+              }
+            }
+          })
+        }
+      })
+    
+      $(function () {
+        // validate organization form  on keyup and submit
+        $('#org-form-create').validate({
+          rules: {
+            organization_code: 'required',
+            organization_name: 'required',
+            organization_address: 'required',
+            email: {
+              required: true,
+              email: true
+            }
+          },
+          messages: {
+            organization_code: 'Please enter  organization code',
+            organization_name: 'Please enter  organization name',
+            organization_address: 'Please enter  organization address',
+            email: 'Please enter a valid email address'
+          },
+          errorPlacement: function (label, element) {
+            label.addClass('mt-2 text-danger')
+            label.insertAfter(element)
+          },
+          highlight: function (element, errorClass) {
+            $(element).parent().addClass('has-danger')
+            $(element).addClass('form-control-danger')
+          }
+        })
+      })
+    })(jQuery)
+  </script>
+{% endblock %}

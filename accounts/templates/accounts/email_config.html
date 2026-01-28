@@ -1,0 +1,408 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block title %}Email Configuration{% endblock title%}
+
+{% block extra_head %}
+
+  <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
+
+ 
+{% endblock extra_head %}
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+            <div class="page-header">
+              <h3 class="page-title">
+                Email Configuration
+              </h3>
+              <nav aria-label="breadcrumb">
+                <button type="button" class="btn btn-info" data-toggle="modal"   id="email-config" >Add Email Configuration</button>
+              </nav>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="table-responsive">
+                  <table id="email-config-list" class="table" >
+                    <thead class="">
+                      <tr>
+                          <th>SMTP Host</th>
+                          <th>Port</th>
+                          <th>Sender Email</th>
+                          <th>TLS</th>
+                          <th>SSL</th>
+                          <th>App Password</th>
+                          <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          <div class="modal fade" id="addEmailConfigModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ModalLabel">Email Configuration</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <ul class="errors">
+                    {% comment %} <li style="color:red">Coffee</li> {% endcomment %}
+                  </ul>
+                  
+                  <form id="form-email-config-information" method="POST" action="{% url "save_email_config" %}">
+                    <div class="form-group">
+                      <label for="smtp_host" class="col-form-label">SMTP Host</label>
+                      <input type="text" class="form-control" id="smtp_host" name="smtp_host">
+                    </div>
+                    <div class="form-group">
+                      <label for="port" class="col-form-label">Port</label>
+                      <input type="text" class="form-control" id="port" name="port">
+                    </div>
+                    <div class="form-group">
+                        <label for="sender_email" class="col-form-label">Sender Email</label>
+                        <input type="text" class="form-control" id="sender_email" name="sender_email">
+                      </div>
+                     
+                      <div class="form-group d-flex align-items-center">
+                        <span>Use TLS</span>
+
+                        <label class="switch mb-0 me-10">
+                          <input type="checkbox"  class="switch-input" name="tls" id="tls">
+                          <span class="slider"></span>
+                        </label>
+                      </div>
+                      <div class="form-group d-flex align-items-center">
+                        <span>Use SSL</span>
+
+                        <label class="switch mb-0 me-10">
+                          <input type="checkbox" class="switch-input" name="ssl" id="ssl">
+                          <span class="slider"></span>
+                        </label>
+                      </div>
+                      <div class="form-group d-flex align-items-center">
+                        <span>Active Status</span>
+
+                        <label class="switch mb-0 me-10">
+                          <input type="checkbox" class="switch-input" name="status" id="status">
+                          <span class="slider"></span>
+                        </label>
+                      </div>
+                      <div class="form-group">
+                        <label for="app_password"  class="col-form-label">App Password</label>
+                        <input type="password" class="form-control" id="app_password" name="app_password">
+                      </div>
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" id="save_bank" class="btn btn-success">Save</button>
+                  <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+          
+
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+
+
+    <script>
+      var bankTable
+      $(document).ready(function() {
+        //Displaying Data by API
+        bankTable=$('#email-config-list').DataTable({
+          "pageLength" : 10,
+          "processing": true,
+          "serverSide": true,
+          "filter": true,
+          "responsive": true,
+          "order": [0, 'desc'],
+          ajax: {
+            "processing":false,
+            "url": "{% url 'configures' %}",
+            "dataSrc": function (response) {
+              return response.data;
+           }
+          },      
+          columns: [
+              {"mData":"host"},
+              {"mData":"port"},
+              {"mData":"host_user"},
+              {"mData":"use_tls"},
+              {"mData":"use_ssl"},
+              {"mData":"host_password"},
+              {"mData":"is_active"}
+          ],
+          buttons: [
+          'pdf',
+          'excel',
+          'print',
+          'csv'
+          ]
+        });
+        //Validation and Submit data
+
+        (function($) {
+          'use strict';
+         var  validator = $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-email-config-information')
+              $.ajax({
+                type: "POST",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action"), 
+                data: form.serialize(), // serializes the form's elements.
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    // Closing Model After submission 
+                    $("#addEmailConfigModal .close").click()
+                    $().removeClass("errors");
+                    // Restting form After submission 
+                    $("#form-email-config-information")[0].reset();
+                    //Resetting Error message
+                    $('.errors li').remove();
+                     bankTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("name")) {
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                      }
+                      if (response.data.hasOwnProperty("short_name")){
+                        $('.errors').append('<li class="li-style" style="color:red;text-transform:capitalize">'+response.data.short_name[0]+'</li>')
+                      }
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          $(function() {
+      
+            // validate organization form  on keyup and submit
+            $("#form-email-config-information").validate({
+              rules: {
+                name: "required",
+                short_name : "required",
+              },
+              messages: {
+                name: "Please enter name",
+                short_name: "Please enter short name",
+              },
+              errorPlacement: function(label, element) {
+                label.addClass('mt-2 text-danger');
+                label.insertAfter(element);
+              },
+              highlight: function(element, errorClass) {
+                $(element).parent().addClass('has-danger')
+                $(element).addClass('form-control-danger')
+              }
+            });
+         
+          });
+        })(jQuery);
+        
+        //Viewing data after clicking edit button in table
+
+        $(document).on('click','#email-config',function(){
+          var id = $(this).attr('data-id')
+          $('#addEmailConfigModal').modal('toggle')
+          $.ajax({
+            type: "GET",
+            headers: {//<==
+              "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+            },
+            url: '/email-config/', 
+            success: function(response) {
+               if(response){
+                $('#smtp_host').val(response.smtp_host)
+                $('#port').val(response.port)
+                $('#app_password').val(response.host_password)
+                $('#tls').prop('checked', response.tls);
+                $('#ssl').prop('checked', response.ssl);
+                $('#status').prop('checked', response.is_active);
+                $('#sender_email').val(response.sender_email)
+                
+               }else{
+                alert("Something error")
+               }
+            }
+         });
+        })
+        //Update data submit and  validation
+        $(function() {
+          $.validator.setDefaults({
+            submitHandler: function() {
+              var form = $('#form-bank-update-information')
+              var id =$('#bank_update').attr('data-id')
+              $.ajax({
+                type: "PUT",
+                headers: {//<==
+                  "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                url: form.attr("action")+id+'/', 
+                data:{
+                  name:$('#bank_name').val(),
+                  short_name:$('#bank_short_name').val(),
+                },
+                success: function(response) {
+                  if(response.success){
+                    $.toast({
+                      heading: 'Success',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'success',
+                      loaderBg: '#f96868',
+                      position: 'top-right'
+                    })
+                    //Closing Modal after submission
+
+                    $("#updateBankModal .close").click()
+                    //Clearing Submit form
+                    $("#form-bank-update-information")[0].reset();
+                    //Resetting Error message
+                    $('.update_errors li').remove();
+                     bankTable.ajax.reload();
+                  }else{
+                    if(response.data){
+                      if (response.data.hasOwnProperty("name")) {
+                        $('.update_errors').append('<li  class="li-style" style="color:red;text-transform:capitalize">'+response.data.name[0]+'</li>')
+                      }
+                      if (response.data.hasOwnProperty("short_name")){
+                        $('.update_errors').append('<li  class="li-style"style="color:red;text-transform:capitalize">'+response.data.short_name[0]+'</li>')
+                      }
+                    }
+                    $.toast({
+                      heading: 'Danger',
+                      text: response.message,
+                      showHideTransition: 'slide',
+                      icon: 'error',
+                      loaderBg: '#f2a654',
+                      position: 'top-right'
+                    })
+                  }
+                }
+             });
+            }
+          });
+          // validate organization form  on keyup and submit
+          $("#form-bank-update-information").validate({
+            rules: {
+              bank_name: "required",
+              bank_short_name : "required",
+            },
+            messages: {
+              bank_name: "Please enter name",
+              bank_short_name: "Please enter short name",
+            },
+            errorPlacement: function(label, element) {
+              label.addClass('mt-2 text-danger');
+              label.insertAfter(element);
+            },
+            highlight: function(element, errorClass) {
+              $(element).parent().addClass('has-danger')
+              $(element).addClass('form-control-danger')
+            }
+          });
+       
+        });
+
+        //Delete Module
+        $('#email-config-list').on('click', '.bank-delete', function (event) {      
+          var row = bankTable.row($(this).parents('tr'));
+          var id = ($(this).attr('data-id'))
+          swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this data!",
+            icon: "warning",
+            buttons: [
+              'Cancel',
+              'Confirm'
+            ],
+            dangerMode: true,
+          }).then(function(isConfirm) {
+            if (isConfirm) {
+                $.ajax({
+                  type:'DELETE',
+                  headers: {//<==
+                    "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                  },
+                  url:'/b2bmanagement/bank-save/'+id+'/',
+                  success: function(data){
+                    if(data.error){  //You are checking for true/false not yes or no.
+                      $.toast({
+                        heading: 'Danger',
+                        text: "Something wrong.data didn't delete",
+                        showHideTransition: 'slide',
+                        icon: 'error',
+                        loaderBg: '#f2a654',
+                        position: 'top-right'
+                      })
+                    }else{
+                      bankTable.ajax.reload();
+                    }
+                  }
+                });
+            } else {
+              swal("Cancelled", "Your data is safe :)", "error");
+            }
+          })
+         
+        });
+
+      });
+     
+  </script>
+  {% endblock extra_script %}

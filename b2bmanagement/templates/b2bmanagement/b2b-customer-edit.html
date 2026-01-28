@@ -1,0 +1,251 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Customer Edit{% endblock title%}
+
+
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+           
+
+
+                    <div class="col-12 grid-margin">
+                      <div class="card">
+                        <div class="card-body">
+                          <h4 class="card-title">Update organization</h4>
+                          <form class="form-sample">
+                           
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Organization ID :</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" value="W234546" disabled />
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Organization Name :</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {% comment %} <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Policy Logo : </label>
+                                  <div class="col-sm-9">
+                                    <input class="form-control file-input" id="image" name="image" type="file"/>
+                                  </div>
+                                </div>
+                              </div> {% endcomment %}
+                            </div>
+
+
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Email : </label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Contact Number :</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" value="017734657983" disabled />
+                                  </div>
+                                </div>
+                              </div>
+                              
+                             
+                            </div>
+
+                            
+                            <div class="row">
+                               <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Logo : </label>
+                                  <div class="col-sm-9">
+                                    <input class="form-control file-input" id="image" name="image" type="file"/>
+                                  </div>
+                                </div>
+                              </div> 
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Organization Type</label>
+                                  <div class="col-sm-9">
+                                    <select class="form-control">
+                                      <option>Choose...</option>
+                                      <option>Corporation</option>
+                                      <option>Nonprifit Organization</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                            </div>
+                           
+                           
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Address</label>
+                                  <div class="col-sm-9">
+                                    <textarea class="form-control"
+                                id="exampleFormControlTextarea1"
+                                name="address"
+                                rows="3"
+                                required></textarea>
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Business Area</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">BIN Number</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Upload BIN</label>
+                                  <div class="col-sm-9">
+                                    <input class="form-control file-input" id="image" name="image" type="file"/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Trade License Number</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Upload Trade License</label>
+                                  <div class="col-sm-9">
+                                    <input class="form-control file-input" id="image" name="image" type="file"/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">TIN Number</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Upload TIN</label>
+                                  <div class="col-sm-9">
+                                    <input class="form-control file-input" id="image" name="image" type="file"/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Password : </label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Status :</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control"  />
+                                  </div>
+                                </div>
+                              </div>
+                              
+                             
+                            </div>
+
+                            <input class="btn btn-primary" type="submit" value="Update">
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                    
+              
+                 
+           
+          </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+  
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+{% endblock content %}
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+<script src="{% static 'js/form-validation.js' %}"></script>
+
+
+  {% endblock extra_script %}

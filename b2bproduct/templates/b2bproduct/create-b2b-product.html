@@ -1,0 +1,187 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Add B2B product {% endblock title%}
+
+
+
+<!-- Layout wrapper -->
+{% block content %} 
+
+    {% include 'navbar.html' %}
+
+    <div class="container-fluid page-body-wrapper">
+    {% include 'layout.html' %}
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+      
+        <div class="card mt">
+          <div class="card-body">
+           
+            
+                    
+                   
+                 
+
+                    <div class="col-12 grid-margin">
+                      <div class="card">
+                        <div class="card-body">
+                          <h4 class="card-title">Add Product</h4>
+                          <form class="form-sample">
+                           
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Product ID :</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Product Type :</label>
+                                  <div class="col-sm-9">
+                                    <select id="dropdown1" class="product-type form-control" style="width: 100%">
+                                        <option value="option1">Choose one</option>
+                                        <option value="1">Life</option>
+                                        <option value="2">IPD/ Hospitalization Coverage</option>
+                                        <option value="3">OPD Coverage</option>
+                                        <option value="4">Critical Illness</option>
+                                        <option value="5">Maternity Coverage</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {% comment %} <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Policy Logo : </label>
+                                  <div class="col-sm-9">
+                                    <input class="form-control file-input" id="image" name="image" type="file"/>
+                                  </div>
+                                </div>
+                              </div> {% endcomment %}
+                            </div>
+
+
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Customer Name : </label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Contact Number :</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+                              
+                             
+                            </div>
+
+                            
+                      
+                           
+                           
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                      <label class="col-sm-3 col-form-label">Email :</label>
+                                      <div class="col-sm-9">
+                                        <input type="text" class="form-control" />
+                                      </div>
+                                    </div>
+                                  </div>
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Address</label>
+                                  <div class="col-sm-9">
+                                    <textarea class="form-control"
+                                id="exampleFormControlTextarea1"
+                                name="address"
+                                rows="3"
+                                required></textarea>
+                                  </div>
+                                </div>
+                              </div>
+
+
+                             
+                            </div>
+
+
+
+                       
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">NID Number</label>
+                                  <div class="col-sm-9">
+                                    <input type="text" class="form-control" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group row">
+                                  <label class="col-sm-3 col-form-label">Upload NID</label>
+                                  <div class="col-sm-9">
+                                    <input class="form-control file-input" id="image" name="image" type="file"/>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <input class="btn btn-primary" type="submit" value="Save">
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    
+                    
+              
+                 
+           
+          </div>
+          </div>
+       
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+     
+      <!-- partial -->
+    </div> 
+{% endblock content %}
+  {% include 'footer.html' %}
+</div>
+</div>
+<!-- container-scroller -->
+
+
+
+
+<!-- / Layout wrapper -->
+
+{% block extra_script %}
+{% comment %} <script src="{% static 'js/form-validation.js' %}"></script> {% endcomment %}
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    // Initialize all fields with select2
+    $('.product-type').select2();
+});
+</script>
+  {% endblock extra_script %}
