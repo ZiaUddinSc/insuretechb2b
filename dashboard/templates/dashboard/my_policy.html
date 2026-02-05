@@ -15,64 +15,13 @@
       <div class="content-wrapper">
         <div class="page-header">
           <h3 class="page-title">My Policy</h3>
+          <h6>Plan: <span id="plan-name"></span></h6>
         </div>
 
-        <div class="container mt-4">
-          <!-- Row 1 -->
-          <div class="row mb-3 justify-content-between">
-            <div class="col-md-5">
-              <div class="info-card coverage-card">
-                <h6>Life Coverage</h6>
-              </div>
-            </div>
-            <div class="col-md-5">
-              <div class="info-card amount-card text-right">
-                <h6>BDT : 5,00,000.00</h6>
-              </div>
-            </div>
-          </div>
-
-          <!-- Row 2 -->
-          <div class="row mb-3 justify-content-between">
-            <div class="col-md-5">
-              <div class="info-card coverage-card">
-                <h6>Accidental Death Benefit</h6>
-              </div>
-            </div>
-            <div class="col-md-5">
-              <div class="info-card amount-card text-right">
-                <h6>BDT : 10,00,000.00</h6>
-              </div>
-            </div>
-          </div>
-
-          <!-- Row 3 -->
-          <div class="row mb-3 justify-content-between">
-            <div class="col-md-5">
-              <div class="info-card coverage-card">
-                <h6>Hospitalization Coverage</h6>
-              </div>
-            </div>
-            <div class="col-md-5">
-              <div class="info-card amount-card text-right">
-                <h6>BDT : 2,00,000.00</h6>
-              </div>
-            </div>
-          </div>
-
-          <!-- Row 4 -->
-          <div class="row mb-3 justify-content-between">
-            <div class="col-md-5">
-              <div class="info-card coverage-card">
-                <h6>OPD Coverage</h6>
-              </div>
-            </div>
-            <div class="col-md-5">
-              <div class="info-card amount-card text-right">
-                <h6>BDT : 10,000.00</h6>
-              </div>
-            </div>
-          </div>
+        <div class="container mt-4" id="policy-container">
+          <p>Loading your policy...</p>
+        </div>
+         
         </div>
       </div>
       <!-- content-wrapper ends -->
@@ -82,13 +31,70 @@
 
       <!-- page-body-wrapper ends -->
 
-      {% include 'footer.html' %}
+      
     </div>
+    {% include 'footer.html' %}
   </div>
   <!-- container-scroller -->
 {% endblock %}
 
 {% block extra_script %}
   <script src="{% static 'js/dashboard.js' %}"></script>
+  <script>
+  $(document).ready(function() {
+    var $container = $('#policy-container');
+    var $employeeName = $('#employee-name');
+    var $planName = $('#plan-name');
+
+    // Token for authentication
+
+    $.ajax({
+        url: '/b2bmanagement/user-coverage-amounts/',
+        type: 'GET',
+        headers: {//<==
+          "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+        },
+        success: function(data) {
+            if(data.detail){
+                $container.html('<p>' + data.detail + '</p>');
+                return;
+            }
+
+            $employeeName.text(data.employee_name);
+            $planName.text(data.plan.plan_name);
+
+            var coverages = data.plan.coverages;
+            if(coverages.length === 0){
+                $container.html('<p>No coverages found for your plan.</p>');
+                return;
+            }
+
+            var html = '';
+            $.each(coverages, function(index, item){
+                html += `
+                    <div class="row mb-3 justify-content-between">
+                        <div class="col-md-5">
+                            <div class="info-card coverage-card p-2">
+                                <strong>${item.policy_type}:</strong> ${item.coverage_type} Coverage
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="info-card amount-card text-right p-2">
+                                <strong>BDT :</strong> ${Number(item.coverage_amount).toLocaleString('en-BD', {minimumFractionDigits: 2})}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            $container.html(html);
+        },
+        error: function(xhr, status, error){
+            console.error(error);
+            $container.html('<p>Error loading policy data.</p>');
+        }
+    });
+  });
+</script>
 {% endblock %}
 <!-- / Layout wrapper -->

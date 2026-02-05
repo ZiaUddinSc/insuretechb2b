@@ -610,11 +610,11 @@ class OrganizationPolicy(models.Model):
     organization_contract_no = models.CharField(max_length=150, blank=True,null=True)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE,blank=True,null=True, related_name='organization_policies')  
     contract_title = models.CharField(max_length=150, blank=True,null=True)
-    policy_type = models.ForeignKey(Product,blank=True,null=True, on_delete=models.CASCADE)
+    # policy_type = models.ForeignKey(Product,blank=True,null=True, on_delete=models.CASCADE)
     remarks = models.TextField(blank=True,null=True)
     end_date = models.DateField(blank=True,null=True,)    
     enrollment_date = models.DateField(blank=True,null=True)
-    policy_mode = models.PositiveSmallIntegerField(choices=ORGANIZATION_POLICY_STATUS_CHOICES, blank=True,null=True,default=1)
+    # policy_mode = models.PositiveSmallIntegerField(choices=ORGANIZATION_POLICY_STATUS_CHOICES, blank=True,null=True,default=1)
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=1)
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -715,7 +715,7 @@ class CompanyPlanItem(CommonBaseModel):
     policy_type = models.ForeignKey(Product,blank=True,null=True, on_delete=models.CASCADE, related_name='plan_policies')
     coverage_type = models.ForeignKey(Policy,blank=True,null=True, on_delete=models.CASCADE, related_name='plan_coverage_types')
     coverage_amount = models.DecimalField(max_digits=12,blank=True,null=True, decimal_places=2)
-    premium_rate = models.DecimalField(max_digits=5,blank=True,null=True, decimal_places=2)
+    premium_rate = models.DecimalField(max_digits=12,blank=True,null=True, decimal_places=2)
     premium_amount = models.DecimalField(max_digits=12,blank=True,null=True, decimal_places=2)
     insured_beneficiary_no = models.DecimalField(max_digits=12,blank=True,null=True, decimal_places=2)
     total = models.DecimalField(max_digits=15,blank=True,null=True, decimal_places=2)
@@ -778,3 +778,6 @@ class GopInformation(models.Model):
     class Meta:
         db_table = 'gop_information'
         ordering = ['-id']  # Orders by id in descending order
+        
+    
+    

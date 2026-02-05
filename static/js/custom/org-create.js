@@ -157,20 +157,20 @@
         } else {
           policyName.css("border", "");
         }
-        var policyType = $(this).find("select.policyType");
-        if (policyType.val() === "") {
-          policyType.css("border", "2px solid red");
-          valid = false;
-        } else {
-          policyType.css("border", "");
-        }
-        var policyMode = $(this).find("select.policyMode");
-        if (policyMode.val() === "") {
-          policyMode.css("border", "2px solid red");
-          valid = false;
-        } else {
-          policyMode.css("border", "");
-        }
+        // var policyType = $(this).find("select.policyType");
+        // if (policyType.val() === "") {
+        //   policyType.css("border", "2px solid red");
+        //   valid = false;
+        // } else {
+        //   policyType.css("border", "");
+        // }
+        // var policyMode = $(this).find("select.policyMode");
+        // if (policyMode.val() === "") {
+        //   policyMode.css("border", "2px solid red");
+        //   valid = false;
+        // } else {
+        //   policyMode.css("border", "");
+        // }
         var insurerValue= $(this).find("select.InsurerField");
         if (insurerValue.val() === "") {
           insurerValue.css("border", "2px solid red");

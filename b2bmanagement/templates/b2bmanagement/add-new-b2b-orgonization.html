@@ -277,7 +277,7 @@
                                 <p id="contract_no_0"></p>
                               </div> 
                             </div>                     
-                              <div class="row">
+                              {% comment %} <div class="row">
                                 <div class="col-md-6">
                                   <label>Policy Type</label>
                                   <select class="form-control policyType" style="height: 45px;" name="policy_type[0]">
@@ -298,7 +298,7 @@
                                   
                                   </select>
                                 </div>
-                              </div>
+                              </div> {% endcomment %}
                               <div class="row">
                                 <div class="col-md-6">
                                   <label>Contract Title</label>
@@ -818,6 +818,28 @@
       </div>
 
       {% include 'footer.html' %}
+      {% comment %} <div class="row">
+        <div class="col-md-6">
+          <label>Policy Type</label>
+          <select class="form-control policyType" style="height: 45px;" name="policy_type[${rowIndex}]">
+            <option value="">--Select Policy Type --</option>
+            {% for product in products%}
+            <option value={{product.id}}>{{product.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label>Mode Of Policy</label>
+          <select class="form-control policyMode" style="height: 45px;" name="policy_mode[${rowIndex}]">
+            <option value="">--Mode Of Policy--</option>
+            <option value="1">Family Flotter</option>
+            <option value="2">Per Disability</option>
+            <option value="3">Per Year</option>
+            <option value="4">Per Decease<x/option>
+          
+          </select>
+        </div>
+      </div> {% endcomment %}
     </div>
   </div>
 {% endblock %}
@@ -875,28 +897,7 @@
             <p id="contract_no_${rowIndex}">${newContract}</p>
           </div> 
         </div> 
-         <div class="row">
-        <div class="col-md-6">
-          <label>Policy Type</label>
-          <select class="form-control policyType" style="height: 45px;" name="policy_type[${rowIndex}]">
-            <option value="">--Select Policy Type --</option>
-            {% for product in products%}
-            <option value={{product.id}}>{{product.name}}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-6">
-          <label>Mode Of Policy</label>
-          <select class="form-control policyMode" style="height: 45px;" name="policy_mode[${rowIndex}]">
-            <option value="">--Mode Of Policy--</option>
-            <option value="1">Family Flotter</option>
-            <option value="2">Per Disability</option>
-            <option value="3">Per Year</option>
-            <option value="4">Per Decease<x/option>
-          
-          </select>
-        </div>
-      </div>
+       
       <div class="row">
         <div class="col-md-6">
           <label>Contract Title</label>

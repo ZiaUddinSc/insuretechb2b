@@ -5,8 +5,10 @@ from rest_framework import status
 from .models import (Organization,District,CompanyType,Bank,SalaryRange,Designation,Plan,Insurer,OrganizationPolicy,
                      CompanyPlanItem,CompanyPlan,CompanyPlanDocument,Department,HospitalInformation,HospitalContact,GopInformation
                      )
+from decimal import Decimal
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics, status,permissions
+from claim.models import EmployeeInformation
 from collections import defaultdict
 from rest_framework.views import APIView
 from .serializers import (OrganizationsSerializer,BankSerializer,DesignationSerializer,
@@ -507,11 +509,11 @@ class OrganizationPolicyCreate(APIView,PageNumberPagination):
         policy_data=[]
         for i in policy_indices:
             organization = data.get('organization')
-            policy_type = data.get(f'policy_type[{i}]')
-            policy_mode=None
-            if data.get(f'policy_mode[{i}]') !="":
-                policy_mode = data.get(f'policy_mode[{i}]')
-            contract_title = data.get(f'contract_title[{i}]')
+            if data.get(f'contract_title[{i}]'):
+            # policy_mode=None
+            # if data.get(f'policy_mode[{i}]') !="":
+            #     policy_mode = data.get(f'policy_mode[{i}]')
+                contract_title = data.get(f'contract_title[{i}]')
             insurer = data.get(f'insurer[{i}]')
             end_date=None
             enrollment_date=None
@@ -525,10 +527,10 @@ class OrganizationPolicyCreate(APIView,PageNumberPagination):
                 "insurer":insurer,
                 "organization_contract_no":contract_no,
                 "organization":organization,
-                "policy_type":policy_type,
+                # "policy_type":policy_type,
                 "remarks":remark,
                 "contract_title":contract_title,
-                "policy_mode":policy_mode,
+                # "policy_mode":policy_mode,
                 "enrollment_date":enrollment_date,
                 "end_date":end_date
             }
@@ -1415,21 +1417,23 @@ class CompanyPlanCreate(APIView,PageNumberPagination):
                                 "coverage_type":coverage_type,
                                 "coverage_amount":coverage_amount,
                                 "policy_type":policy_type,
-                                "premium_rate":premium_rate,
+                                "premium_rate":Decimal(premium_rate),
                                 "premium_amount":premium_amount,
                                 "insured_beneficiary_no":insured_beneficiary_no,
                                 "total":total
                             
                             }
                             plans_data.append(plan_data)
+                            print(plans_data)
                     if len(plans_data) > 0: 
                         plansSerilizer = CompanyPlanItemSerializer(data=plans_data,many=True)
                         if plansSerilizer.is_valid():
                             plansSerilizer.save(created_by=request.user) 
                             return Response({"success":True,"message":'Company Plan Created',"data":companySerializer.data}, status=status.HTTP_201_CREATED)
+                        print(plansSerilizer.errors)
                     else:
                         return Response({"success":False,"message":"Company Plan didn't save",'data':[]}, status=status.HTTP_400_BAD_REQUEST)    
-            # print(companySerializer.errors)
+                print(compnay_plans)
             return Response({"success":False,"message":"Company Plan didn't save",'data':[]}, status=status.HTTP_400_BAD_REQUEST)  
     def put(self, request, pk):
         try:
@@ -1984,3 +1988,87 @@ def gopPaginationList(request):
     })
 
 
+class CoverageHelperMixin:
+    """
+    Mixin with shared logic to get employee plan coverages
+    """
+
+    def get_employee_plan_coverages(self, user=None, contract_no=None):
+        """
+        Fetch plan and coverage items for an employee
+        If user is provided -> get employee by user
+        If contract_no is provided -> get employee by contract
+        """
+        try:
+            if user:
+                employee = EmployeeInformation.objects.select_related(
+                    "organization_emp_policy", "plan"
+                ).get(user=user)
+            elif contract_no:
+                employee = EmployeeInformation.objects.select_related(
+                    "organization_emp_policy", "plan"
+                ).get(contract_no=contract_no)
+            else:
+                return None, "User or contract_no must be provided"
+        except EmployeeInformation.DoesNotExist:
+            return None, "Employee not found"
+
+        if not employee.plan:
+            return None, "No plan assigned to this employee"
+
+        policy = employee.organization_emp_policy
+        if not policy or (contract_no and policy.organization_contract_no != contract_no):
+            return None, "Organization policy not found for this employee"
+
+        plan_data = {
+            "plan_id": employee.plan.id,
+            "plan_name": employee.plan.name,
+            "coverages": []
+        }
+
+        # Get all company plans under this policy
+        company_plans = policy.org_plan_policies.all()
+
+        for plan in company_plans:
+            documents = plan.company_plan_documents.filter(plan=employee.plan)
+            for doc in documents:
+                items = doc.company_plan_items.all().select_related("coverage_type", "policy_type")
+                for item in items:
+                    plan_data["coverages"].append({
+                        "policy_type": item.policy_type.name if item.policy_type else None,
+                        "coverage_type": item.coverage_type.name if item.coverage_type else None,
+                        "coverage_amount": item.coverage_amount,
+                        "premium_rate": item.premium_rate,
+                        "premium_amount": item.premium_amount,
+                        "insured_beneficiary_no": item.insured_beneficiary_no,
+                        "total": item.total
+                    })
+
+        return plan_data, None    
+
+class CoverageByContractAPIView(CoverageHelperMixin, APIView):
+    # authentication_classes = []  # No login required
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        plan_data, error = self.get_employee_plan_coverages(user=request.user)
+        if error:
+            return Response({"detail": error}, status=404)
+
+        return Response({
+            "employee_name": request.user.username,
+            "plan": plan_data
+        })
+
+
+class CoverageByContractTokenAPIView(CoverageHelperMixin,APIView):
+    authentication_classes = [TokenAuthentication]   # ✔ Require token
+    def get(self, request):
+        plan_data, error = self.get_employee_plan_coverages(user=request.user)
+        if error:
+            return Response({"detail": error}, status=404)
+
+        return Response({
+            "employee_name": request.user.username,
+            "plan": plan_data
+        })

@@ -9,6 +9,7 @@ from .views import (create_management_orgonization,create_insure,b2bOrganization
                     create_hospital,
                     BankView,
                     getOrganizationData,
+                    CoverageByContractAPIView,
                     getBankList,
                     BankViewSigleList,
                     DesignationView,
@@ -134,4 +135,5 @@ urlpatterns = [
     path('gop/',GOPCreateAPIView.as_view(),name='gop'),
     path('gops/',GopsView,name='gops'),
     path('gop-list/',gopPaginationList,name='gop-list'),
+    path('user-coverage-amounts/',CoverageByContractAPIView.as_view(),name='user-coverage-amounts'),
 ]

@@ -407,8 +407,8 @@ class InsurerPolicyDocumentsSerializer(serializers.ModelSerializer):
         fields = '__all__' 
         
 class InsurerPolicyListSerializer(serializers.ModelSerializer):
-    policy_type=ProductSerializer()
-    policy_mode_display = serializers.CharField(source='get_policy_mode_display', read_only=True)
+    # policy_type=ProductSerializer()
+    # policy_mode_display = serializers.CharField(source='get_policy_mode_display', read_only=True)
     enrollment_date_full = serializers.DateField(
         source="enrollment_date",   # original model field
         format="%d %B, %Y",
@@ -574,8 +574,8 @@ class OrganizationPolicyListSerializer(serializers.ModelSerializer):
     )
     org_plan_policy = serializers.SerializerMethodField() 
     org_policy_documents=OrganizationPolicyDocumentsSerializer(many=True)
-    policy_type=ProductSerializer()
-    policy_mode_display = serializers.CharField(source='get_policy_mode_display', read_only=True)
+    # policy_type=ProductSerializer()
+    # policy_mode_display = serializers.CharField(source='get_policy_mode_display', read_only=True)
     insurer=InsurerSerializer()
     days_count = serializers.SerializerMethodField()
     status_display = serializers.CharField(source='get_status_display', read_only=True)
