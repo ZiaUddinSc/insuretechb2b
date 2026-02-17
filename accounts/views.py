@@ -597,32 +597,58 @@ def database_backup(request):
 
 @api_view(['POST'])
 def login_api(request):
-    identifier = request.data.get('username')  # can be username or email
+    identifier = request.data.get('username')
     password = request.data.get('password')
-    # find user by username or email
+    role = request.data.get('role', 'B2B Employee')  # 👈 default role
+    
+    if not identifier or not password:
+        return Response(
+            {"success": False, "message": "Username and password required"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Only allow these two roles
+    allowed_roles = ['B2B Employee', 'Organization HR','ORGANIZATION HR']
+
+    if role not in allowed_roles:
+        return Response(
+            {"success": False, "message": "Invalid role"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
-        user_obj = CustomUser.objects.filter(
+        user_obj = CustomUser.objects.get(
             Q(phone_number=identifier) | Q(email=identifier)
-        ).get()
+        )
     except CustomUser.DoesNotExist:
-        return Response({ "success":False,"message": "Invalid mobile/email or password"}, status=400)
-    if user_obj.groups.filter(name='B2B Employee').exists():
-    # authenticate using username
-        user = authenticate(email=user_obj.email, password=password)
-        if user is None:
-            user = authenticate(phone_number=IndentationError, password=password)
-        if user is None:
-            return Response({ "success":False,"message": "Invalid mobile/email or password"}, status=400)
+        return Response(
+            {"success": False, "message": "Invalid credentials"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-        token, created = Token.objects.get_or_create(user=user)
-        user_data = CustomUserListSerializer(user).data
+    # Authenticate
+    user = authenticate(request, username=user_obj.email, password=password)
+    
+    if user is None:
+        return Response(
+            {"success": False, "message": "Invalid credentials"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-        return Response({
-            "success":True,
-            "message": "Login successful",
-            "token": token.key,
-            "user": user_data
-        })
-    return Response({ "success":False,"message": "User is not authonticated"}, status=400)
+    # 🔐 Role-based validation
+    if not user.groups.filter(name=role).exists():
+        return Response(
+            {"success": False, "message": f"User is not {role}"},
+            status=status.HTTP_403_FORBIDDEN
+        )
 
-   
+    token, _ = Token.objects.get_or_create(user=user)
+    user_data = CustomUserListSerializer(user).data
+
+    return Response({
+        "success": True,
+        "message": "Login successful",
+        "token": token.key,
+        "role": role,
+        "user": user_data
+    })

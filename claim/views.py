@@ -108,7 +108,6 @@ def CreateClaim(request):
 @group_required_multiple('Insurer Audit Officer','Insurer Finance', 'Claim Supervisor','Organization HR', 'Shield Operation',"B2B Employee","Insurer Claim Officer")
 def ClaimList(request):
     template_name = 'claim/claim-list.html'
-    
     return render(request, template_name=template_name,context={'request': request})
 
 
@@ -561,6 +560,116 @@ def update_claim_status(request):
         # return Response({"status": False, 'message': 'claim status not updated'})
 
 
+@api_view(["POST"])
+@authentication_classes([TokenAuthentication])
+def accept_claim(request):
+    if request.method == "POST":
+        # Save Document
+       
+        data = request.data
+        data=request.data.copy()
+        id = data.get('id')
+        
+        status=int(data.get('status'))
+        claim = ClaimInformation.objects.get(id=id)
+        actor = request.user
+        action = request.data.get('action')
+        remarks = request.data.get('remarks', '')
+        settled_amount = request.data.get('settled_amount',0)
+        cost_items_raw = request.POST.get("cost_items",None)
+    try:
+        receiver_user =CustomUser.objects.get(pk=request.user.id)
+        if claim.file_status== 7 :
+            receiver_user = claim_hr_receiver(request)
+            documentType = {}
+            documentFile = {}
+            # Collect Document Type Selection
+            for key, value in request.POST.items():
+                if key.startswith('documentType['):
+                    idx = key.split('[')[1].split(']')[0]  # extract index number
+                    documentType[int(idx)] = value
+
+            # Collect images
+            for key, file in request.FILES.items():
+                if key.startswith('documentFile['):
+                    idx = key.split('[')[1].split(']')[0]
+                    documentFile[int(idx)] = file
+
+            # Combine by index
+            combined_data = []
+
+            for idx in sorted(documentType.keys()):
+                combined_data.append({
+                    'claim': claim,
+                    'document_type': documentType.get(idx),
+                    'document': documentFile.get(idx)
+                })
+            filtered_document_list = [
+                item for item in combined_data if item['document'] is not None]
+            length = len(filtered_document_list)
+            if length > 0:
+                # create instances
+                objs = [ClaimDocuments(**item) for item in filtered_document_list]
+                ClaimDocuments.objects.bulk_create(objs)
+        process_claim_action(claim, status,actor, remarks, settled_amount,receiver_user,cost_items_raw)
+        return Response({"success": True, "message": f"Claim received successfully"})
+    except Exception as e:
+        return Response({"success": False, "error": str(e)}, status=400)
+        # claim = ClaimInformation.objects.filter(id=id).first()
+        # claim_data = {
+        #     "file_status": 4,
+        #     "sender": request.user,
+        #     'current_holder': request.user
+        # }
+        # if  status in [0, 1, 7]:  
+        #     claim_data["sender"] = claim.current_holder  
+        #     claim_data["current_holder"] = claim.sender  
+        # claim = ClaimInformation.objects.filter(id=id).update(**claim_data)
+        # if claim:
+        #     file = FileTransferHistory.objects.filter(
+        #         file_id=id).order_by('-id').first()
+        #     if file:
+        #         print("file.group.name",id )
+        #         # Update fields
+        #         groupname = file.group.name if file and file.group else None
+        #         file.status = data.get('status')
+        #         file.remarks = data.get('remarks')
+        #         file.received_at = datetime.now()
+        #         file.save()   
+        #         if  status in [1,2]:    
+        #             group_instance = None  
+        #             if groupname.upper()=="":      
+        #                 group_instance, _ = Group.objects.get_or_create(name="Waada")
+        #             elif groupname.upper()=="Waada": 
+        #                 group_instance, _ = Group.objects.get_or_create(name="Insurer Claim Officer")
+        #             elif groupname.upper()=="Insurer Claim Officer": 
+        #                 group_instance, _= Group.objects.get_or_create(name="Insurer Audit Officer")     
+                    
+        #             FileTransferHistory.objects.create(
+        #                 file_id=id,
+        #                 group=group_instance,
+        #                 status=4,
+        #                 sender=request.user,
+        #                 receiver=superadmin
+        #             )
+        #             return Response({"status": True, 'message': 'claim status  updated'})
+        #         else:
+        #             if groupname.upper()=="ORGANIZATION HR": 
+        #                 group_instance, created = Group.objects.get_or_create(name="B2B Employee")
+        #             elif groupname.upper()=="Waada":
+        #                 group_instance, created = Group.objects.get_or_create(name="ORGANIZATION HR")
+        #             FileTransferHistory.objects.create(
+        #                 file_id=id,
+        #                 group=group_instance,
+        #                 status=4,
+        #                 sender=file.receiver,
+        #                 receiver=file.sender
+        #             )
+        #         return Response({"status": True, 'message': 'claim status  updated'})
+        #     return Response({"status": True, 'message': 'claim status  updated'})
+        # return Response({"status": False, 'message': 'claim status not updated'})
+
+
 # Claim FIle Delete
 @api_view(["POST"])
 def delete_claim_document(request):
@@ -861,13 +970,26 @@ class ClaimListView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication]  # Require token
     def get(self, request):
+        search = request.GET.get("search")
         # Retrieve object or return 404 if not found
+        
+        
+        
         queryset = ClaimInformation.objects.prefetch_related(
             'claim_history').all()
         queryset.filter(
                 Q(created_by=request.user) |
                 Q(claim_history__sender=request.user)
             ).distinct()
+        
+        if search:
+            queryset = queryset.filter(
+                Q(file_status__icontains=search) |
+                Q(claim_for__icontains=search) |
+                Q(beneficiary_name__icontains=search)
+            )
+
+        
         paginator = StandardResultsSetPagination()
         paginated_qs = paginator.paginate_queryset(queryset, request)
         serializer = ClaimInformationListSerializer(paginated_qs, many=True)
