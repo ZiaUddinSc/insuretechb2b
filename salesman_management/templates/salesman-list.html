@@ -1,7 +1,7 @@
 {% extends 'base.html' %} 
 {% load static %} 
 
-{% block title %}Salesman List{% endblock title%}
+{% block title %}Salesforce List{% endblock title%}
 
 {% block extra_head %}
 
@@ -25,11 +25,11 @@
           <div class="card-body">
             <div class="page-header">
               <h3 class="page-title">
-                Salesman List
+                Salesforce List
               </h3>
               <nav aria-label="breadcrumb">
                 <a href="{% url 'add-salesman' %}" >
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addHospitalModal" data-whatever="@mdo">Add Salesman</button>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addHospitalModal" data-whatever="@mdo">Add Salesforce</button>
                 </a>
               </nav>
             </div>
@@ -39,7 +39,7 @@
                   <table id="sales-employee-list" class="table" >
                     <thead class="">
                       <tr>
-                          <th>Sales Employee Name</th>
+                          <th>Employee Name</th>
                           <th>Employee Code</th> 
                           <th>Line Manager </th> 
                            <th>Department</th> 
