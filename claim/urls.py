@@ -1,7 +1,7 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path,include
 
-from .views  import EmployeeCreateAPIView,currencyeView,EmployeesView,AllEmployeeList,CompnayDetailProfileAPIView,EmployeeDetailAPIView, getCurrencyList,CurrencySigleList,test_send_email,CurrencyView,CreateClaim,suggest_benificiary,create_claim_api,FileTransferWithHistoryView,ClaimList,ClaimDetailAPIView,ClaimView,EmployeeList,EmployeeListView,ReceiveClaimList,FileReceiveWithHistoryView,update_claim_status,UpdateClaimView,delete_claim_document,update_claim_api,claim_action,update_claim_item
+from .views  import EmployeeCreateAPIView,currencyeView,ClaimUnderProcessList,EmployeesView,AllEmployeeList,FileApprovedWithHistoryView,CompnayDetailProfileAPIView,EmployeeDetailAPIView, getCurrencyList,CurrencySigleList,test_send_email,CurrencyView,CreateClaim,suggest_benificiary,create_claim_api,FileTransferWithHistoryView,ClaimList,ClaimDetailAPIView,ClaimView,EmployeeList,EmployeeListView,ReceiveClaimList,FileReceiveWithHistoryView,update_claim_status,UpdateClaimView,delete_claim_document,update_claim_api,claim_action,update_claim_item
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
@@ -13,6 +13,7 @@ urlpatterns = [
      path("update-claim-api/", update_claim_api, name="update-claim-api"),
      path('claim-list/',ClaimList,name='claim_list'),
      path('received-claim-list/',ReceiveClaimList,name='received-claim-list'),
+     path('underprocess-claim-list/',ClaimUnderProcessList,name='underprocess-claim-list'),
      path('employee-list-view/<int:policy_id>/',EmployeeList,name='employee-list-view'),
      path('employees/',EmployeesView,name='employees'),
      path("claim-view/<int:pk>/", ClaimView,name="claim_view"),
@@ -20,6 +21,7 @@ urlpatterns = [
      path("employee-create/<int:pk>/", EmployeeCreateAPIView.as_view(), name="employee-create"),
      path("claim-with-history/", FileTransferWithHistoryView.as_view(),name="claim_with_history"),
      path("file-receive-with-history/", FileReceiveWithHistoryView.as_view(),name="file_receive_with_history"),
+     path("approved-file-history/", FileApprovedWithHistoryView.as_view(),name="approved_file_history"),
      path("update-claim-status/", update_claim_status,name="update-claim-status"),
      path('claim-details/<int:pk>/', ClaimDetailAPIView.as_view(), name='claim-details'),
      path('profile-details/', CompnayDetailProfileAPIView.as_view(), name='profile-details'),

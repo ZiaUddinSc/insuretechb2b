@@ -73,8 +73,8 @@ INSTALLED_APPS = [
     'policy',
     'b2bmanagement',
     'b2bproduct',
-    'claim'
-    
+    'claim',
+    'salesman_management'
     
 
 ]

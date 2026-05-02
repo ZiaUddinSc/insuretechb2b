@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Business Collection Summary{% endblock %}
+
+{% block extra_head %}
+<style>
+.section-title{
+    font-size:18px;
+    font-weight:600;
+    margin-top:25px;
+    margin-bottom:15px;
+    border-left:4px solid #28a745;
+    padding-left:10px;
+}
+
+.form-section{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 8px rgba(0,0,0,.05);
+}
+
+.report-header{
+    text-align:center;
+    margin-bottom:20px;
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="container-fluid page-body-wrapper">
+{% include 'layout.html' %}
+
+<div class="main-panel">
+<div class="content-wrapper">
+
+<div class="card">
+<div class="card-body">
+<!-- 🔎 FILTER -->
+<form method="GET" class="form-section">
+
+    <div class="row">
+
+        <!-- Organization -->
+        <div class="col-md-4">
+            <label>Organization</label>
+            <select name="organization_id" class="form-control" id="organization_id">
+                <option value="">All</option>
+                {% for org in organizations %}
+                    <option value="{{ org.id }}"
+                        {% if selected_org == org.id|stringformat:"s" %}selected{% endif %}>
+                        {{ org.organization_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- From -->
+        {% comment %} <div class="col-md-3">
+            <label>From</label>
+            <input type="date" name="from_date" value="{{ from_date }}" class="form-control">
+        </div> {% endcomment %}
+
+        <!-- To -->
+        {% comment %} <div class="col-md-3">
+            <label>To</label>
+            <input type="date" name="to_date" value="{{ to_date }}" class="form-control">
+        </div> {% endcomment %}
+
+        <!-- Button -->
+       <button id="searchBtn" class="btn btn-success mt-2">
+            Search
+        </button>
+
+    </div>
+</form>
+<button id="downloadPdfBtn" class="btn btn-primary" style="display:none;">
+    Download PDF
+</button>
+<!-- HEADER -->
+ <div id="reportSection" style="display:none;">
+<div class="report-header">
+    <h2 class="report-title"></h2>
+    <h4>Business Collection Summary</h4>
+    <p  class="report-date">Date: {{ date }}</p>
+</div>
+
+
+<div class="form-section">
+
+<div class="section-title">
+    Collection Report Details
+</div>
+
+<div class="table-responsive">
+<table class="table table-bordered text-center">
+    <thead class="thead-light">
+        <tr>
+            <th>Today Collection</th>
+            <th>Current Month Collection</th>
+            <th>New Business</th>
+            <th>Renewal Business</th>
+            <th>Previous Month Collection</th>
+            <th>Current Year Collection</th>
+            <th>Previous Year Collection</th>
+        </tr>
+    </thead>
+    <tbody id="reportBody">
+    </tbody>    
+      
+</table>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+$(document).ready(function(){
+
+ $("#searchBtn").click(function(e){
+    e.preventDefault()
+    let org_id = $("#organization_id").val();
+
+    if(org_id == ""){
+        alert("Please select organization");
+        $("#downloadPdfBtn").hide();
+        return;
+    }
+    $.ajax({
+        url: "/sales/reports/collection/",
+        type: "GET",
+        data: {
+            organization_id: org_id
+        },
+
+        success: function(response){
+            $("#downloadPdfBtn").show();
+            $("#reportSection").show();
+            if(response.organization){
+                $(".report-title").text(response.organization.organization_name);
+            }
+
+            $(".report-date").text(response.date);
+            $("#reportBody").html(`
+                <tr>
+                    <td>${response.today_collection}</td>
+                    <td>${response.current_month_collection}</td>
+                    <td>${response.new_business}</td>
+                    <td>${response.renewal_business}</td>
+                    <td>${response.previous_month_collection}</td>
+                    <td>${response.current_year_collection}</td>
+                    <td>${response.previous_year_collection}</td>
+                </tr>
+            `);
+        }
+    });
+});
+$("#downloadPdfBtn").click(function () {
+    const { jsPDF } = window.jspdf;
+
+    let report = document.getElementById("reportSection");
+
+    // make sure it's visible before capture
+    report.style.display = "block";
+
+    html2canvas(report, {
+        scale: 2, // high quality
+        useCORS: true
+    }).then(canvas => {
+
+        let imgData = canvas.toDataURL("image/png");
+
+        let pdf = new jsPDF("p", "mm", "a4");
+
+        let imgWidth = 210; // A4 width
+        let pageHeight = 297;
+        let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let position = 0;
+
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+
+        pdf.save("Business_Collection_Report.pdf");
+
+        // optional: hide again
+    });
+});
+});
+</script>
+
+{% include 'footer.html' %}
+{% endblock %}

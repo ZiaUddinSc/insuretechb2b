@@ -32,7 +32,7 @@
             </a>
           </div>
           <div class="col-md-4 stretch-card">
-            <a href="{% url 'table-temp' %}" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
+            <a href="{% url 'underprocess-claim-list' %}" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
              <div class="number-div">
                <h4 class=""> {{ status_summary.under_processing.count|default:0}}</h4>
                 <h5 class="custom-text">Number</h5>
@@ -81,18 +81,18 @@
             </a>
           </div>
           <div class="col-md-4 stretch-card">
-            <a href="#" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
+            <a  href="/claim/received-claim-list/" class="btn btn-lg btn-block h-100 d-flex flex-column justify-content-center align-items-center text-center custom-card">
              <div class="number-div">
-               <h4 class="">0</h4>
+              <h4 class=""> {{ status_summary.initiated.count|default:0}}</h4>
                 <h5 class="custom-text">Number</h5>
              </div>
 
-             <div class="amount-div">
+             {% comment %} <div class="amount-div">
                <h4 class="">0</h4>
                 <h5 class="custom-text">Amount</h5>
-             </div>
+             </div> {% endcomment %}
               <img src="{% static 'images/dashboard/Paid.png' %}" class="icon-dashboard" alt="Paid Claim" width="80" height="80" />
-              <h5 class="mt-2 custom-text">Paid Claim</h5>
+              <h5 class="mt-2 custom-text">Pending Claim</h5>
             </a>
           </div>
 

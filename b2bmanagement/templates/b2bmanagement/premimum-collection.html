@@ -1,0 +1,569 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Premium Collection{% endblock %}
+
+{% block extra_head %}
+<style>
+.section-title{
+    font-size:18px;
+    font-weight:600;
+    margin-top:25px;
+    margin-bottom:15px;
+    border-left:4px solid #007bff;
+    padding-left:10px;
+}
+
+.form-section{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 8px rgba(0,0,0,.05);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="container-fluid page-body-wrapper">
+{% include 'layout.html' %}
+
+<div class="main-panel">
+<div class="content-wrapper">
+
+<div class="card">
+<div class="card-body">
+
+<h3 class="mb-4">💰 Add  Collection</h3>
+
+<form id="collectionForm">
+{% csrf_token %}
+
+<div class="form-section">
+
+<div class="section-title">
+Organization Information
+</div>
+<div class="row">
+   <div class="col-md-12 "> 
+    <input type="hidden" name="organization_id" value="{{ organization.id }}">
+    <input type="hidden" name="salesman_id" value="{{ organization.sales_employee.id }}">
+
+<div class="media">
+                          <div class="media-body">
+                            <table class="table tableBankInfo table-bordered">
+                              <tbody>
+                                <tr>
+                                <td width="10%"><strong>Company Name</td><td width="75%"><strong>{{organization.organization_name |default:"N/A" }}</strong>
+                              
+                                </tr>
+                                <tr>
+                                  <td> <strong>Organization Code</strong></td>   <td>{{organization.organization_code |default:"N/A" }}
+                                
+                                </tr>
+                                <tr>
+                                  <td><strong>Organization Type</strong></td>   <td>{{organization.company_type_display |default:"N/A" }}
+                                
+                                </tr>
+                                 <tr>
+                                  <td><strong>Sales Employee</strong></td>   <td>{{ organization.sales_employee.employee_name|default:"N/A" }} - {{ organization.sales_employee.employee_code|default:"N/A" }}
+                                
+                                </tr>
+                                <tr>
+                                  <td><strong>Address</strong></td>   <td>{{organization.address |default:"N/A" }}
+                                </tr>
+                                <tr>
+                                  <td><strong>Website</strong></td>   <td>{{organization.website |default:"N/A" }}
+                                </tr>
+                                
+                              </tbody>
+                            </table>
+                            <br/>
+                          </div>
+                        </div>
+</div>
+</div>
+<div class="section-title">
+Contract Information
+</div>
+<div class="row">
+  <table   class="table table-bordered">
+      <thead>
+        <tr>
+          <th>
+          SL
+          </th>
+          <th>
+          Contract ID
+          </th>
+          <th>
+            Contract Title
+          </th>
+          <th>
+            Enrollment Date
+          </th>
+          <th>
+            End Date
+          </th>
+          
+          <th>
+            Remaning Days
+          </th>
+          <th>
+            Insurer Name
+          </th>
+          
+        </tr>
+      </thead>
+      <tbody>
+        {% for org_policy in organization.organization_policies %}
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td>{{org_policy.insurer_contract_no |default:"N/A" }}</td>   
+          <td>{{org_policy.contract_title |default:"N/A" }}</td>   
+          <td>{{org_policy.enrollment_date_full |default:"N/A"}}</td>  
+          <td>{{org_policy.end_date_full  |default:"N/A" }}</td>     
+          <td>
+            {% if org_policy.days_count %}
+            {{ org_policy.days_count }} {% if org_policy.days_count == 1 %}day{% else %}days{% endif %}
+              {% else %}
+                  N/A
+              {% endif %}
+            </td>     
+          <td> {{ org_policy.insurer.insurer_name |default:"N/A"}}</td>    
+              
+        </tr>
+        <tr >
+          <td colspan="11">
+          <table class="table table-bordered companyPlan">
+            <thead>
+              {% for compnay_plan in org_policy.org_plan_policy.company_plan_documents  %}
+              <tr>
+                <th colspan="8" class="py-1">
+                  Plan - {{ compnay_plan.plan.name }}
+                </th>
+              </tr>  
+              <tr class="table-info">
+                <th>
+                  Policy Type
+                </th>
+                <th>
+                  Coverage Type
+                </th>
+                <th>
+                  Coverage Amount
+                </th>
+                <th>
+                  Premium Rate % 
+                </th>
+                <th>
+                  Premium Amount
+                </th>
+                <th>
+                  Insured Number of Beneficiary
+
+                </th>
+                <th>
+                  Total Premium 
+
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for plan_item in compnay_plan.company_plan_items %}
+              
+              <tr>
+                <td>
+                  {{plan_item.policy_type.name}}
+                </td>
+                <td>
+                  {{plan_item.coverage_type.name}}
+                </td>
+                <td>
+                  {{plan_item.coverage_amount}}
+                </td>
+                <td>
+                  {{plan_item.premium_rate}}
+                </td>
+                <td>
+                  {{plan_item.premium_amount}}
+                </td>
+                <td>
+                  {{plan_item.insured_beneficiary_no}}
+                </td>
+                <td>
+                  {{plan_item.total}}
+                </td>
+              </tr>
+              {% endfor %%}
+              <tr>
+                <td colspan="6">
+                  <h6>Gross Total</h6>
+                </td>
+                <td>
+                  {{compnay_plan.total_sum}}
+                </td>
+                
+              </tr>
+            
+            
+            </tbody>
+          
+            {% endfor %}
+            
+          </table>
+          </td>
+          </tr> 
+        {% empty %}
+          <tr>
+            <td colspan="6">No contact available</td>
+          </tr>
+
+      {% endfor %}
+        
+      </tbody>
+  </table>
+</div>
+<div class="section-title">
+Collection Information
+</div>
+
+<div class="row">
+
+
+
+<div class="col-md-4 mb-3">
+<label>Premium Amount</label>
+<input
+type="number"
+step="0.01"
+name="premimum_amount"
+value="{{ total_premium }}"
+class="form-control"
+placeholder="Enter Premium Amount"
+required
+readonly
+>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Collected Amount(Total Collection : {{total_collected}})</label>
+<input
+type="number"
+step="0.01"
+name="collected_amount"
+class="form-control"
+placeholder="Enter Collected Amount"
+required
+>
+</div>
+<div class="col-md-4 mb-3">
+<label>Due Amount(Total Due: {{due_amount}})</label>
+<input
+type="number"
+step="0.01"
+name="due_amount"
+class="form-control"
+placeholder="Auto or Manual"
+>
+</div>
+</div>
+
+<div class="row">
+
+
+
+<div class="col-md-4 mb-3">
+<label>Commission (%)</label>
+<input
+type="number"
+step="0.01"
+name="commission_percent"
+class="form-control"
+readonly
+>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Commission Amount</label>
+<input
+type="number"
+step="0.01"
+name="commision_amount"
+class="form-control"
+readonly
+>
+</div>
+<div class="col-md-4 mb-3">
+<label>Collection Date</label>
+<input
+type="date"
+name="collection_date"
+class="form-control"
+required
+>
+</div>
+
+</div>
+
+<div class="row">
+<input type="hidden" id="existing_collected" value="{{ total_collected }}">
+<div class="col-md-6 mb-3">
+<label>Status</label>
+<select class="form-control" name="status" readonly>
+<option value="partial">Partial</option>
+<option value="full">Full</option>
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label>Payment Type</label>
+<select class="form-control" id="paymentType" name="payment_type">
+<option value="">Select Payment Type</option>
+<option value="bank">Bank</option>
+<option value="cash">Cash</option>
+<option value="mfs">Mobile Financial Service</option>
+</select>
+</div>
+</div>
+<!-- =========================
+     BANK SECTION
+========================= -->
+<div id="bankSection" class="payment-box" style="display:none;">
+    <div class="card p-3 mb-3">
+        <h6>🏦 Bank Payment</h6>
+
+        <!-- Bank Account -->
+        <div class="form-group">
+            <label>Bank Account</label>
+             <select class="form-control" name="bank_account" id="bankSelect">
+                <option value="">Loading...</option>
+              </select>
+        </div>
+
+        <!-- Account Name -->
+        <div class="form-group">
+            <label>Account Name</label>
+            <input type="text" class="form-control" name="bank_account_name" placeholder="Enter Account Name">
+        </div>
+
+        <!-- Account Number -->
+        <div class="form-group">
+            <label>Account Number</label>
+            <input type="text" class="form-control" name="bank_account_number" placeholder="Enter Account Number">
+        </div>
+
+        <!-- Image -->
+        <div class="form-group">
+            <label>Transaction / Cheque Image</label>
+            <input type="file" class="form-control" name="bank_image" accept="image/*">
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================
+     CASH SECTION
+========================= -->
+<div id="cashSection" class="payment-box" style="display:none;">
+    <div class="card p-3 mb-3">
+        <h6>💵 Cash Payment</h6>
+
+        <div class="form-group">
+            <label>Received By</label>
+            <input type="text" class="form-control" name="cash_received_by">
+        </div>
+
+        <div class="form-group">
+            <label>Note</label>
+            <textarea class="form-control" name="cash_note"></textarea>
+        </div>
+    </div>
+</div>
+
+<!-- =========================
+     MFS SECTION
+========================= -->
+<div id="mfsSection" class="payment-box" style="display:none;">
+    <div class="card p-3 mb-3">
+        <h6>📱 MFS Payment</h6>
+
+        <div class="form-group">
+            <label>MFS Provider</label>
+             <select class="form-control" name="mfs_account" id="mfsSelect">
+            <option value="">Loading...</option>
+        </select>
+        </div>
+        <div class="form-group">
+            <label>MFS Account Name</label>
+            <input type="text" class="form-control" name="mfs_account_name" placeholder="Enter MFS Account Number">
+
+        </div>
+        <div class="form-group">
+            <label>MFS Account Number</label>
+            <input type="text" class="form-control" name="mfs_account_number" placeholder="Enter Account Number">
+
+        </div>
+
+        <div class="form-group">
+            <label>Transaction ID</label>
+            <input type="text" class="form-control" name="mfs_txn_id" placeholder="Transaction ID">
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="text-right">
+<button
+id="submitBtn"
+type="submit"
+class="btn btn-success px-4"
+>
+Save Collection
+</button>
+</div>
+
+</form>
+
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+{% include 'footer.html' %}
+{% endblock %}
+
+{% block extra_script %}
+<script>
+  $(function(){
+
+function csrfToken(){
+   return $('[name=csrfmiddlewaretoken]').val();
+}
+
+/* 🔥 CALCULATION */
+function calculateAll(){
+
+    let premium = parseFloat($("input[name='premimum_amount']").val()) || 0;
+    let existing = parseFloat($("#existing_collected").val()) || 0;
+    let current = parseFloat($("input[name='collected_amount']").val()) || 0;
+
+    let total = existing + current;
+
+    if(total > premium){
+        total = premium;
+        $("input[name='collected_amount']").val((premium - existing).toFixed(2));
+    }
+
+    let due = premium - total;
+    due = due < 0 ? 0 : due;
+
+    $("input[name='due_amount']").val(due.toFixed(2));
+
+    let isFull = due === 0;
+
+    $("select[name='status']").val(isFull ? "full" : "partial");
+
+    if(isFull){
+
+        let salesmanId = $("input[name='salesman_id']").val();
+        $.get("/sales/get_commission/", { salesman_id: salesmanId }, function(res){
+
+            if(res.success){
+
+                let percent = parseFloat(res.commission_percent);
+
+                $("input[name='commission_percent']").val(percent);
+
+                let commission = (total * percent) / 100;
+
+                $("input[name='commision_amount']").val(commission.toFixed(2));
+            }
+        });
+
+    } else {
+        $("input[name='commission_percent']").val('');
+        $("input[name='commision_amount']").val('');
+    }
+}
+
+$("input[name='collected_amount']").on("input", calculateAll);
+
+/* 🔥 PAYMENT TYPE */
+$("#paymentType").on("change", function(){
+
+    let type = $(this).val();
+
+    $("#bankSection, #cashSection, #mfsSection").hide();
+
+    if(type === "bank"){
+        $("#bankSection").show();
+        loadAccounts("bank", "#bankSelect");
+    }
+    else if(type === "mfs"){
+        $("#mfsSection").show();
+        loadAccounts("mfs", "#mfsSelect");
+    }
+    else if(type === "cash"){
+        $("#cashSection").show();
+    }
+});
+
+/* 🔥 LOAD BANK/MFS */
+function loadAccounts(type, target){
+
+    $.get("/b2bmanagement/banks/", { type: type }, function(res){
+
+        let html = '<option value="">Select</option>';
+
+        res.data.forEach(function(item){
+            html += `<option value="${item.id}">${item.name}</option>`;
+        });
+
+        $(target).html(html);
+    });
+}
+
+/* 🔥 SUBMIT */
+$("#collectionForm").on("submit", function(e){
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    $.ajax({
+        url: "/sales/collection/create/",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: { "X-CSRFToken": csrfToken() },
+
+        beforeSend: function(){
+            $("#submitBtn").prop("disabled", true).text("Saving...");
+        },
+
+        success: function(res){
+            if(res.success){
+                alert(res.message);
+                location.reload(); // ✅ reload
+            } else {
+                alert(res.message);
+            }
+        },
+
+        error: function(){
+            alert("Error occurred");
+        },
+
+        complete: function(){
+            $("#submitBtn").prop("disabled", false).text("Save Collection");
+        }
+    });
+});
+
+});
+</script>
+{% endblock %}

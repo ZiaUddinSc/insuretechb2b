@@ -3386,9 +3386,9 @@
                   <br/>
                   <br/>
                   {% if claim_view.is_user_in_current_group or  request.user|has_group:"Super Admin"  %} 
-                      {%if claim_view.is_edited_enable is not True%}
+                      {%if claim_view.is_edited_enable is not True and claim_view.file_status != 7 %}
                         <form id="claim_submit_form">
-                          <table class="table table-bordered">
+                          <table class="table table-bordered" >
                             <thead>
                             <tr>
                             <th>Remarks</th>
@@ -3422,8 +3422,11 @@
                       {%endif%}  
                   {%endif%}  
                   {%if  claim_view.file_status == 7  and  "B2B Employee" in claim_view.current_holder_groups %}
+                  <textarea class="form-control" rows="4" readonly>
+                    {{ claim_view.last_remarks}}
+                    </textarea>
                   <form id="claim_submit_form">
-                   <table class="table table-bordered">
+                   <table class="table table-bordered" style="display: none;">
                      <thead>
                      <tr>
                      <th>Remarks</th>
@@ -3443,12 +3446,19 @@
                      </select>
                      <span class="error" id="statusError"></span>
                      </td>
-                     <td>
+                     {% comment %} <td>
                        <button type="submit" id="claim-receive" class="btn btn-primary mt-4">Submit</button>
-                     </td>
+                     </td> {% endcomment %}
                    </tr>
                    </tbody>
                    </table>  
+                   <div class="d-flex justify-content-end">
+
+                   <button type="submit" id="claim-receive"
+                   class="btn btn-primary mt-4">
+                   Submit
+                 </button>
+                </div>
                   </form>              
                   {%endif%}  
                   <br/>

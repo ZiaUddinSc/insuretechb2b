@@ -33,6 +33,9 @@
       account_number: {
         required: true,
       },
+      sales_employee:{
+        required: true,
+      },
       routing_number: {
         digits: true,
         minlength: 9,
@@ -58,11 +61,15 @@
       account_number: {
         required: "Account Number  is required.",
       },
+      sales_employee: {
+        required: "Sales Employee  is required.",
+      },
       routing_number: {
         digits: "Only numbers allowed",
         minlength: "Routing number must be exactly 9 digits",
         maxlength: "Routing number must be exactly 9 digits"
-      }
+      },
+      
       
     },
     errorPlacement: function (error, element) {
@@ -198,7 +205,6 @@
           $(this).find('input[name],textarea[name], select[name]').each(function () {
           let name = $(this).attr("name");
           let value = $(this).val();
-          console.log($(this).attr("type"));
           if ($(this).attr("type") === "file") {
             // File input
             let files = $(this)[0].files;

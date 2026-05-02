@@ -8,7 +8,7 @@ from .models import (District,Organization,CompanyType,SalaryRange,Bank,Designat
                      CompanyPlanItem,CompanyPlanDocument,Department,HospitalInformation,HospitalContact,GopInformation
                      )
 from b2bproduct.serializers import ProductSerializer,PolicySerializer
-
+from salesman_management.serializers import SalesEmployeeSerializer
 
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -501,6 +501,7 @@ class OrganizationPolicyDocumentsSerializer(serializers.ModelSerializer):
         model = OrganizationPolicyDocuments
         fields = '__all__' 
 
+
 class OrganizationPolicyDocumentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationPolicyDocuments
@@ -607,6 +608,7 @@ class OrganizationListSerializer(serializers.ModelSerializer):
 
 class OrgnaizationListSerializer(serializers.ModelSerializer):
     bank=BankSerializer()
+    sales_employee=SalesEmployeeSerializer()
     contacts=OrganizationContactListSerializer(many=True)
     organization_policies=OrganizationPolicyListSerializer(many=True)
     # # insurer_policies=InsurerPolicyListSerializer(many=True)

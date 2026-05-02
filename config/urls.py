@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/', include("claim.api_urls")),
     path('api/', include("b2bproduct.api_urls")),
     path('api/', include("dashboard.api_urls")),
+    path("sales/", include("salesman_management.urls")),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 admin.site.site_header = 'InsureTech B2B'
 admin.site.site_title = 'InsureTech B2B'

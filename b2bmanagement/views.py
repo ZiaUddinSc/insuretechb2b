@@ -1,7 +1,9 @@
 import json
+from django.db.models import Sum
 from django.shortcuts import render,get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
+from salesman_management.models import SalesEmployee,PremiumCollection
 from .models import (Organization,District,CompanyType,Bank,SalaryRange,Designation,Plan,Insurer,OrganizationPolicy,
                      CompanyPlanItem,CompanyPlan,CompanyPlanDocument,Department,HospitalInformation,HospitalContact,GopInformation
                      )
@@ -61,8 +63,9 @@ def create_management_orgonization(request):
     departments=Department.objects.filter(status=1)
     new_org_auto_id = generate_auto_id(Organization,3)
     company_types=CompanyType.objects.filter(status=1)
+    sales_employees=SalesEmployee.objects.filter(status=1,role__name='Sales Officer')
     template_name = 'b2bmanagement/add-new-b2b-orgonization.html'
-    return render(request, template_name=template_name,context={"company_types":company_types,'banks':banks,"designations":designations,"products":products,"plans":plans,"departments":departments,"insurers":insurers,'new_org_auto_id':new_org_auto_id})
+    return render(request, template_name=template_name,context={"company_types":company_types,'banks':banks,"designations":designations,"products":products,"plans":plans,"departments":departments,"insurers":insurers,'new_org_auto_id':new_org_auto_id,"sales_employees":sales_employees})
 
 def create_insure(request):
     designations=Designation.objects.all()
@@ -201,6 +204,37 @@ class OrganizationDetailsView(APIView):
         return JsonResponse({"success": False, "error": "Invalid request"}, status=400)
 
 
+
+def add_premimum_collection_view(request,pk):
+    organization = Organization.objects.get(pk=pk)
+    serializer = OrgnaizationListSerializer(organization)
+    total_premium_data = CompanyPlanItem.objects.filter(
+    company_document__companyplan__organization_policy__organization__sales_employee_id=organization.sales_employee
+        ).aggregate(
+            total_premium=Sum('total')
+        )
+    total_premium = total_premium_data['total_premium'] or 0        # if request.headers.get('Content-Type') == 'application/json' or request.accepts('application/json'):
+    total_collected_data = PremiumCollection.objects.filter(
+    organization_id=organization.id
+    ).aggregate(
+        total_collected=Sum('collected_amount')
+    )
+
+    total_collected = total_collected_data['total_collected'] or 0
+
+    # ✅ Calculate due
+    due_amount = total_premium - total_collected
+    if due_amount < 0:
+        due_amount = 0
+
+    context = {
+        "organization": serializer.data,
+        "salesmen": SalesEmployee.objects.filter(role__name='Sales Officer'),
+        "total_premium":total_premium,
+        "total_collected": total_collected,
+        "due_amount": due_amount
+    }
+    return render(request, 'b2bmanagement/premimum-collection.html',context)
 
 
 class OrganizationPolicyView(APIView):    
@@ -497,67 +531,251 @@ class OrganizationPolicyCreate(APIView,PageNumberPagination):
         except Insurer.DoesNotExist:
             return Response({"success":False,"error": "Item not found"},status=status.HTTP_404_NOT_FOUND)
     
+    # def post(self, request):
+    #     data = request.POST    
+    #     print(data)
+    #     files =request.FILES  
+    #     policy_indices = set()
+    #     for key in data.keys():
+    #         if "contract_title[" in key:
+    #             index = key.split("[")[1].split("]")[0]
+    #             policy_indices.add(index)
+    #     # Iterate over each policy index
+    #     policy_data=[]
+    #     for i in policy_indices:
+    #         organization = data.get('organization')
+    #         if data.get(f'contract_title[{i}]'):
+    #         # policy_mode=None
+    #         # if data.get(f'policy_mode[{i}]') !="":
+    #         #     policy_mode = data.get(f'policy_mode[{i}]')
+    #             contract_title = data.get(f'contract_title[{i}]')
+    #         insurer = data.get(f'insurer[{i}]')
+    #         end_date=None
+    #         enrollment_date=None
+    #         remark = data.get(f'remark[{i}]')
+    #         if data.get(f'enroolment_date[{i}]'):
+    #            enrollment_date =  datetime.strptime(data.get(f'enroolment_date[{i}]'), "%d-%m-%Y").date()
+    #         if data.get(f'end_date[{i}]'):
+    #             end_date =  datetime.strptime(data.get(f'end_date[{i}]'), "%d-%m-%Y").date()
+    #         contract_no =data.get(f'contract_no_{i}')
+    #         organization_data={
+    #             "insurer":insurer,
+    #             "organization_contract_no":contract_no,
+    #             "organization":organization,
+    #             # "policy_type":policy_type,
+    #             "remarks":remark,
+    #             "contract_title":contract_title,
+    #             # "policy_mode":policy_mode,
+    #             "enrollment_date":enrollment_date,
+    #             "end_date":end_date
+    #         }
+    #         sales_employees = data.getlist(f'sales_employee[{i}][]')
+    #         print("sales_employees",sales_employees)
+    #         uploaded_files = files.getlist(f'upload_document_file[{i}][]')
+    #         org_id =data.get('organization')
+    #         org_policy = OrganizationPolicy.objects.filter(organization_contract_no=contract_no,organization_id=org_id).first()
+    #         if  org_policy:
+    #             serializer = OrganizationPolicySerializer(org_policy, data=organization_data, partial=True)
+    #         else:
+    #             serializer = OrganizationPolicySerializer(data=organization_data)
+    #         created_files = []
+    #         if serializer.is_valid():
+    #             org_policy = serializer.save(created_by=request.user)
+    #             policy_data.append(serializer.data)
+    #             # for sales_employee in sales_employees:
+    #             print(sales_employees)
+    #                 # salesEmptSerializer = OrganizationSalesEmployeeSerializer(data={'sales_employee': sales_employee, 'organization_policy': org_policy.id})
+    #                 # if salesEmptSerializer.is_valid():
+    #                 #     salesEmptSerializer.save()
+    #                 #     created_files.append(salesEmptSerializer.data)
+    #                 #     policy_data.append({"sales_emp": created_files})                        
+    #                 # else:     
+    #                 #     print(salesEmptSerializer.errors)
+    #                 #     return Response({"success":False,"data":documentSerializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    #             for file in uploaded_files:
+    #                 documentSerializer = OrganizationPolicyDocumentsSerializer(data={'document': file, 'organization_policy': org_policy.id})
+    #                 if documentSerializer.is_valid():
+    #                     documentSerializer.save(created_by=request.user)
+    #                     created_files.append(documentSerializer.data)
+    #                     policy_data.append({"uploaded_files": created_files})                        
+    #                 else:     
+    #                     return Response({"success":False,"data":documentSerializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    #         if len(policy_data) > 0: 
+    #             print("policy_data",policy_data)
+    #             return Response({"success":False,"data":policy_data}, status=status.HTTP_201_CREATED)
+    #         else:
+    #             return Response({"success":False,'policies_data':policy_data}, status=status.HTTP_400_BAD_REQUEST)    
+
     def post(self, request):
-        data = request.POST    
-        files =request.FILES   
-        policy_indices = set()
+        data = request.POST
+        files = request.FILES
+
+        print("Incoming Data:", data)
+
+        # -------------------------------
+        # GET ALL POLICY INDICES (ORDERED)
+        # -------------------------------
+        policy_indices = []
+
         for key in data.keys():
             if "contract_title[" in key:
                 index = key.split("[")[1].split("]")[0]
-                policy_indices.add(index)
-        # Iterate over each policy index
-        policy_data=[]
-        for i in policy_indices:
-            organization = data.get('organization')
-            if data.get(f'contract_title[{i}]'):
-            # policy_mode=None
-            # if data.get(f'policy_mode[{i}]') !="":
-            #     policy_mode = data.get(f'policy_mode[{i}]')
-                contract_title = data.get(f'contract_title[{i}]')
-            insurer = data.get(f'insurer[{i}]')
-            end_date=None
-            enrollment_date=None
-            remark = data.get(f'remark[{i}]')
-            if data.get(f'enroolment_date[{i}]'):
-               enrollment_date =  datetime.strptime(data.get(f'enroolment_date[{i}]'), "%d-%m-%Y").date()
-            if data.get(f'end_date[{i}]'):
-                end_date =  datetime.strptime(data.get(f'end_date[{i}]'), "%d-%m-%Y").date()
-            contract_no =data.get(f'contract_no_{i}')
-            organization_data={
-                "insurer":insurer,
-                "organization_contract_no":contract_no,
-                "organization":organization,
-                # "policy_type":policy_type,
-                "remarks":remark,
-                "contract_title":contract_title,
-                # "policy_mode":policy_mode,
-                "enrollment_date":enrollment_date,
-                "end_date":end_date
-            }
-            uploaded_files = files.getlist(f'upload_document_file[{i}][]')
-            org_id =data.get('organization')
-            org_policy = OrganizationPolicy.objects.filter(organization_contract_no=contract_no,organization_id=org_id).first()
-            if  org_policy:
-                    serializer = OrganizationPolicySerializer(org_policy, data=organization_data, partial=True)
-            else:
-                serializer = OrganizationPolicySerializer(data=organization_data)
-            created_files = []
-            if serializer.is_valid():
-                org_policy = serializer.save(created_by=request.user)
-                policy_data.append(serializer.data)
-                for file in uploaded_files:
-                    documentSerializer = OrganizationPolicyDocumentsSerializer(data={'document': file, 'organization_policy': org_policy.id})
-                    if documentSerializer.is_valid():
-                        documentSerializer.save(created_by=request.user)
-                        created_files.append(documentSerializer.data)
-                        policy_data.append({"uploaded_files": created_files})                        
-                    else:     
-                        return Response({"success":False,"data":documentSerializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        if len(policy_data) > 0: 
-            return Response({"success":True,"data":policy_data}, status=status.HTTP_201_CREATED)
-        else:
-            return Response({"success":False,'policies_data':policy_data}, status=status.HTTP_400_BAD_REQUEST)    
+                policy_indices.append(int(index))
 
+        policy_indices = sorted(policy_indices)
+
+        policy_data = []
+
+        # -------------------------------
+        # LOOP THROUGH EACH POLICY
+        # -------------------------------
+        for i in policy_indices:
+            try:
+                print(f"\nProcessing Policy Index: {i}")
+
+                organization = data.get('organization')
+                contract_title = data.get(f'contract_title[{i}]')
+                insurer = data.get(f'insurer[{i}]')
+                remark = data.get(f'remark[{i}]')
+                contract_no = data.get(f'contract_no_{i}')
+
+                # -------------------------------
+                # DATE PARSING
+                # -------------------------------
+                enrollment_date = None
+                end_date = None
+
+                if data.get(f'enroolment_date[{i}]'):
+                    enrollment_date = datetime.strptime(
+                        data.get(f'enroolment_date[{i}]'),
+                        "%d-%m-%Y"
+                    ).date()
+
+                if data.get(f'end_date[{i}]'):
+                    end_date = datetime.strptime(
+                        data.get(f'end_date[{i}]'),
+                        "%d-%m-%Y"
+                    ).date()
+
+                # -------------------------------
+                # POLICY DATA
+                # -------------------------------
+                organization_data = {
+                    "insurer": insurer,
+                    "organization_contract_no": contract_no,
+                    "organization": organization,
+                    "remarks": remark,
+                    "contract_title": contract_title,
+                    "enrollment_date": enrollment_date,
+                    "end_date": end_date
+                }
+
+                # -------------------------------
+                # GET SALES EMPLOYEES
+                # -------------------------------
+                # sales_employees = data.getlist(f'sales_employee[{i}][]')
+                # print(f"Sales Employees for {i}:", sales_employees)
+
+                # -------------------------------
+                # GET FILES
+                # -------------------------------
+                uploaded_files = files.getlist(f'upload_document_file[{i}][]')
+
+                # -------------------------------
+                # CREATE OR UPDATE POLICY
+                # -------------------------------
+                org_policy = OrganizationPolicy.objects.filter(
+                    organization_contract_no=contract_no,
+                    organization_id=organization
+                ).first()
+
+                if org_policy:
+                    serializer = OrganizationPolicySerializer(
+                        org_policy,
+                        data=organization_data,
+                        partial=True
+                    )
+                else:
+                    serializer = OrganizationPolicySerializer(
+                        data=organization_data
+                    )
+
+                if not serializer.is_valid():
+                    return Response({
+                        "success": False,
+                        "errors": serializer.errors
+                    }, status=status.HTTP_400_BAD_REQUEST)
+
+                org_policy = serializer.save(created_by=request.user)
+
+                policy_response = {
+                    "policy": serializer.data,
+                    "sales_employees": [],
+                    "documents": []
+                }
+
+                # -------------------------------
+                # SAVE SALES EMPLOYEES
+                # -------------------------------
+                # for emp_id in sales_employees:
+                #     if emp_id:
+                #         sales_serializer = OrganizationSalesEmployeeSerializer(
+                #             data={
+                #                 "sales_employee": emp_id,
+                #                 "organization_policy": org_policy.id
+                #             }
+                #         )
+
+                #         if sales_serializer.is_valid():
+                #             sales_serializer.save()
+                #             policy_response["sales_employees"].append(
+                #                 sales_serializer.data
+                #             )
+                #         else:
+                #             return Response({
+                #                 "success": False,
+                #                 "errors": sales_serializer.errors
+                #             }, status=status.HTTP_400_BAD_REQUEST)
+
+                # -------------------------------
+                # SAVE DOCUMENTS
+                # -------------------------------
+                for file in uploaded_files:
+                    doc_serializer = OrganizationPolicyDocumentsSerializer(
+                        data={
+                            "document": file,
+                            "organization_policy": org_policy.id
+                        }
+                    )
+
+                    if doc_serializer.is_valid():
+                        doc_serializer.save(created_by=request.user)
+                        policy_response["documents"].append(
+                            doc_serializer.data
+                        )
+                    else:
+                        return Response({
+                            "success": False,
+                            "errors": doc_serializer.errors
+                        }, status=status.HTTP_400_BAD_REQUEST)
+
+                policy_data.append(policy_response)
+
+            except Exception as e:
+                return Response({
+                    "success": False,
+                    "error": str(e)
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        # -------------------------------
+        # FINAL RESPONSE (AFTER LOOP)
+        # -------------------------------
+        return Response({
+            "success": True,
+            "data": policy_data
+        }, status=status.HTTP_201_CREATED)
+        
     def put(self, request, pk):
         try:
           insurer = OrganizationPolicy.objects.get(id=pk) 
@@ -587,6 +805,19 @@ class OrganizationPolicyCreate(APIView,PageNumberPagination):
         policy.delete()
         return Response({"error": False, "message": "Organization has been deleted"})
 
+
+def get_bank_or_mfs(request):
+    account_type = request.GET.get("type")  # bank / mfs
+
+    data = Bank.objects.filter(
+        account_type=account_type,
+        status=1
+    ).values("id", "name", "short_name")
+
+    return JsonResponse({
+        "success": True,
+        "data": list(data)
+    })
  
 class BankListAPIView(APIView,PageNumberPagination):
     queryset = Bank.objects.all()
@@ -1099,7 +1330,6 @@ class HopitalCreateAPIView(APIView,PageNumberPagination):
                 data['bin_file']=files.get('bin_file')
             if files.get('tin_file'):
                 data['tin_file']=files.get('tin_file')    
-            print(data)
             serializer = HospitalSerializer(data=data)
             index = 0
             created_contacts = []

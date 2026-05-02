@@ -123,6 +123,22 @@
         </ul>
           </div>
       </li> {% endcomment %}
+            {% if request.user|has_group:"Super Admin" %}
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#ui-sales" aria-expanded="false" aria-controls="ui-advanced">
+          <i class="fas fa-clipboard-list menu-icon"></i>
+          <span class="menu-title">Sales</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="ui-sales">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'salesman-list' %}">Salesman List</a></li>
+          
+          </ul>
+          
+        </div>
+      </li>
+      {% endif %}
       
       {% if request.user|has_group:"Super Admin" %}
       <li class="nav-item">
@@ -200,6 +216,21 @@
         </div>
       </li>
       {% endif %}
+
+        <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#ui-reports" aria-expanded="false" aria-controls="ui-advanced">
+          <i class="fas fa-clipboard-list menu-icon"></i>
+          <span class="menu-title">Reports</span>
+          <i class="menu-arrow"></i>
+        </a>
+        <div class="collapse" id="ui-reports">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="{% url 'collection_report_summary' %}">Collection Report</a></li>
+          
+          </ul>
+          
+        </div>
+      </li>
       {% comment %} <li class="nav-item">
         <a class="nav-link"  href="{% url 'claim-dashboard' %}" aria-expanded="false" aria-controls="form-elements">
           <i class="fas fa-clipboard-list menu-icon"></i>

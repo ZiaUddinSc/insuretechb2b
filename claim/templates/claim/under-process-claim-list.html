@@ -1,6 +1,6 @@
 {% extends 'base.html' %} 
 {% load static %} 
-{% block title %}Pending Claim List{% endblock title%}
+{% block title %}Underprocess Claim List{% endblock title%}
 
 {% block extra_head %}
   <link href="{% static "/fonts/bootstrap-icons.css" %}" rel="stylesheet" type="text/css">
@@ -21,7 +21,7 @@
           <div class="card-body">
             <div class="page-header">
               <h3 class="page-title">
-                Under Processing Claim              
+                Under Proeessing Claim              
               </h3>
               </nav>
             </div>
@@ -116,7 +116,7 @@
           "order": [0, 'desc'],
           ajax: {
             "processing":false,
-            "url": "{% url 'file_receive_with_history' %}",
+            "url": "{% url 'approved_file_history' %}",
             "dataSrc": function (response) {
               return response.data;
            },

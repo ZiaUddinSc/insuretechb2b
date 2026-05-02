@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (Organization,Bank,Designation,SalaryRange,Plan,Department,
                      Insurer,InsurerContact,InsurerPolicy,InsurerPolicyDocuments
                      ,OrganizationContact,OrganizationPolicy,OrganizationPolicyDocuments,
-                     CompanyPlan,CompanyPlanItem,CompanyPlanDocument,CompanyType,District,HospitalContact,HospitalInformation,GopInformation 
+                     CompanyPlan,CompanyPlanItem,CompanyPlanDocument,CompanyType,District,HospitalContact,HospitalInformation,GopInformation, 
                      )
 # Register your models here.
 

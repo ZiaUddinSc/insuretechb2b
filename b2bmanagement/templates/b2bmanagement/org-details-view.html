@@ -89,6 +89,10 @@
                                   <td><strong>Organization Type</strong></td>   <td>{{organization.company_type_display |default:"N/A" }}
                                 
                                 </tr>
+                                 <tr>
+                                  <td><strong>Sales Employee</strong></td>   <td>{{ organization.sales_employee.employee_name|default:"N/A" }} - {{ organization.sales_employee.employee_code|default:"N/A" }}
+                                
+                                </tr>
                                 <tr>
                                   <td><strong>Address</strong></td>   <td>{{organization.address |default:"N/A" }}
                                 </tr>

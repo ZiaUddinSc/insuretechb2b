@@ -117,6 +117,15 @@ def ReceiveClaimList(request):
     return render(request, template_name=template_name,context={'request': request})
 
 
+def ClaimList(request):
+    template_name = 'claim/receive-claim-list.html'
+    return render(request, template_name=template_name,context={'request': request})
+
+def ClaimUnderProcessList(request):
+    template_name = 'claim/under-process-claim-list.html'
+    return render(request, template_name=template_name,context={'request': request})
+
+
 @group_required_multiple('Super Admin')
 def EmployeeList(request,policy_id):
     template_name = 'claim/employee-list.html'
@@ -731,6 +740,54 @@ class FileTransferWithHistoryView(APIView):
         })
 
 
+class FileApprovedWithHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        queryset = ClaimInformation.objects.prefetch_related(
+            'claim_history').all()
+        user = request.user
+        if user.is_superuser:
+            pass  # superuser sees all
+        else:
+            user_groups = user.groups.values_list('name', flat=True)
+            # Normal user sees only own created data
+           
+            if "Organization HR" in user_groups:
+                print(request.user)
+                queryset = queryset.filter(sender=request.user,current_group__name="Shield Operation")
+
+            elif "Shield Operation" in user_groups:
+                queryset = queryset.filter(current_holder=request.user,current_group__name__iexact="Insurer Claim Officer")
+            
+            elif "Claim Supervisor" in user_groups:
+                 queryset = queryset.filter(current_holder=request.user,current_group__name="Insurer Audit Officer")
+            
+            elif "Insurer Audit Officer" in user_groups:
+                queryset = queryset.filter(current_group__name="Insurer Audit Officer")
+
+            elif "Insurer Claim Officer" in user_groups:
+                queryset = queryset.filter(current_holder=request.user,current_group__name="Claim Supervisor")
+            
+            elif "B2B Employee" in user_groups:
+                queryset = queryset.filter(current_group__name="B2B Employee") 
+               
+            else:
+                # fallback → user sees only what they hold
+                queryset = queryset.filter(current_holder=user)
+        total_count = queryset.count()
+        serializer = ClaimInformationFileSerializer(queryset, many=True)
+        data = serializer.data
+        for item in data:
+            # item['is_super_user'] = request.user.is_superuser or  request.user.groups.filter(name__in=["ORGANIZATION HR","Insurer Claim Officer", "Waada","Insurer Audit Officer"]).exists()
+            item['is_super_user'] =  request.user.is_superuser
+        return Response({
+            "draw": 0,
+            "recordsTotal": total_count,
+            "recordsFiltered": 0,
+            "data": data
+        })
+
 class FileReceiveWithHistoryView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -947,6 +1004,10 @@ class ClaimDetailAPIView(APIView):
         #         "message": "Company Plan fetched successfully",
         #         "data": serializer.data,
         #     }, status=status.HTTP_200_OK)
+        last_history = obj.claim_history.order_by('-received_at').first()
+        last_remarks = last_history.remarks if last_history else "" 
+        data["last_remarks"] = last_remarks
+
         context = {
             "claim_view": data,
         }

@@ -4,8 +4,10 @@ from django.urls import path,include
 from .views import (create_management_orgonization,create_insure,b2bOrganizationList,assignPolicies,addAssignPolicies,b2bSetting,addOrganizationType,b2bCustomerEdit,bankView,organizationsBoard,updateOrganization,
                     OrganizationView,
                     hospitalPaginationList,
+                    add_premimum_collection_view,
                     hospitalList,
                     OrganizationPolicyView,
+                    get_bank_or_mfs,
                     create_hospital,
                     BankView,
                     getOrganizationData,
@@ -118,6 +120,7 @@ urlpatterns = [
     path('company-plan-details/<int:pk>/',CompanyDetailAPIView.as_view(),name='company-plan-details'),  
     path('organization-view-details/<int:pk>/',OrganizationDetailsView.as_view(),name='organization-view-details'),    
     path('organization-policy-delete/',OrganizationPolicyView.as_view(),name='organization-policy-delete'),    
+    path('add_premimum_collection/<int:pk>/',add_premimum_collection_view,name='organization-view-details'),    
 
        # Create Company Type  URL
     path('company-type-view/',companyTypeView,name='company-type-view'),
@@ -136,4 +139,5 @@ urlpatterns = [
     path('gops/',GopsView,name='gops'),
     path('gop-list/',gopPaginationList,name='gop-list'),
     path('user-coverage-amounts/',CoverageByContractAPIView.as_view(),name='user-coverage-amounts'),
+    path('banks/', get_bank_or_mfs, name='get-bank-list'),
 ]

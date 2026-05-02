@@ -14,6 +14,7 @@ STATUS_CHOICES = [
 
 BANK_TYPE_CHOICES = [
         ('bank', 'Bank'),
+        ('cash', 'Cash'),
         ('mfs', 'MOBILE FINANCIAL SERVICE'),
         ]
 
@@ -116,6 +117,8 @@ class Bank(CommonBaseModel):
     
     def __str__(self):
         return str(self.name)
+
+
         
 class Designation(CommonBaseModel):
     """Custom User Information"""
@@ -141,6 +144,15 @@ class Designation(CommonBaseModel):
     
     def __str__(self):
      return str(self.title)
+
+
+class Branch(models.Model):
+    name=models.CharField(max_length=150)
+    code=models.CharField(max_length=30)
+    region=models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class Department(CommonBaseModel):
     """Custom User Information"""
@@ -521,6 +533,7 @@ class Organization(CommonBaseModel):
     organization_name = models.CharField(max_length=150, blank=True,null=True)
     organization_address = models.TextField(blank=True)
     website = models.CharField(max_length=250,blank=True,null=True)
+    sales_employee= models.ForeignKey('salesman_management.SalesEmployee', blank=True,null=True,on_delete=models.CASCADE, related_name='org_sales_person')
     company_logo = models.FileField(upload_to=compnay_logo_path,blank=True,null=True)  
     trade_license_file = models.FileField(upload_to=tin_file_path,blank=True,null=True)  # You can also use ImageField
     trade_license_no = models.CharField(max_length=100, blank=True,null=True)

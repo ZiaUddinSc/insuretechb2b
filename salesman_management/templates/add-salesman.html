@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Add Sales Employee{% endblock %}
+
+{% block extra_head %}
+<style>
+.section-title{
+    font-size:18px;
+    font-weight:600;
+    margin-top:25px;
+    margin-bottom:15px;
+    border-left:4px solid #28a745;
+    padding-left:10px;
+}
+
+.form-section{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 8px rgba(0,0,0,.05);
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="container-fluid page-body-wrapper">
+{% include 'layout.html' %}
+
+<div class="main-panel">
+<div class="content-wrapper">
+
+<div class="card">
+<div class="card-body">
+
+<h3 class="mb-4">➕ Add Sales Employee</h3>
+
+<form id="add-employee-form" method="POST" enctype="multipart/form-data">
+{% csrf_token %}
+
+<div class="form-section">
+
+<div class="section-title">
+Sales Employee Information
+</div>
+
+
+<!-- USER INFO -->
+<div class="row">
+
+<div class="col-md-4 mb-3">
+<label>Full Name</label>
+<input
+type="text"
+name="full_name"
+class="form-control"
+placeholder="Enter Full Name"
+required
+>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Email</label>
+<input
+type="email"
+name="email"
+class="form-control"
+placeholder="Enter Email"
+required
+>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Password</label>
+<input
+type="password"
+name="password"
+class="form-control"
+placeholder="Enter Password"
+required
+>
+</div>
+
+</div>
+
+
+
+<!-- EMPLOYEE -->
+<div class="row">
+
+<div class="col-md-4 mb-3">
+<label>Employee Code</label>
+<input
+type="text"
+name="employee_code"
+class="form-control"
+placeholder="Enter Employee Code"
+required
+>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Phone</label>
+<input
+type="text"
+name="phone"
+class="form-control"
+placeholder="Enter Phone"
+required
+>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Channel</label>
+<select class="form-control" name="channel">
+<option value="">Select</option>
+{% for c in channels %}
+<option value="{{c.id}}">
+{{c.name}}
+</option>
+{% endfor %}
+</select>
+</div>
+
+</div>
+
+
+
+<!-- PERSONAL -->
+<div class="row">
+
+<div class="col-md-4 mb-3">
+<label>Father Name</label>
+<input
+type="text"
+name="father_name"
+class="form-control"
+placeholder="Enter Father Name"
+required
+>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Mother Name</label>
+<input
+type="text"
+name="mother_name"
+class="form-control"
+placeholder="Enter Mother Name"
+required
+>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Date of Birth</label>
+<input
+type="date"
+name="date_of_birth"
+class="form-control"
+required
+>
+</div>
+
+</div>
+
+
+
+<!-- ORGANIZATION -->
+<div class="row">
+
+<div class="col-md-4 mb-3">
+<label>Department</label>
+<select class="form-control" name="department">
+<option value="">Select</option>
+{% for d in departments %}
+<option value="{{d.id}}">
+{{d.name}}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Designation</label>
+<select class="form-control" name="designation">
+<option value="">Select</option>
+{% for d in designations %}
+<option value="{{d.id}}">
+{{d.title}}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-4 mb-3">
+<label>Branch</label>
+<select class="form-control" name="branch">
+<option value="">Select</option>
+{% for b in branches %}
+<option value="{{b.id}}">
+{{b.name}}
+</option>
+{% endfor %}
+</select>
+</div>
+
+</div>
+
+
+
+<div class="row">
+
+<div class="col-md-6 mb-3">
+<label>Role</label>
+<select class="form-control" name="role">
+<option value="">Select</option>
+{% for r in roles %}
+<option value="{{r.id}}">
+{{r.name}}
+</option>
+{% endfor %}
+</select>
+</div>
+
+
+<div class="col-md-6 mb-3">
+<label>Status</label>
+<select class="form-control" name="status">
+<option value="1">
+Active
+</option>
+
+<option value="2">
+Inactive
+</option>
+</select>
+</div>
+
+</div>
+
+
+
+<!-- REPORTING -->
+<div class="row">
+
+{% comment %} <div class="col-md-6 mb-3">
+<label>Manager</label>
+<select class="form-control" name="manager">
+<option value="">Select</option>
+{% for m in managers %}
+<option value="{{m.id}}">
+{{m.user.username}}
+</option>
+{% endfor %}
+</select>
+</div> {% endcomment %}
+
+
+<div class="col-md-6 mb-3">
+<label>Line Manager</label>
+<select class="form-control" name="line_manager">
+<option value="">Select</option>
+{% for m in managers %}
+<option value="{{m.id}}">
+{{m.employee_name}}
+</option>
+{% endfor %}
+</select>
+</div>
+<div class="col-md-6 mb-3">
+<label>Joining Date</label>
+<input
+type="date"
+name="joining_date"
+class="form-control"
+>
+</div>
+</div>
+
+
+
+<!-- JOINING -->
+
+
+</div>
+
+
+
+<div class="text-right">
+<button
+id="submitBtn"
+type="submit"
+class="btn btn-primary px-4"
+>
+Save Employee
+</button>
+</div>
+
+</form>
+
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+{% include 'footer.html' %}
+{% endblock %}
+
+
+
+{% block extra_script %}
+<script>
+$(function(){
+
+function csrfToken(){
+   return $('[name=csrfmiddlewaretoken]').val();
+}
+
+$("#add-employee-form").on("submit",function(e){
+
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    $.ajax({
+        url:"/sales/employee/create/",
+        method:"POST",
+        data:formData,
+        processData:false,
+        contentType:false,
+
+        headers:{
+            "X-CSRFToken": csrfToken()
+        },
+
+        beforeSend:function(){
+            $("#submitBtn")
+            .prop("disabled",true)
+            .text("Saving...");
+        },
+
+        success:function(res){
+
+            alert(
+                res.message ||
+                "Employee created successfully"
+            );
+
+            $("#add-employee-form")[0].reset();
+
+            $("#submitBtn")
+             .prop("disabled",false)
+             .text("Save Employee");
+        },
+
+        error:function(xhr){
+
+            console.log(xhr.responseJSON);
+
+            let message =
+                "Failed to create employee";
+
+            if(
+                xhr.responseJSON &&
+                xhr.responseJSON.message
+            ){
+                message =
+                    xhr.responseJSON.message;
+            }
+
+            alert(message);
+
+            $("#submitBtn")
+             .prop("disabled",false)
+             .text("Save Employee");
+        }
+
+    });
+
+});
+
+});
+</script>
+{% endblock %}

@@ -157,6 +157,7 @@ def insurer_dashboard(request):
 def b2b_employee_dashboard(request):
     dashboard_data=dashboard_counts(request,"B2B Employee")
     context = dashboard_data
+    print(dashboard_data)
     return render(request, 'dashboard/b2b_employee_dashboard.html',context=context)
 
 def insurer_claim_dashboard(request):
@@ -228,6 +229,20 @@ def dashboardCount(request,group_name="Organization HR"):
     }
     return data
 
+
+def parse_date(value):
+    if not value:
+        return None
+    
+    # If already datetime
+    if isinstance(value, datetime):
+        return value.date()
+    
+    # If string like "23-Jul-90"
+    if isinstance(value, str):
+        return datetime.strptime(value.strip(), "%d-%b-%y").date()
+
+    return None
 
 
 def dashboardForClaimOfficerCount(request,group_name="Organization HR"):
@@ -633,9 +648,9 @@ def process_data(request,rows):
                 new_member_id=f"{new_org_auto_id}{'00'}{emp_id}"
                 
                 if row['dob']:
-                    dob = datetime.strptime(row['dob'], "%d-%b-%y").date()  
+                    dob = parse_date(row['dob'])  
                 if row['membership_date']:
-                    membership_date = datetime.strptime(row['membership_date'], "%d-%b-%y").date()   
+                    membership_date = parse_date(row['membership_date'])   
                 row_plan=row['plan'].strip()
                 row_designation=row['designation'].strip()
                 row_department=row['department'].strip()

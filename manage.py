@@ -8,7 +8,7 @@ def main():
     """Run administrative tasks."""
     # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'waadaa_b2b.settings')
     # os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.django.local')
-    environment=os.environ.setdefault('DJANGO_ENVIRONMENT', 'local')
+    environment=os.environ.setdefault('DJANGO_ENVIRONMENT', 'production')
     
     if environment == 'production':
         os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.django.production')
